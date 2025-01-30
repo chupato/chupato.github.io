@@ -1,0 +1,14 @@
+{
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "semiColons": false,
+    "singleQuote": true,
+    "exclude": ["vendor/", "metafile.json"]
+  },
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "compile": "deno run -A task-compile.js"
+  }
+}
