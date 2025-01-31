@@ -7,8 +7,4 @@
     "singleQuote": true,
     "exclude": ["vendor/", "metafile.json"]
   },
-  "tasks": {
-    "compile": "deno run -A task-compile.js",
-    "dev": "deno serve -A task-dev.ts"
-  }
 }

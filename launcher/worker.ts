@@ -1,8 +1,6 @@
-import { MPQ } from './mpq.ts'
-import * as DBC from './dbc.ts'
-import * as std from './std.ts'
+import * as globals from './globals.ts'
 
-Object.assign(globalThis, { MPQ, DBC, std })
+Object.assign(globalThis, globals)
 
 const OK = new Response(null, { status: 200 })
 
