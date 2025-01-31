@@ -1,6 +1,6 @@
 
 const url = new URL(location.href)
-const version = url.pathname.split('/')[2]
+const version = url.pathname.split('/')[2] || 'master'
 const port = url.searchParams.get('port')
 if (!port) throw Error('Must be run with a port')
 
@@ -85,7 +85,10 @@ const initRoutes = async () => {
   }
 
 
-  using webview = getWebViewWindow()
+  const webview = getWebViewWindow()
+  return {
+    'GET/hello': () => new Response('Hello\n')
+  }
 }
 
 const routeInitRes = await fetch(`http://localhost:${port}/routes`, {

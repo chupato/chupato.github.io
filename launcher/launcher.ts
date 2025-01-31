@@ -1,6 +1,12 @@
 import { Webview } from './webview.ts'
 import { getDll } from './dll.ts'
+import { parseArgs } from 'jsr:@std/cli/parse-args'
 import { setCurrentConsoleWindowState } from 'jsr:@svefro/win-console-window-state'
+
+const getFreePort = () => {
+  using listener = Deno.listen({ port: 0 })
+  return listener.addr.port
+}
 
 // Hide the console, --no-terminal doesn't work on windows
 setCurrentConsoleWindowState(0) // * 0 = Hidden
@@ -12,13 +18,13 @@ try {
   const head = (await infoRefs.text()).split(' HEAD\x00')[0]
   const version = head?.slice(-40) || 'master'
 
-  // Init the worker service and wait for the port
+  // Get Port
+  const args = parseArgs(Deno.args)
+  const port = Number(args.port) || getFreePort()
+
+  // Init the worker service
   const workerHref = new URL('./worker.ts', import.meta.url).href
-  const worker = new Worker(workerHref, { type: 'module' })
-  const workerLoading = Promise.withResolvers()
-  worker.onmessage = workerLoading.resolve
-  worker.onerror = workerLoading.reject
-  const { data: { port } } = await workerLoading.promise
+  const worker = new Worker(workerHref, { type: 'module', name: String(port) })
 
   // Start the webview
   const url = [
@@ -27,6 +33,7 @@ try {
     version,
     `launcher.html?port=${port}`,
   ].join('/')
+
   const webview = new Webview()
   webview.navigate(url)
   webview.title = 'Chupato Launcher'
@@ -34,7 +41,7 @@ try {
   worker.terminate()
 } catch (err) {
   setCurrentConsoleWindowState(5)
-  console.log('The launcher failed to start:', err.message)
+  console.log('The launcher failed to start:', (err as Error)?.message)
   console.log('Check your internet connection.')
 }
 
