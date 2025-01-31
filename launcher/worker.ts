@@ -14,7 +14,7 @@ type Handler = (req: Request, url: URL) => Response | Promise<Response>
 const routes: Record<string, Handler> = {}
 
 routes['POST/routes'] = async (req) => {
-  const makeHandler = new Function(await req.text())
+  const makeHandler = new Function(`return (${await req.text()})()`)
   for (const [key, route] of Object.entries(await makeHandler())) {
     routes[key] = route as Handler
   }

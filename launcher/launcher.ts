@@ -8,8 +8,8 @@ try {
   // Get the git version, we act like a git to avoid rate limits
   const gitInfoRefsUrl ='https://github.com/chupato/chupato.github.io.git/info/refs?service=git-upload-pack'
   const gitAgent = { 'User-Agent': 'git/2.x.x', Accept: '*/*' }
-  const infoRefs = (await fetch(gitInfoRefsUrl, { headers: gitAgent })).text()
-  const head = infoRefs.split(' HEAD\x00')[0]
+  const infoRefs = await fetch(gitInfoRefsUrl, { headers: gitAgent })
+  const head = (await infoRefs.text()).split(' HEAD\x00')[0]
   const version = head?.slice(-40) || 'master'
 
   // Init the worker service and wait for the port
@@ -33,6 +33,7 @@ try {
   webview.run()
   worker.terminate()
 } catch (err) {
+  setCurrentConsoleWindowState(5)
   console.log('The launcher failed to start:', err.message)
   console.log('Check your internet connection.')
 }
