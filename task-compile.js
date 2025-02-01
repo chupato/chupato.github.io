@@ -2,7 +2,7 @@ import { dlls } from './launcher/dll.ts'
 import { build } from './build.ts'
 
 Deno.writeTextFileSync('./launcher.html', build({
-//	minify: true
+	// minify: true
 }))
 
 const includedFiles = [...dlls.map(n => `${n}.dll`), 'worker.ts']

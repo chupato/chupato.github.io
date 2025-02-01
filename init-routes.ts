@@ -4,7 +4,7 @@ const { resolve } = std.path
 const { crypto } = std.crypto
 const { encodeBase64Url } = std.encoding
 const encode = new TextEncoder().encode.bind(new TextEncoder())
-const _decode = new TextDecoder().decode.bind(new TextDecoder())
+const decode = new TextDecoder().decode.bind(new TextDecoder())
 
 // -----------
 // Config File
@@ -21,6 +21,7 @@ const setConfig = (k: string, v: any) => {
   clearTimeout(saveTimeout)
   config[k] = v
   saveTimeout = setTimeout(save, 50)
+  return v
 }
 
 const assignConfig = (data: Record<string, any>) => {
@@ -34,6 +35,12 @@ try {
   Object.assign(config, savedConfig)
 } catch {
   // ignore errors loading config
+}
+
+try {
+  Deno.statSync(config.tmpDir as string)
+} catch {
+  setConfig('tmpDir', Deno.makeTempDirSync())
 }
 
 // ----------------------------------------
@@ -127,6 +134,7 @@ const scanWoWDir = async function* () {
 }
 
 scanWoWDir.abort = () => abortScan = true
+
 if (!(await isValidWowDir(config.wowDir))) {
   setConfig('wowDir', undefined)
 }
@@ -141,7 +149,7 @@ const defaultWTFConfig = {
   readEULA: '1',
   realmName: 'AzerothCore',
   realmList: '51.68.39.150',
-  accountName: 'test', // TODO auto-set with discord link
+  accountName: String(config.accountName || ''),
   // Idea: put password in the clip board and paste it into wow login ?
 }
 
@@ -160,24 +168,41 @@ const stringifyWTFConf = (conf: Record<string, string>) =>
     .join('\r\n')
 
 const startWoW = async () => {
+  try {
+    await Deno.remove(`${config.wowDir}\\Cache`, { recursive: true })
+    log({ status: 'clear cache' })
+  } catch(err) {
+    log({ error: 'unable to clear cache', message: err.message })
+  }
+  log({ status: 'creating realmlist.wtf', realmList: defaultWTFConfig.realmList })
   for await (const locale of Deno.readDir(`${config.wowDir}\\Data`)) {
     if (!locale.isDirectory) continue
+    log({ locale: locale.name })
     await Deno.writeTextFile(
       `${config.wowDir}\\Data\\${locale.name}\\realmlist.wtf`,
       `SET realmList ${defaultWTFConfig.realmList}\r\n`,
-    )
+    ).catch((err) => log({ error: 'unable to save reamlist file', message: err.message, locale: locale.name }))
   }
 
   const configPath = `${config.wowDir}\\WTF\\Config.wtf`
+  log({ path: configPath })
   const configFile = parseWTFConf(
-    await Deno.readTextFile(configPath).catch(() => ''),
+    await Deno.readTextFile(configPath)
+      .catch((err) => {
+        log({ error: 'unable to read config file', message: err.message })
+        return ''
+      }),
   )
+  log({ config: configFile })
   await Deno.writeTextFile(
     configPath,
     stringifyWTFConf({ ...configFile, ...defaultWTFConfig }),
-  )
+  ).catch((err) => log({ error: 'unable to save config file', message: err.message }))
+  log({ action: 'starting wow.exe...' })
 
-  new Deno.Command(`${config.wowDir}\\Wow.exe`, {
+  const wow = new Deno.Command(`${config.wowDir}\\Wow.exe`, {
+    stderr: 'piped',
+    stdout: 'piped',
     args: [
       '-nosplash',
       // '-noredirect'
@@ -185,6 +210,13 @@ const startWoW = async () => {
       // '-uid', // auth ??
     ],
   }).spawn()
+  const mux = new std.async.MuxAsyncIterator()
+  mux.add(wow.stdout)
+  mux.add(wow.stderr)
+  for await (const data of mux) {
+    log({ clientLog: decode(data) })
+  }
+
 }
 
 
@@ -201,7 +233,7 @@ const patchFiles = [
 type DBCName = Parameters<typeof DBC.toBytes>[0]
 type DBCValues = Parameters<typeof DBC.toBytes>[1]
 type Updates = { name: DBCName; data: DBCValues; replace?: boolean }[]
-const openDBC = (name: DBCName) => {
+const openDBC = <T extends DBCName>(name: T) => {
   if (!config.wowDir) throw Error('need to locate your wow directory first')
   for (const patchName of patchFiles) {
     let mpq: MPQ | undefined
@@ -210,7 +242,7 @@ const openDBC = (name: DBCName) => {
       const file = mpq.getFile(`DBFilesClient\\${name}`)
       const buffer = new ArrayBuffer(file.size)
       if (file.read(buffer) !== file.size) throw Error('invalid dbc file size')
-      return buffer
+      return DBC.fromBytes(name, buffer)
     } catch (err) {
       if ((err as any).type !== 'ERROR_FILE_NOT_FOUND') throw err
     } finally {
@@ -220,18 +252,32 @@ const openDBC = (name: DBCName) => {
   throw new Deno.errors.NotFound(`${name} not found`)
 }
 
-const applyPatch = async (updates: Updates) => {
-  if (!config.wowDir) {
-    return console.log('can not patch without a valid wow directory')
+const makePatch = async (updates: Updates) => {
+  const { tmpDir } = config
+  try {
+    // cleanup
+    await Deno.remove(`${tmpDir}\\patch-X.mpq`)
+  } catch {
+    // ignore
   }
-  const tmpDir = await Deno.makeTempDir()
   const mpq = MPQ.create(`${tmpDir}\\patch-X.mpq`)
+  const addDBC = async <T extends DBCName>(name: T, dbc: Uint8Array) => {
+    await Deno.writeFile(`${tmpDir}\\${name}`, dbc)
+    mpq.addFile(`${tmpDir}\\${name}`, `DBFilesClient\\${name}`)
+  }
+
+  // Remove enchant level requirements
+  const spellItemEnchantment = openDBC('SpellItemEnchantment.dbc')
+  for (const row of spellItemEnchantment.rows) {
+    row.MinLevel = 0
+  }
+  await addDBC('SpellItemEnchantment.dbc', spellItemEnchantment.toBytes())
+
   await Promise.all(updates.map(async ({ data, replace, name }) => {
     const dbc = replace
       ? DBC.toBytes(name, data)
-      : DBC.fromBytes(name, openDBC(name)).assign(data).toBytes()
-    await Deno.writeFile(`${tmpDir}\\${name}`, dbc)
-    mpq.addFile(`${tmpDir}\\${name}`, `DBFilesClient\\${name}`)
+      : openDBC(name).assign(data).toBytes()
+    await addDBC(name, dbc)
   }))
 
   mpq.close()
@@ -246,55 +292,46 @@ const fetchUpdates = async (): Promise<Updates> => {
   const talentData = getSheet('TALENT.DBC')
 
   const spells = []
-  const skills = []
-  let skillStartId = 30_000
-
-  // Professions
-  for (const data of await getSheet('TAILORING')) {
+  const skills = openDBC('SkillLineAbility.dbc')
+  const bySpell: Record<string, (typeof skills.rows)[0]> = {}
+  for (const skill of skills.rows) {
+    bySpell[skill.Spell as string] = skill
+    skill.AcquireMethod = 0
+  }
+  for (const row of await getSheet('PROFESSION')) {
+  const skillReq = Number(row.ReqSkillRank)
     const {
-      SkillLine, // "197",
-      AcquireMethod, // "",
-      CharacterPoints_1, // "",
-      CharacterPoints_2, // "",
       ID, // "100015",
-      EffectItemType_1, // "4315",
-      Name_Lang_enUS, // "Reinforced Woolen Shoulders",
-      Reagent_1, // "3839",
-      ReagentCount_1, // "9",
-      Reagent_2, // "2319",
-      ReagentCount_2, // "2",
-      Reagent_3, // "1705",
-      ReagentCount_3, // "2",
-      Reagent_4, // "2321",
-      ReagentCount_4, // "1"
-    } = data
+      item, // "4315",
+      new_name,// "Reinforced Woolen Shoulders",
+      Reagent_1 = 0, // "3839",
+      ReagentCount_1 = 0, // "9",
+      Reagent_2 = 0, // "2319",
+      ReagentCount_2 = 0, // "2",
+      Reagent_3 = 0, // "1705",
+      ReagentCount_3 = 0, // "2",
+      Reagent_4 = 0, // "2321",
+      ReagentCount_4 = 0, // "1"
+    } = row
 
     spells.push({
-      ID,
-      EffectItemType_1,
-      Name_Lang_enUS,
-      Reagent_1,
-      ReagentCount_1,
-      Reagent_2,
-      ReagentCount_2,
-      Reagent_3,
-      ReagentCount_3,
-      Reagent_4,
-      ReagentCount_4,
+      ID: Number(ID),
+      EffectItemType_1: item,
+      Name_Lang_enUS: new_name,
+      Reagent_1, ReagentCount_1,
+      Reagent_2, ReagentCount_2,
+      Reagent_3, ReagentCount_3,
+      Reagent_4, ReagentCount_4,
     })
 
-    skills.push({
-      ID: skillStartId++,
-      SkillLine,
-      Spell: ID,
-      AcquireMethod,
-      CharacterPoints_1,
-      CharacterPoints_2,
-    })
+    const skill = bySpell[ID]
+    if (skill) {
+      skill.TrivialSkillLineRankHigh = skillReq + 10
+      skill.TrivialSkillLineRankLow = skillReq + 5
+    }
   }
 
   return [
-    { name: 'SkillLineAbility.dbc', data: skills },
     { name: 'Spell.dbc', data: spells },
     {
       name: 'Talent.dbc',
@@ -304,16 +341,16 @@ const fetchUpdates = async (): Promise<Updates> => {
   ]
 }
 
-
 // ----------------------
 // Connect with Interface
 // ----------------------
 const OK = new Response(null, { status: 204 })
 let controller: ReadableStreamDefaultController<any> | undefined
 const events = Promise.withResolvers<ReadableStreamDefaultController<any>>()
-const dispatch = async (data: unknown) => {
+const log = (payload: unknown) => dispatch('log', payload)
+const dispatch = async (type: string, payload: unknown) => {
   controller || (controller = await events.promise)
-  controller.enqueue(encode(`data: ${JSON.stringify(data)}\r\n\r\n`))
+  controller.enqueue(encode(`data: ${JSON.stringify({ type, payload })}\r\n\r\n`))
 }
 
 type Handler = (req: Request, url: URL) => Response | Promise<Response>
@@ -328,27 +365,41 @@ const routes: Record<string, Handler> = {
     return OK
   },
   'GET/patch': async () => {
-    const updates = await fetchUpdates()
-    await applyPatch(updates)
+    try {
+      log({ status: 'checking wow directory' })
+      if (!config.wowDir) return new Response(null, { status: 400 })
+      const updates = await fetchUpdates()
+      log({ status: 'fetch updates' })
+      const patchFile = await makePatch(updates)
+      log({ status: 'build patch' })
+      await Deno.copyFile(patchFile, `${config.wowDir}\\Data\\patch-X.mpq`)
+      log({ status: 'write patch' })
+    } catch (err) {
+      log({ message: err.message, stack: err.stack })
+    }
     return OK
   },
   'GET/play': async () => {
-    await startWoW()
+    try {
+      await startWoW()
+    } catch (err) {
+      log({ message: err.message, stack: err.stack })
+    }
     return OK
   },
   'GET/start-wow-dir-scan': async (req) => {
     if (!config.wowDir) {
-      dispatch({ type: 'scan-start' })
+      dispatch('scan-start', {})
       for await (const progress of scanWoWDir()) {
         if (req.signal.aborted) {
           console.log('Scan aborted')
           return OK
         }
-        dispatch({ type: 'scan-progress', ...progress })
+        dispatch('scan-progress', { ...progress })
       }
-      dispatch({ type: 'scan-complete', wowDir: config.wowDir })
+      dispatch('scan-complete', { wowDir: config.wowDir })
     } else {
-      dispatch({ type: 'scan-complete', wowDir: config.wowDir })
+      dispatch('scan-complete', { wowDir: config.wowDir })
     }
     return OK
   },

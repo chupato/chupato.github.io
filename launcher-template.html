@@ -83,10 +83,10 @@ body {
   margin: 0;
   overflow: hidden;
   color: white;
-  background: rgba(60, 42, 41, 0.8);
-  background-size: 75%;
   transition: opacity 300ms;
   opacity: 1;
+  background-image: url('./launcher/Chupato-Logo-Huge.png');
+  background-size: contain;
 }
 
 header {
@@ -216,27 +216,39 @@ button {
   background-color: darkmagenta;
 }
 
+#debug {
+  overflow: auto;
+  white-space: pre-wrap;
+  max-height: 15ch;
+}
+
 </style>
   </head>
-  <body style="background: black" data-status="loading">
+  <body style="background-color: black" data-status="loading">
     <header>
-      <h1>Chupato</h1>
-      <h2>19 twink WoW server</h2>
+      <h1>CHUPATO</h1>
+      <h2>
+        <b>C</b>hallenge
+        <b>H</b>eroes
+        <b>U</b>ltimate
+        <b>P</b>rivate
+        <b>A</b>dventure
+        <b>T</b>wink
+        <b>O</b>nline
+      </h2>
     </header>
     <main>
       <div>
         <label>
-          <span id='scan-message'>
-            Looking for your World of Warcraft install...
-          </span>
-          <input id='wow-dir' type='file' accept='.exe' />
+          <span id='scan-message'>Looking for your World of Warcraft install...</span>
+          <input id='wow-dir' style="display: none" type='file' accept='.exe' />
           <pre id='scan-output' />
         </label>
       </div>
       <pre id='debug'></pre>
     </main>
     <footer>
-      <button id="start-wow-dir-scan">Scan</button>
+      <button id="start-wow-dir-scan">Re-Scan</button>
       <button id="patch">Patch</button>
       <button id="play">Play</button>
     </footer>
@@ -259,6 +271,8 @@ const routeInitRes = await GET('routes', { method: 'POST', body: `async () => {$
 const $ = q => document.querySelector(q.join(''))
 const $$ = (query) => [...document.querySelectorAll(query.join(''))]
 
+const debug = $`#debug`
+
 for (const btn of $$`button`) {
   btn.onclick = async () => {
     btn.disabled = true
@@ -272,10 +286,20 @@ ev.addEventListener('error', console.log)
 
 const scanOutput = $`#scan-output`
 const scanMessage = $`#scan-message`
+const logs = []
 ev.addEventListener('message', ({ data }) => {
   try {
-    const { type, ...payload } = JSON.parse(data)
+    const { type, payload } = JSON.parse(data)
     console.log({ [type]: payload })
+    if (type === 'log') {
+      const span = document.createElement('span')
+      const code = document.createElement('code')
+      span.className = 'event-type'
+      span.append(type)
+      code.append(span, ` ${JSON.stringify(payload)}\n`)
+      debug.append(code)
+    }
+
     if (type === 'scan-start') {
       scanOutput.dataset.status = 'pending'
     }
@@ -305,9 +329,11 @@ ev.addEventListener('message', ({ data }) => {
   }
 })
 const config = await GET('config')
-document.body.dataset.status = config.wowDir
-  ? 'scanning'
-  : 'patching'
+document.body.dataset.status = 'scanning'
+await GET('start-wow-dir-scan')
+if (config.wowDir) {
+  document.body.dataset.status = 'patching'
+}
 
     </script>
   </body>
