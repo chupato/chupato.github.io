@@ -85,17 +85,20 @@ body {
   color: white;
   transition: opacity 300ms;
   opacity: 1;
-  background-image: url('https://rawcdn.githack.com/chupato/chupato.github.io/5e61b22f97f09013f62877ba5912452345f1d6a8/launcher/background.avif');
+  background-image: url('https://rawcdn.githack.com/chupato/chupato.github.io/2b0d64f85aa8ac45922c676d15d3aac4a398b84d/launcher/background.avif');
   background-size: cover;
+  background-position: center;
 }
 
 header {
   text-align: center;
   padding: 16px;
   user-select: none;
-  background-image: url('https://rawcdn.githack.com/chupato/chupato.github.io/5e61b22f97f09013f62877ba5912452345f1d6a8/launcher/logo.avif');
+  background-image: url('https://rawcdn.githack.com/chupato/chupato.github.io/2b0d64f85aa8ac45922c676d15d3aac4a398b84d/launcher/logo.avif');
   background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
+  height: 35vh;
 }
 
 main {
@@ -111,6 +114,9 @@ footer {
   justify-content: right;
   align-items: center;
   background: #0008;
+  border-top: 1px solid black;
+  outline: 1px solid #f8b7005c;
+  box-shadow: #000a 0px 0px 40px 3px;
 }
 
 a {
@@ -228,18 +234,6 @@ button {
 </style>
   </head>
   <body style="background-color: black" data-status="loading">
-    <header>
-      <h1>CHUPATO</h1>
-      <h2>
-        <b>C</b>hallenge
-        <b>H</b>eroes
-        <b>U</b>ltimate
-        <b>P</b>rivate
-        <b>A</b>dventure
-        <b>T</b>wink
-        <b>O</b>nline
-      </h2>
-    </header>
     <main>
       <div>
         <label>
@@ -250,6 +244,8 @@ button {
       </div>
       <pre id='debug'></pre>
     </main>
+    <header>
+    </header>
     <footer>
       <button id="start-wow-dir-scan">Re-Scan</button>
       <button id="patch">Patch</button>
