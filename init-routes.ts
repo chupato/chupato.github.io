@@ -642,12 +642,14 @@ const fetchUpdates = async (): Promise<Updates> => {
 
     spells.push({
       ID: Number(ID),
-      EffectItemType_1: item,
-      Name_Lang_enUS: new_name,
       Reagent_1, ReagentCount_1,
       Reagent_2, ReagentCount_2,
       Reagent_3, ReagentCount_3,
       Reagent_4, ReagentCount_4,
+      ...(item && ({
+        EffectItemType_1: item,
+        Name_Lang_enUS: new_name,
+        }))
     })
 
     const skill = bySpell[ID]

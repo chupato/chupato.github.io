@@ -254,9 +254,15 @@ button {
 }
 
 #debug {
-  overflow: auto;
   white-space: pre-wrap;
-  max-height: 15ch;
+  height: 15ch;
+  overflow-y: scroll;
+  word-break: break-word;
+  background-color: #0008;
+  padding: 1ch;
+  border-radius: 1ch;
+  border: 2px solid #587165;
+  scroll-behavior: smooth; /* Smooth scrolling */
 }
 
 </style>
@@ -282,7 +288,10 @@ button {
           <pre id='scan-output' />
         </label>
       </div>
-      <pre id='debug'></pre>
+      <details>
+        <summary>debug (<span id="debug-log-count">0</span>)</summary>
+        <pre id='debug'></pre>
+      </details>
     </main>
     <footer>
       <button id="start-wow-dir-scan">Re-Scan</button>
@@ -309,6 +318,7 @@ const $ = q => document.querySelector(q.join(''))
 const $$ = (query) => [...document.querySelectorAll(query.join(''))]
 
 const debug = $`#debug`
+const debugCount = $`#debug-log-count`
 
 for (const btn of $$`button`) {
   btn.onclick = async () => {
@@ -329,12 +339,30 @@ ev.addEventListener('message', ({ data }) => {
     const { type, payload } = JSON.parse(data)
     console.log({ [type]: payload })
     if (type === 'log') {
-      const span = document.createElement('span')
-      const code = document.createElement('code')
-      span.className = 'event-type'
-      span.append(type)
-      code.append(span, ` ${JSON.stringify(payload)}\n`)
-      debug.append(code)
+      debug.get
+      const scroll = Math.abs((debug.scrollHeight - debug.scrollTop) - debug.clientHeight) < 20
+      // check if we are scrolling up
+      debugCount.textContent = Number(debugCount.textContent) + 1
+      const typeSpan = document.createElement('span')
+      typeSpan.className = 'event-type'
+      typeSpan.append(type)
+      debug.append(typeSpan)
+      for (const [k, v] of Object.entries(payload)) {
+        const code = document.createElement('code')
+        const span = document.createElement('span')
+        const vType = typeof v
+        span.className = 'key'
+        code.className = `value-type-${vType}`
+        if (v && (vType === 'object')) {
+          code.append(JSON.stringify(v))
+        } else {
+          code.append(v)
+        }
+        span.append(k)
+        debug.append(' ', span, ': ', code)
+      }
+      debug.append('\n')
+      scroll && (debug.scrollTop = debug.scrollHeight)
     }
 
     if (type === 'scan-start') {
