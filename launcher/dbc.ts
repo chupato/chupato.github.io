@@ -1,7 +1,7 @@
-import { dbcSchema } from './dbc-schema.ts'
-
 const MAGIC_NUMBER = 1128416343 // 'WDBC'
 const HEADER_SIZE = 20
+
+type SchemaType =  'int' | 'uint' | 'byte' | 'float' | 'string'
 
 // Record Structure
 const view = (arrayBuffer: ArrayBuffer) => {
@@ -34,19 +34,13 @@ const view = (arrayBuffer: ArrayBuffer) => {
   }
 }
 
-type DeepValues<T> = T extends Record<string, unknown> ? DeepValues<T[keyof T]>
-  : T
-
-type Schemas = typeof dbcSchema
-type SchemaTypes = DeepValues<Schemas>
-export const toBytes = <T extends keyof Schemas>(
-  name: T,
-  data: Partial<Record<keyof Schemas[T], number | string>>[],
+export type Schema = { [k in string]: SchemaType }
+type SchemaEntry = [keyof Schema, SchemaType]
+export const toBytes = <T extends Schema>(
+  schema: T,
+  data: Partial<Record<keyof T, number | string>>[],
 ) => {
-  const fields = Object.entries(dbcSchema[name]) as [
-    keyof Schemas[T],
-    SchemaTypes,
-  ][]
+  const fields = Object.entries(schema) as SchemaEntry[]
   const rowCount = data.length
   const rowSize = fields.length * 4 // uint32 size
   const recordSize = rowSize * rowCount
@@ -92,15 +86,11 @@ export const toBytes = <T extends keyof Schemas>(
   return combine
 }
 
-
-export const fromBytes = <T extends keyof Schemas>(
-  name: T,
+export const fromBytes = <T extends Schema>(
+  schema: T,
   buffer: ArrayBuffer,
-  schema?: Schemas[T],
 ) => {
-  schema || (schema = dbcSchema[name])
-  if (!schema) throw Error(`no schema for ${name}`)
-  type DBCRow = Partial<Record<keyof Schemas[T], number | string>>
+  type DBCRow = Partial<Record<keyof T, string | number>>
   const view = new DataView(buffer)
   const WORD = view.getUint32(0, true)
   const ROW_COUNT = view.getUint32(4, true)
@@ -108,10 +98,7 @@ export const fromBytes = <T extends keyof Schemas>(
   const RECORD_SIZE = view.getUint32(12, true)
   const STRING_SIZE = view.getUint32(16, true)
   if (WORD !== MAGIC_NUMBER) throw Error('invalid dbc signature')
-  const fields = Object.entries(dbcSchema[name]) as [
-    keyof Schemas[T],
-    SchemaTypes,
-  ][]
+  const fields = Object.entries(schema) as SchemaEntry[]
   const recordSize = fields.reduce((acc, e) => acc + (e[1] === 'byte' ? 1 : 4), 0)
 
   if (
@@ -141,7 +128,7 @@ export const fromBytes = <T extends keyof Schemas>(
     let cursor = rowStart
     while (++i < FIELD_COUNT) {
       const field = fields[i]
-      const key = field[0] as keyof Schemas[T]
+      const key = field[0] as keyof DBCRow
       switch (field[1]) {
         case 'string': {
           const offset = view.getUint32(cursor, true)
@@ -191,7 +178,7 @@ export const fromBytes = <T extends keyof Schemas>(
       }
       return this
     },
-    toBytes: () => toBytes(name, rows),
+    toBytes: () => toBytes(schema, rows),
     rows,
     byIds,
   }

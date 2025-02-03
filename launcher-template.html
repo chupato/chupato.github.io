@@ -94,11 +94,18 @@ header {
   text-align: center;
   padding: 16px;
   user-select: none;
-  background-image: url('https://rawcdn.githack.com/chupato/chupato.github.io/2b0d64f85aa8ac45922c676d15d3aac4a398b84d/launcher/logo.avif');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  height: 35vh;
+}
+
+header h2 {
+  font-weight: 300;
+}
+
+header h2 b {
+  font-weight: 900;
+  color: #F8B700;
 }
 
 main {
@@ -117,6 +124,27 @@ footer {
   border-top: 1px solid black;
   outline: 1px solid #f8b7005c;
   box-shadow: #000a 0px 0px 40px 3px;
+}
+
+#logo {
+  display: block;
+  position: absolute;
+  background-image: url(https://rawcdn.githack.com/chupato/chupato.github.io/2b0d64f85aa8ac45922c676d15d3aac4a398b84d/launcher/logo.avif);
+  height: 150px;
+  width: 200px;
+  z-index: 10;
+  left: 0px;
+  bottom: 0px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(0deg);
+  transition: transform ease-out 200ms;
+}
+
+#logo:hover {
+  filter: brightness(1.1) contrast(110%);
+  transform: rotate(2.5deg);
 }
 
 a {
@@ -234,6 +262,18 @@ button {
 </style>
   </head>
   <body style="background-color: black" data-status="loading">
+    <div id="logo"></div>
+    <header>
+      <h2>
+        <b>C</b>hallenge
+        <b>H</b>eroes
+        <b>U</b>ltimate
+        <b>P</b>rivate
+        <b>A</b>dventure
+        <b>T</b>wink
+        <b>O</b>nline
+      </h2>
+    </header>
     <main>
       <div>
         <label>
@@ -244,8 +284,6 @@ button {
       </div>
       <pre id='debug'></pre>
     </main>
-    <header>
-    </header>
     <footer>
       <button id="start-wow-dir-scan">Re-Scan</button>
       <button id="patch">Patch</button>
@@ -333,6 +371,38 @@ await GET('start-wow-dir-scan')
 if (config.wowDir) {
   document.body.dataset.status = 'patching'
 }
+
+const audioContext = new AudioContext()
+const audioBuffer = fetch('https://rawcdn.githack.com/chupato/chupato.github.io/d4b928bd955c26ca2ec10c7c6c90d188ca474563/launcher/chupato-cute.ogg')
+  .then(response => response.arrayBuffer())
+  .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+
+const timings = [
+  0, // Challenge
+  0.92, // Heroes
+  1.62, // Ultimate
+  2.432, // Private
+  2.95, // Adventure
+  3.65, // Twink
+  4.15, // Online
+  4.7, // Chupato
+]
+
+const play = async (...args) => {
+  const source = audioContext.createBufferSource()
+  source.buffer = await audioBuffer
+  source.connect(audioContext.destination)
+  source.start(0, ...args)
+}
+
+$`#logo`.onclick = () => play()
+// TODO
+// - toggle debug mode on / off
+// - Allow to manually select path
+// - Allow install (?)
+// - Karaoke Jingle (URGENT)
+// - Discord OAuth (with auto-login (?))
+// - Change PWD
 
     </script>
   </body>
