@@ -587,6 +587,7 @@ const makePatch = async (updates: Updates) => {
   }
   const mpq = MPQ.create(`${tmpDir}\\patch-X.mpq`)
   const addDBC = async <T extends DBCName>(name: T, dbc: Uint8Array) => {
+    log({ add: name })
     await Deno.writeFile(`${tmpDir}\\${name}`, dbc)
     mpq.addFile(`${tmpDir}\\${name}`, `DBFilesClient\\${name}`)
   }
@@ -651,8 +652,8 @@ const fetchUpdates = async (): Promise<Updates> => {
 
     const skill = bySpell[ID]
     if (skill) {
-      skill.TrivialSkillLineRankHigh = skillReq + 10
-      skill.TrivialSkillLineRankLow = skillReq + 5
+      skill.TrivialSkillLineRankHigh = skillReq + 15
+      skill.TrivialSkillLineRankLow = skillReq + 7
     }
   }
 
