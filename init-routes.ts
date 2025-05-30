@@ -10,6 +10,64 @@ const decode = new TextDecoder().decode.bind(new TextDecoder())
 // DBC Schemas
 // -----------
 const dbcSchemas: { [k in string]: DBC.Schema } = {
+  'SkillLine.dbc': {
+    ID: 'int',
+    CategoryID: 'int',
+    SkillCostsID: 'int',
+    DisplayName_Lang_enUS: 'string',
+    DisplayName_Lang_enGB: 'string',
+    DisplayName_Lang_koKR: 'string',
+    DisplayName_Lang_frFR: 'string',
+    DisplayName_Lang_deDE: 'string',
+    DisplayName_Lang_enCN: 'string',
+    DisplayName_Lang_zhCN: 'string',
+    DisplayName_Lang_enTW: 'string',
+    DisplayName_Lang_zhTW: 'string',
+    DisplayName_Lang_esES: 'string',
+    DisplayName_Lang_esMX: 'string',
+    DisplayName_Lang_ruRU: 'string',
+    DisplayName_Lang_ptPT: 'string',
+    DisplayName_Lang_ptBR: 'string',
+    DisplayName_Lang_itIT: 'string',
+    DisplayName_Lang_Unk: 'string',
+    DisplayName_Lang_Mask: 'uint',
+    Description_Lang_enUS: 'string',
+    Description_Lang_enGB: 'string',
+    Description_Lang_koKR: 'string',
+    Description_Lang_frFR: 'string',
+    Description_Lang_deDE: 'string',
+    Description_Lang_enCN: 'string',
+    Description_Lang_zhCN: 'string',
+    Description_Lang_enTW: 'string',
+    Description_Lang_zhTW: 'string',
+    Description_Lang_esES: 'string',
+    Description_Lang_esMX: 'string',
+    Description_Lang_ruRU: 'string',
+    Description_Lang_ptPT: 'string',
+    Description_Lang_ptBR: 'string',
+    Description_Lang_itIT: 'string',
+    Description_Lang_Unk: 'string',
+    Description_Lang_Mask: 'uint',
+    SpellIconID: 'int',
+    AlternateVerb_Lang_enUS: 'string',
+    AlternateVerb_Lang_enGB: 'string',
+    AlternateVerb_Lang_koKR: 'string',
+    AlternateVerb_Lang_frFR: 'string',
+    AlternateVerb_Lang_deDE: 'string',
+    AlternateVerb_Lang_enCN: 'string',
+    AlternateVerb_Lang_zhCN: 'string',
+    AlternateVerb_Lang_enTW: 'string',
+    AlternateVerb_Lang_zhTW: 'string',
+    AlternateVerb_Lang_esES: 'string',
+    AlternateVerb_Lang_esMX: 'string',
+    AlternateVerb_Lang_ruRU: 'string',
+    AlternateVerb_Lang_ptPT: 'string',
+    AlternateVerb_Lang_ptBR: 'string',
+    AlternateVerb_Lang_itIT: 'string',
+    AlternateVerb_Lang_Unk: 'string',
+    AlternateVerb_Lang_Mask: 'uint',
+    CanLink: 'int',
+  },
   'SkillLineAbility.dbc': {
     ID: 'uint',
     SkillLine: 'uint',
@@ -659,7 +717,14 @@ const fetchUpdates = async (): Promise<Updates> => {
     }
   }
 
+  const gatheringAsSecondarySkills = [
+    { ID: 182, CategoryID: 9 }, // Herbalism
+    { ID: 186, CategoryID: 9 }, // Mining
+    { ID: 393, CategoryID: 9 }, // Skinning
+  ]
+
   return [
+    { name: 'SkillLine.dbc', data: gatheringAsSecondarySkills },
     { name: 'Spell.dbc', data: spells },
     { name: 'SkillLineAbility.dbc', data: skills.rows },
     {
@@ -683,8 +748,7 @@ const dispatch = async (type: string, payload: unknown) => {
 }
 
 type Handler = (req: Request, url: URL) => Response | Promise<Response>
-// deno-lint-ignore no-unused-vars
-const routes: Record<string, Handler> = {
+const R: Record<string, Handler> = {
   'GET/config': () =>
     new Response(JSON.stringify(config), {
       headers: { 'Content-Type': 'application/json' },
@@ -694,26 +758,18 @@ const routes: Record<string, Handler> = {
     return OK
   },
   'GET/patch': async () => {
-    try {
-      log({ status: 'checking wow directory' })
-      if (!config.wowDir) return new Response(null, { status: 400 })
-      const updates = await fetchUpdates()
-      log({ status: 'fetch updates' })
-      const patchFile = await makePatch(updates)
-      log({ status: 'build patch' })
-      await Deno.copyFile(patchFile, `${config.wowDir}\\Data\\patch-X.mpq`)
-      log({ status: 'write patch' })
-    } catch (err) {
-      log({ message: err.message, stack: err.stack })
-    }
+    log({ status: 'checking wow directory' })
+    if (!config.wowDir) return new Response(null, { status: 400 })
+    const updates = await fetchUpdates()
+    log({ status: 'fetch updates' })
+    const patchFile = await makePatch(updates)
+    log({ status: 'build patch' })
+    await Deno.copyFile(patchFile, `${config.wowDir}\\Data\\patch-X.mpq`)
+    log({ status: 'write patch' })
     return OK
   },
   'GET/play': async () => {
-    try {
-      await startWoW()
-    } catch (err) {
-      log({ message: err.message, stack: err.stack })
-    }
+    await startWoW()
     return OK
   },
   'GET/start-wow-dir-scan': async (req) => {
@@ -744,4 +800,19 @@ const routes: Record<string, Handler> = {
     })
   }
 }
+
+const routes = Object.fromEntries(Object.entries(R).map(([path, handler]) => [
+  path,
+  async (req: Request, url: URL) => {
+    const start = performance.now()
+    try {
+      const result = await handler(req, url)
+      const duration = Math.round((performance.now() - start) * 1000) / 1000
+      log({ action: url.pathname.slice(1), success: true, duration })
+      return result
+    } catch (err) {
+      log({ action: url.pathname.slice(1), error: true, message: (err as Error)?.message })
+    }
+  }
+]))
 

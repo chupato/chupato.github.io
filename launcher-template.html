@@ -265,6 +265,13 @@ button {
   scroll-behavior: smooth; /* Smooth scrolling */
 }
 
+.key { color: #60ffaf; font-weight: 750 }
+.action { color: #61b7ff; font-style: italic }
+.value-type-boolean { color: #c8a2fe }
+.value-type-number { color: #ff9161 }
+.value-type-string { color: #fad59d }
+.value-type-object { color: #ACC }
+
 </style>
   </head>
   <body style="background-color: black" data-status="loading">
@@ -343,23 +350,26 @@ ev.addEventListener('message', ({ data }) => {
       const scroll = Math.abs((debug.scrollHeight - debug.scrollTop) - debug.clientHeight) < 20
       // check if we are scrolling up
       debugCount.textContent = Number(debugCount.textContent) + 1
-      const typeSpan = document.createElement('span')
-      typeSpan.className = 'event-type'
-      typeSpan.append(type)
-      debug.append(typeSpan)
-      for (const [k, v] of Object.entries(payload)) {
+      const playloadEntries = Object.entries(payload)
+      for (const [k, v] of playloadEntries) {
         const code = document.createElement('code')
+        if (k === 'action') {
+          code.className = k
+          code.append(v)
+          debug.append(' ', code)
+          continue
+        }
         const span = document.createElement('span')
         const vType = typeof v
-        span.className = 'key'
-        code.className = `value-type-${vType}`
         if (v && (vType === 'object')) {
           code.append(JSON.stringify(v))
         } else {
           code.append(v)
         }
+        code.className = `value-type-${vType}`
+        span.className = 'key'
         span.append(k)
-        debug.append(' ', span, ': ', code)
+        debug.append(' ', span, ' ', code)
       }
       debug.append('\n')
       scroll && (debug.scrollTop = debug.scrollHeight)
