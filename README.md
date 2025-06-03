@@ -1,5 +1,5 @@
-# CHUPATO
 Challenge Heroes Ultimate Private Arena Twink Online
+
 ---
 
 No website currently available.
