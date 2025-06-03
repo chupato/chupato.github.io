@@ -672,10 +672,21 @@ const sheetID = '11PVL9YA1lmCoqaIguKjwuDFX58e8hzAh6kzDXA4jBV4'
 const getSheet = async (page: string) =>
   (await fetch(`https://opensheet.elk.sh/${sheetID}/${page}`)).json()
 
+const cleanupSheetRow = row => Object.fromEntries(Object.entries(row).flatMap(([k, v]) =>  {
+  const valueStr = v.trim()
+  const valueNbr = Number(v)
+  return valueStr ? [[k, Number.isNaN(valueNbr) ? valueStr : valueNbr]] : []
+}))
+
 const fetchUpdates = async (): Promise<Updates> => {
   const talentData = getSheet('TALENT.DBC')
+  const spellsData = getSheet('SPELL.DBC')
+  const spells = new Map()
+  const addSpell = (spell: Record<string, unknown> & { ID: number }) => {
+    const match = spells.get(spell.ID)
+    match ? Object.assign(match, spell) : spells.set(spell.ID, spell)
+  }
 
-  const spells = []
   const skills = openDBC('SkillLineAbility.dbc')
   const bySpell: Record<string, (typeof skills.rows)[0]> = {}
   for (const skill of skills.rows) {
@@ -698,7 +709,7 @@ const fetchUpdates = async (): Promise<Updates> => {
       ReagentCount_4 = 0, // "1"
     } = row
 
-    spells.push({
+    addSpell({
       ID: Number(ID),
       Reagent_1, ReagentCount_1,
       Reagent_2, ReagentCount_2,
@@ -707,7 +718,7 @@ const fetchUpdates = async (): Promise<Updates> => {
       ...(item && ({
         EffectItemType_1: item,
         Name_Lang_enUS: new_name,
-        }))
+      }))
     })
 
     const skill = bySpell[ID]
@@ -723,9 +734,14 @@ const fetchUpdates = async (): Promise<Updates> => {
     { ID: 393, CategoryID: 9 }, // Skinning
   ]
 
+  for (const row of (await spellsData)) {
+    if (!Number(row.ID)) continue
+    addSpell(cleanupSheetRow(row))
+  }
+
   return [
     { name: 'SkillLine.dbc', data: gatheringAsSecondarySkills },
-    { name: 'Spell.dbc', data: spells },
+    { name: 'Spell.dbc', data: spells.values().toArray() },
     { name: 'SkillLineAbility.dbc', data: skills.rows },
     {
       name: 'Talent.dbc',
