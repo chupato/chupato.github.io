@@ -12,12 +12,12 @@ new Deno.Command('deno', {
 	cwd: './launcher',
 	args: [
 		'compile',
-		// '--no-terminal', // bugged, prevent the webview to appear
+		'--no-terminal', // bugged, prevent the webview to appear
 		'--no-check',
 		'--vendor',
 		...includedFiles.flatMap(n => ['--include', `./${n}`]),
 		...['--target', 'x86_64-pc-windows-msvc'],
-		...['--icon', './icon.ico'],
+		...['--icon', './chupato.ico'],
 		...['-A', './launcher.ts'],
 	]
 }).outputSync()
