@@ -385,6 +385,31 @@ const dbcSchemas: { [k in string]: DBC.Schema } = {
     CategoryMask_1: 'int',
     CategoryMask_2: 'int',
   },
+  'MapDifficulty.dbc': {
+    ID: 'int',
+    MapID: 'int',
+    Difficulty: 'int',
+    Message_Lang_enUS: 'string',
+    Message_Lang_enGB: 'string',
+    Message_Lang_koKR: 'string',
+    Message_Lang_frFR: 'string',
+    Message_Lang_deDE: 'string',
+    Message_Lang_enCN: 'string',
+    Message_Lang_zhCN: 'string',
+    Message_Lang_enTW: 'string',
+    Message_Lang_zhTW: 'string',
+    Message_Lang_esES: 'string',
+    Message_Lang_esMX: 'string',
+    Message_Lang_ruRU: 'string',
+    Message_Lang_ptPT: 'string',
+    Message_Lang_ptBR: 'string',
+    Message_Lang_itIT: 'string',
+    Message_Lang_Unk: 'string',
+    Message_Lang_Mask: 'uint',
+    RaidDuration: 'int',
+    MaxPlayers: 'int',
+    Difficultystring: 'string',
+  },
 } as const
 
 
@@ -739,10 +764,18 @@ const fetchUpdates = async (): Promise<Updates> => {
     addSpell(cleanupSheetRow(row))
   }
 
+  const gnomerganHeroic = {
+    ID: 18,
+    Difficulty: 1,
+    RaidDuration: 259200,
+    Difficultystring: 'DUNGEON_DIFFICULTY_5PLAYER_HEROIC',
+  }
+
   return [
     { name: 'SkillLine.dbc', data: gatheringAsSecondarySkills },
     { name: 'Spell.dbc', data: spells.values().toArray() },
     { name: 'SkillLineAbility.dbc', data: skills.rows },
+    { name: 'MapDifficulty.dbc', data: [gnomerganHeroic] },
     {
       name: 'Talent.dbc',
       data: await talentData,
