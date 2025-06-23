@@ -1,0 +1,2 @@
+## Enforce Linux-style (LF) line endings for web directory
+web/** text eol=lf

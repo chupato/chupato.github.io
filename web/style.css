@@ -34,3 +34,19 @@
   --depth: 1;
   --noise: 0;
 }
+
+.POOR { color: #9d9d9d }
+.COMMON { color: #ffffff }
+.UNCOMMON { color: #1eff00 }
+.RARE { color: #0070dd }
+.EPIC { color: #a335ee }
+.LEGENDARY { color: #ff8000 }
+.ARTIFACT { color: #e6cc80 }
+.HEIRLOOM { color: #00ccff }
+.POOR, .COMMON, .UNCOMMON, .RARE, .EPIC,
+.LEGENDARY, .ARTIFACT, .HEIRLOOM { text-shadow: 0 1px 2px #000 }
+
+::backdrop {
+  backdrop-filter: blur(10px);
+  background-color: #0002;
+}
