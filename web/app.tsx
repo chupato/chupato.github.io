@@ -146,15 +146,15 @@ function App() {
                 {mockPlayers.map(p => (
                   <tr key={p.id} class="border-b border-base-200">
                     <td class="py-1 px-2">
-                      <span
-                        role="img"
-                        aria-label={p.cls}
-                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
-                        style={{
-                          outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
-                          outlineOffset: '2px',
-                        }}
-                      />
+                    <span
+                      role="img"
+                      aria-label={p.cls}
+                      class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} inline-block w-6 h-6`}
+                      style={{
+                        outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
+                        outlineOffset: '2px',
+                      }}
+                    />
                     </td>
                     <td class="py-1 px-2 font-medium">{p.name}</td>
                     <td class="py-1 px-2 text-xs opacity-70">{p.lastActive}</td>
