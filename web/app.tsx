@@ -46,7 +46,7 @@ function App() {
         <Home size={24}/> CHUPATO Server Activity
       </h1>
 
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid gap-4 md:grid-cols-2 items-start">
         <div class="space-y-4">
           <div class="card card-compact bg-base-100 shadow">
             <div class="card-body p-2 space-y-1">
@@ -69,11 +69,8 @@ function App() {
                       <span
                         role="img"
                         aria-label={p.cls}
-                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
-                        style={{
-                          outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
-                          outlineOffset: '2px',
-                        }}
+                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6 rounded-full border-2`}
+                        style={{ borderColor: wowClasses[p.cls.toUpperCase()].color }}
                       />
                       <span class="font-medium">{p.name}</span>
                     </div>
