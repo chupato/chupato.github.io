@@ -9,7 +9,6 @@ const source = new EventSource(sourceUrl)
 const setDisconnected = () =>
   sourceDisconnectedAt.peek() || (sourceDisconnectedAt.value = Date.now())
 
-
 const STATE = {}
 source.addEventListener('init', (event) => {
   const init = JSON.parse(event.data) as InitData
@@ -30,7 +29,16 @@ source.addEventListener('open', () => {
 })
 
 setDisconnected()
-/*
-type GameEventHandler<T> = (data: GameEvent<T>) => void | Promise<void>
-type GameEventRegister<T> = 
-*/
+
+// type GameEvent<Type, Data> =
+
+// emit('SHUTDOWN', { at: Date.now() })
+// emit('LOGIN', { player, at })
+// emit('LOGOUT', { id: player.id })
+// emit('STARTUP', { at })
+// emit('SHUTDOWN', { at })
+// emit('QUEUE_STATE', { type, arena, queue })
+// emit('BATTLEGROUND_JOIN', { playerId, id, team, at })
+// emit('BATTLEGROUND_LEAVE', { player, id })
+// emit('BATTLEGROUND_START', { id, type, start: at })
+// emit('BATTLEGROUND_END', { id })

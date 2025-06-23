@@ -7,17 +7,17 @@
 }
 
 .WARRIOR, .DRUID, .MONK, .MAGE {
-  background-position-y:   0%;
+  background-position-y: 0%;
 }
 .PALADIN, .HUNTER, .ROGUE, .PRIEST {
-  background-position-y:  50%;
+  background-position-y: 50%;
 }
 .DEATHKNIGHT, .SHAMAN, .WARLOCK, .DEMONHUNTER {
   background-position-y: 100%;
 }
 
 .WARRIOR, .DEATHKNIGHT, .PALADIN {
-  background-position-x:   0%;
+  background-position-x: 0%;
 }
 .DRUID, .HUNTER, .SHAMAN {
   background-position-x: 33.333333%;
