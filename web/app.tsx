@@ -20,7 +20,9 @@ const mockPlayers = [
 ]
 
 const mockWarsongCount = 7
-const mockArenaCount = 3
+const mockArena2v2Count = 3
+const mockArena3v3Count = 2
+const mockArena5v5Count = 1
 
 function App() {
   return (
@@ -30,13 +32,13 @@ function App() {
       </h1>
 
       <div class="grid gap-4 md:grid-cols-2">
-        <div class="card bg-base-100 shadow">
-          <div class="card-body space-y-2">
+        <div class="card card-compact bg-base-100 shadow">
+          <div class="card-body p-2 space-y-1">
             <h2 class="card-title">Recent Active Players</h2>
-            <ul class="menu menu-compact">
+            <ul class="divide-y divide-base-200">
               {mockPlayers.map(p => (
-                <li key={p.id} class="flex justify-between items-center">
-                  <div class="flex items-center gap-2">
+                <li key={p.id} class="flex justify-between items-center py-1">
+                  <div class="flex items-center gap-1">
                     <span class="font-medium">{p.name}</span>
                     <span
                       role="img"
@@ -44,11 +46,11 @@ function App() {
                       class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
                       style={{ color: wowClasses[p.cls.toUpperCase()].color }}
                     />
-                    <span class="px-2 py-0.5 rounded-full text-xs uppercase bg-base-200 text-base-content">
+                    <span class="px-1 py-0.5 rounded-full text-xs uppercase bg-base-200 text-base-content">
                       {p.race}
                     </span>
                   </div>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
                     <span class="text-sm font-semibold">{p.level}</span>
                     <span class="text-xs opacity-70">{p.lastActive}</span>
                   </div>
@@ -58,18 +60,27 @@ function App() {
           </div>
         </div>
 
-        <div>
-          <h2 class="text-xl font-semibold mb-2">Queue Status</h2>
-          <div class="stats shadow">
-            <div class="stat">
-              <div class="stat-title">Warsong Queue</div>
-              <div class="stat-value">{mockWarsongCount}</div>
-              <div class="stat-desc">players waiting</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title">Arena Queue</div>
-              <div class="stat-value">{mockArenaCount}</div>
-              <div class="stat-desc">players waiting</div>
+        <div class="card card-compact bg-base-100 shadow">
+          <div class="card-body p-2 space-y-1">
+            <h2 class="card-title">Queue Status</h2>
+            <div class="stats stats-vertical shadow">
+              <div class="stat">
+                <div class="stat-title">Warsong Queue</div>
+                <div class="stat-value">{mockWarsongCount}</div>
+                <div class="stat-desc">players waiting</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Arena 2v2</div>
+                <div class="stat-value">{mockArena2v2Count}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Arena 3v3</div>
+                <div class="stat-value">{mockArena3v3Count}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Arena 5v5</div>
+                <div class="stat-value">{mockArena5v5Count}</div>
+              </div>
             </div>
           </div>
         </div>
