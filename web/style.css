@@ -1,10 +1,10 @@
 @import 'tailwindcss';
-@plugin "daisyui";
-@plugin "daisyui/theme" {
-  name: "abyss";
+@plugin 'daisyui';
+@plugin 'daisyui/theme' {
+  name: 'abyss';
   default: true;
   prefersdark: true;
-  color-scheme: "dark";
+  color-scheme: 'dark';
   --color-base-100: oklch(20% 0.08 209);
   --color-base-200: oklch(15% 0.08 209);
   --color-base-300: oklch(10% 0.08 209);
@@ -35,16 +35,33 @@
   --noise: 0;
 }
 
-.POOR { color: #9d9d9d }
-.COMMON { color: #ffffff }
-.UNCOMMON { color: #1eff00 }
-.RARE { color: #0070dd }
-.EPIC { color: #a335ee }
-.LEGENDARY { color: #ff8000 }
-.ARTIFACT { color: #e6cc80 }
-.HEIRLOOM { color: #00ccff }
-.POOR, .COMMON, .UNCOMMON, .RARE, .EPIC,
-.LEGENDARY, .ARTIFACT, .HEIRLOOM { text-shadow: 0 1px 2px #000 }
+.POOR {
+  color: #9d9d9d;
+}
+.COMMON {
+  color: #ffffff;
+}
+.UNCOMMON {
+  color: #1eff00;
+}
+.RARE {
+  color: #0070dd;
+}
+.EPIC {
+  color: #a335ee;
+}
+.LEGENDARY {
+  color: #ff8000;
+}
+.ARTIFACT {
+  color: #e6cc80;
+}
+.HEIRLOOM {
+  color: #00ccff;
+}
+.POOR, .COMMON, .UNCOMMON, .RARE, .EPIC, .LEGENDARY, .ARTIFACT, .HEIRLOOM {
+  text-shadow: 0 1px 2px #000;
+}
 
 ::backdrop {
   backdrop-filter: blur(10px);
@@ -53,12 +70,24 @@
 
 @layer utilities {
   @keyframes wiggle {
-    0% { transform: rotate(0deg); }
-    20% { transform: rotate(3deg); }
-    40% { transform: rotate(-3deg); }
-    60% { transform: rotate(2deg); }
-    80% { transform: rotate(-2deg); }
-    100% { transform: rotate(0deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(3deg);
+    }
+    40% {
+      transform: rotate(-3deg);
+    }
+    60% {
+      transform: rotate(2deg);
+    }
+    80% {
+      transform: rotate(-2deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
   }
   .hover\:wiggle:hover {
     animation: wiggle 0.5s ease-in-out 1 both;

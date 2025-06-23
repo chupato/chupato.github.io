@@ -41,7 +41,7 @@ export const wowClasses = {
     excludeStats: magical,
     color: '#c69b6d', // Tan
   },
-    /*
+  /*
   DEATHKNIGHT: {
     excludeStats: magical,
     color: '#c41e3a', // Red
