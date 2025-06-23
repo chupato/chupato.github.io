@@ -23,15 +23,41 @@ const mockWarsongCount = 7
 const mockArena2v2Count = 3
 const mockArena3v3Count = 2
 const mockArena5v5Count = 1
+// positive = online since that timestamp; negative = offline since abs(timestamp)
+const mockServerSince = Date.now() - 5 * 60 * 1000
 
 function App() {
+  // compute server status
+  const online = mockServerSince > 0
+  const sinceMs = online
+    ? Date.now() - mockServerSince
+    : Date.now() + mockServerSince
+  const fmt = (ms: number) => {
+    const s = Math.floor(ms / 1000)
+    const m = Math.floor(s / 60)
+    const h = Math.floor(m / 60)
+    const ss = s % 60
+    const mm = m % 60
+    return `${h}h ${mm}m ${ss}s`
+  }
   return (
     <div class="p-4 space-y-6">
       <h1 class="text-2xl font-bold flex items-center gap-2">
         <Home size={24}/> CHUPATO Server Activity
       </h1>
 
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="card card-compact bg-base-100 shadow">
+          <div class="card-body p-2 space-y-1">
+            <h2 class="card-title">Server Status</h2>
+            <div class="stats stats-vertical shadow">
+              <div class="stat">
+                <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
+                <div class="stat-value">{fmt(sinceMs)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="card card-compact bg-base-100 shadow">
           <div class="card-body p-2 space-y-1">
             <h2 class="card-title">Recent Active Players</h2>
@@ -39,21 +65,18 @@ function App() {
               {mockPlayers.map(p => (
                 <li key={p.id} class="flex justify-between items-center py-1">
                   <div class="flex items-center gap-1">
-                    <span class="font-medium">{p.name}</span>
                     <span
                       role="img"
                       aria-label={p.cls}
                       class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
-                      style={{ color: wowClasses[p.cls.toUpperCase()].color }}
+                      style={{
+                        outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
+                        outlineOffset: '2px',
+                      }}
                     />
-                    <span class="px-1 py-0.5 rounded-full text-xs uppercase bg-base-200 text-base-content">
-                      {p.race}
-                    </span>
+                    <span class="font-medium">{p.name}</span>
                   </div>
-                  <div class="flex items-center gap-1">
-                    <span class="text-sm font-semibold">{p.level}</span>
-                    <span class="text-xs opacity-70">{p.lastActive}</span>
-                  </div>
+                  <span class="text-xs opacity-70">{p.lastActive}</span>
                 </li>
               ))}
             </ul>
