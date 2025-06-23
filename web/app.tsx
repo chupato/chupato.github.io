@@ -67,7 +67,7 @@ function App() {
     return `${h}h ${mm}m ${ss}s`
   }
   return (
-    <div class="p-4 space-y-6 bg-base-200 min-h-screen">
+    <div class="p-4 pt-20 space-y-6 bg-base-200 min-h-screen">
       <div
         class="relative h-48 bg-cover bg-center rounded-lg overflow-visible"
         style={{ backgroundImage: `url(${bgUrl})` }}
@@ -79,11 +79,11 @@ function App() {
           class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3"
         />
         <h1
-          class="absolute inset-x-0 top-16 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
+          class="absolute inset-x-0 top-28 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
         >
           <Home size={24}/> CHUPATO Server Activity
         </h1>
-        <p class="absolute inset-x-0 top-28 text-center text-sm text-success drop-shadow-sm">
+        <p class="absolute inset-x-0 top-36 text-center text-sm text-success drop-shadow-sm">
           Real-time event stream & stats for your WotLK private server
         </p>
       </div>
