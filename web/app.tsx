@@ -192,10 +192,10 @@ function App() {
         <div class='space-y-4'>
           <div class='card card-compact bg-base-100 shadow'>
             <div class='card-body p-2 space-y-1'>
-              <h2 class='card-title flex items-center gap-2 drop-shadow'>
+              <h2 class='card-title justify-center flex items-center drop-shadow'>
                 <Server size={20} /> Server Status
               </h2>
-              <div class='grid grid-cols-2 gap-4 p-3 shadow'>
+              <div class='flex items-center justify-evenly p-3'>
                 <div class='space-y-2'>
                   <div class='flex items-center gap-2'>
                     {online
@@ -217,6 +217,7 @@ function App() {
                     <span class='stat-value font-semibold'>{fmt(sinceMs)}</span>
                   </div>
                 </div>
+                <div class="divider divider-horizontal"></div>
                 <div class='flex items-center justify-center flex-col'>
                   <span class='text-lg font-semibold'>Active Players</span>
                   <span class='text-6xl font-bold'>{mockPlayers.length}</span>
@@ -226,7 +227,7 @@ function App() {
           </div>
           <div class='card card-compact bg-base-100 shadow'>
             <div class='card-body p-2 space-y-1'>
-              <h2 class='card-title flex items-center gap-2 drop-shadow'>
+              <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
                 <Users size={20} /> Recent Active Players
               </h2>
               <table class='table-auto w-full border-collapse'>
@@ -271,10 +272,10 @@ function App() {
         </div>
         <div class='card card-compact bg-base-100 shadow'>
           <div class='card-body p-2 space-y-1'>
-            <h2 class='card-title flex items-center gap-2 drop-shadow'>
+            <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
               <Hourglass size={20} /> Queue Status
             </h2>
-            <div class='flex items-center justify-around p-2'>
+            <div class='flex items-center justify-evenly p-2'>
               <div class='flex flex-col items-center gap-1'>
                 <div class='flex items-center gap-1 text-warning'>
                   <Flag size={20} />
@@ -287,7 +288,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div class='divider divider-vertical' />
+              <div class="divider divider-horizontal"></div>
               <div class='flex flex-col items-center gap-1'>
                 <div class='flex items-center gap-1 text-info'>
                   <Swords size={20} />
