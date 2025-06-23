@@ -1,7 +1,8 @@
 import { Fragment, h, render } from 'preact'
 import { Home, Server, Users, Swords } from 'lucide-preact'
-import logoUrl from '../launcher/logo.avif'
-import bgUrl from '../launcher/background.avif'
+import logoUrl from './logo.avif'
+import bgUrl from './background.avif'
+import chupatoSoundUrl from './chupato-cute.ogg'
 
 import styles from './class-button.module.css'
 import { wowClasses } from './wow.ts'
@@ -10,7 +11,7 @@ Object.assign(globalThis, { h, Fragment })
 
 
 const audioContext = new AudioContext()
-const audioBuffer = fetch('../launcher/chupato-cute.ogg')
+const audioBuffer = fetch(chupatoSoundUrl)
   .then(response => response.arrayBuffer())
   .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
 
@@ -75,6 +76,7 @@ function App() {
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
+          onClick={() => play()}
           class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3"
         />
         <h1
