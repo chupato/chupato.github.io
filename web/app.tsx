@@ -112,6 +112,10 @@ function App() {
                   <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
                   <div class="stat-value">{fmt(sinceMs)}</div>
                 </div>
+                <div class="stat">
+                  <div class="stat-title">Active Players</div>
+                  <div class="stat-value text-4xl">{mockPlayers.length}</div>
+                </div>
               </div>
             </div>
           </div>
