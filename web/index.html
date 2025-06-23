@@ -11,6 +11,20 @@
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
+    <!-- SVG filter for text outline -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;visibility:hidden">
+      <defs>
+        <filter id="text-outline" x="-50%" y="-50%" width="200%" height="200%">
+          <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="dilated"/>
+          <feFlood flood-color="black" flood-opacity="1" result="color"/>
+          <feComposite in="color" in2="dilated" operator="in" result="outline"/>
+          <feMerge>
+            <feMergeNode in="outline"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
     <div id="app"></div>
     <script type="module" src="./app.tsx"></script>
   </body>

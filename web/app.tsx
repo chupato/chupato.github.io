@@ -69,6 +69,17 @@ function App() {
   }
   return (
     <div class="p-4 pt-20 space-y-6 bg-base-200 min-h-screen">
+      {/* SVG filter for text outline */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="text-outline" x="-50%" y="-50%" width="200%" height="200%">
+            <feMorphology in="SourceAlpha" operator="dilate" width="20px" result="thicken" />
+            <feFlood floodColor="black" result="outline" />
+            <feComposite in="outline" in2="thicken" operator="in" result="outline" />
+            <feComposite in="SourceGraphic" in2="outline" operator="over" />
+          </filter>
+        </defs>
+      </svg>
       <div
         class="relative h-48 bg-cover bg-center rounded-lg overflow-visible"
         style={{ backgroundImage: `url(${bgUrl})` }}
@@ -80,11 +91,11 @@ function App() {
           class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3 cursor-pointer hover:wiggle"
         />
         <h1
-          class="absolute inset-x-0 top-28 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
+          class="absolute inset-x-0 top-28 text-center text-3xl font-bold text-warning filter-outline-lg flex items-center justify-center gap-2"
         >
           <Home size={24}/> CHUPATO Server Activity
         </h1>
-        <p class="absolute inset-x-0 top-36 text-center text-sm text-success drop-shadow-sm">
+        <p class="absolute inset-x-0 top-36 text-center text-sm text-success drop-shadow-sm filter-outline-lg">
           Real-time event stream & stats for your WotLK private server
         </p>
       </div>

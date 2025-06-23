@@ -59,4 +59,8 @@
   .hover\:wiggle:hover {
     animation: wiggle 0.5s ease-in-out infinite;
   }
+  /* outline + drop-shadow combo for banner title */
+  .filter-outline-lg {
+    filter: url(#text-outline) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+  }
 }
