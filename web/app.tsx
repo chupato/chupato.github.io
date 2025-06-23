@@ -73,7 +73,7 @@ function App() {
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <defs>
           <filter id="text-outline" x="-50%" y="-50%" width="200%" height="200%">
-            <feMorphology in="SourceAlpha" operator="dilate" width="20px" result="thicken" />
+            <feMorphology in="SourceAlpha" operator="dilate" radius="20" result="thicken" />
             <feFlood floodColor="black" result="outline" />
             <feComposite in="outline" in2="thicken" operator="in" result="outline" />
             <feComposite in="SourceGraphic" in2="outline" operator="over" />
