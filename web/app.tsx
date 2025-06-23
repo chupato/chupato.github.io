@@ -89,20 +89,25 @@ function App() {
             <div class="stats stats-vertical shadow">
               <div class="stat">
                 <div class="stat-title">Warsong Queue</div>
-                <div class="stat-value">{mockWarsongCount}</div>
+                <div class="stat-value text-4xl">{mockWarsongCount}</div>
                 <div class="stat-desc">players waiting</div>
               </div>
               <div class="stat">
-                <div class="stat-title">Arena 2v2</div>
-                <div class="stat-value">{mockArena2v2Count}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Arena 3v3</div>
-                <div class="stat-value">{mockArena3v3Count}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Arena 5v5</div>
-                <div class="stat-value">{mockArena5v5Count}</div>
+                <div class="stat-title">Arena Queues</div>
+                <div class="flex gap-2 justify-center">
+                  <div class="text-center">
+                    <div class="font-semibold">2v2</div>
+                    <div class="text-xl">{mockArena2v2Count}</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-semibold">3v3</div>
+                    <div class="text-xl">{mockArena3v3Count}</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-semibold">5v5</div>
+                    <div class="text-xl">{mockArena5v5Count}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
