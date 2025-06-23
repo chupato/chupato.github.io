@@ -47,9 +47,9 @@ const mockPlayers = [
 ]
 
 const mockWarsongCount = 7
-const mockArena2v2Count = 3
+const mockWarsongAvgWait = '2m 15s'
 const mockArena3v3Count = 2
-const mockArena5v5Count = 1
+const mockArena3v3AvgWait = '4m 30s'
 // positive = online since that timestamp; negative = offline since abs(timestamp)
 const mockServerSince = Date.now() - 5 * 60 * 1000
 
@@ -148,24 +148,12 @@ function App() {
               <div class="stat">
                 <div class="stat-title">Warsong Queue</div>
                 <div class="stat-value text-4xl">{mockWarsongCount}</div>
-                <div class="stat-desc">players waiting</div>
+                <div class="stat-desc">avg wait {mockWarsongAvgWait}</div>
               </div>
               <div class="stat">
-                <div class="stat-title">Arena Queues</div>
-                <div class="flex gap-2 justify-center">
-                  <div class="text-center">
-                    <div class="font-semibold">2v2</div>
-                    <div class="text-xl">{mockArena2v2Count}</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="font-semibold">3v3</div>
-                    <div class="text-xl">{mockArena3v3Count}</div>
-                  </div>
-                  <div class="text-center">
-                    <div class="font-semibold">5v5</div>
-                    <div class="text-xl">{mockArena5v5Count}</div>
-                  </div>
-                </div>
+                <div class="stat-title">Arena 3v3 Queue</div>
+                <div class="stat-value text-4xl">{mockArena3v3Count}</div>
+                <div class="stat-desc">avg wait {mockArena3v3AvgWait}</div>
               </div>
             </div>
           </div>
