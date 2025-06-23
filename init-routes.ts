@@ -385,31 +385,57 @@ const dbcSchemas: { [k in string]: DBC.Schema } = {
     CategoryMask_1: 'int',
     CategoryMask_2: 'int',
   },
-  'MapDifficulty.dbc': {
+  'LFGDungeons.dbc': {
     ID: 'int',
+    Name_Lang_enUS: 'string',
+    Name_Lang_enGB: 'string',
+    Name_Lang_koKR: 'string',
+    Name_Lang_frFR: 'string',
+    Name_Lang_deDE: 'string',
+    Name_Lang_enCN: 'string',
+    Name_Lang_zhCN: 'string',
+    Name_Lang_enTW: 'string',
+    Name_Lang_zhTW: 'string',
+    Name_Lang_esES: 'string',
+    Name_Lang_esMX: 'string',
+    Name_Lang_ruRU: 'string',
+    Name_Lang_ptPT: 'string',
+    Name_Lang_ptBR: 'string',
+    Name_Lang_itIT: 'string',
+    Name_Lang_Unk: 'string',
+    Name_Lang_Mask: 'uint',
+    MinLevel: 'int',
+    MaxLevel: 'int',
+    Target_Level: 'int',
+    Target_Level_Min: 'int',
+    Target_Level_Max: 'int',
     MapID: 'int',
     Difficulty: 'int',
-    Message_Lang_enUS: 'string',
-    Message_Lang_enGB: 'string',
-    Message_Lang_koKR: 'string',
-    Message_Lang_frFR: 'string',
-    Message_Lang_deDE: 'string',
-    Message_Lang_enCN: 'string',
-    Message_Lang_zhCN: 'string',
-    Message_Lang_enTW: 'string',
-    Message_Lang_zhTW: 'string',
-    Message_Lang_esES: 'string',
-    Message_Lang_esMX: 'string',
-    Message_Lang_ruRU: 'string',
-    Message_Lang_ptPT: 'string',
-    Message_Lang_ptBR: 'string',
-    Message_Lang_itIT: 'string',
-    Message_Lang_Unk: 'string',
-    Message_Lang_Mask: 'uint',
-    RaidDuration: 'int',
-    MaxPlayers: 'int',
-    Difficultystring: 'string',
-  },
+    Flags: 'int',
+    TypeID: 'int',
+    Faction: 'int',
+    TextureFilename: 'string',
+    ExpansionLevel: 'int',
+    Order_Index: 'int',
+    Group_Id: 'int',
+    Description_Lang_enUS: 'string',
+    Description_Lang_enGB: 'string',
+    Description_Lang_koKR: 'string',
+    Description_Lang_frFR: 'string',
+    Description_Lang_deDE: 'string',
+    Description_Lang_enCN: 'string',
+    Description_Lang_zhCN: 'string',
+    Description_Lang_enTW: 'string',
+    Description_Lang_zhTW: 'string',
+    Description_Lang_esES: 'string',
+    Description_Lang_esMX: 'string',
+    Description_Lang_ruRU: 'string',
+    Description_Lang_ptPT: 'string',
+    Description_Lang_ptBR: 'string',
+    Description_Lang_itIT: 'string',
+    Description_Lang_Unk: 'string',
+    Description_Lang_Mask: 'uint',
+  }
 } as const
 
 
@@ -706,6 +732,7 @@ const cleanupSheetRow = row => Object.fromEntries(Object.entries(row).flatMap(([
 const fetchUpdates = async (): Promise<Updates> => {
   const talentData = getSheet('TALENT.DBC')
   const spellsData = getSheet('SPELL.DBC')
+  const LFGDungeonsData = getSheet('LFGDUNGEONS.DBC')
   const spells = new Map()
   const addSpell = (spell: Record<string, unknown> & { ID: number }) => {
     const match = spells.get(spell.ID)
@@ -764,18 +791,13 @@ const fetchUpdates = async (): Promise<Updates> => {
     addSpell(cleanupSheetRow(row))
   }
 
-  const gnomerganHeroic = {
-    ID: 18,
-    Difficulty: 1,
-    RaidDuration: 259200,
-    Difficultystring: 'DUNGEON_DIFFICULTY_5PLAYER_HEROIC',
-  }
+  const dungeons =  (await LFGDungeonsData).map(cleanupSheetRow)
 
   return [
     { name: 'SkillLine.dbc', data: gatheringAsSecondarySkills },
     { name: 'Spell.dbc', data: spells.values().toArray() },
     { name: 'SkillLineAbility.dbc', data: skills.rows },
-    { name: 'MapDifficulty.dbc', data: [gnomerganHeroic] },
+    { name: 'LFGDungeons.dbc', data: dungeons },
     {
       name: 'Talent.dbc',
       data: await talentData,
