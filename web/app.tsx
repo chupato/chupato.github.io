@@ -8,6 +8,30 @@ import { wowClasses } from './wow.ts'
 
 Object.assign(globalThis, { h, Fragment })
 
+
+const audioContext = new AudioContext()
+const audioBuffer = fetch('../launcher/chupato-cute.ogg')
+  .then(response => response.arrayBuffer())
+  .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+
+const timings = [
+  0, // Challenge
+  0.92, // Heroes
+  1.62, // Ultimate
+  2.432, // Private
+  2.95, // Adventure
+  3.65, // Twink
+  4.15, // Online
+  4.7, // Chupato
+]
+
+const play = async (...args) => {
+  const source = audioContext.createBufferSource()
+  source.buffer = await audioBuffer
+  source.connect(audioContext.destination)
+  source.start(0, ...args)
+}
+
 const mockPlayers = [
   { id: '1', name: 'Alice', race: 'Human', cls: 'Paladin', level: 19, lastActive: '2m ago' },
   { id: '2', name: 'Bob', race: 'Orc', cls: 'Warrior', level: 18, lastActive: '5m ago' },
@@ -51,6 +75,7 @@ function App() {
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
+          onClick={() => play()}
           class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3"
         />
         <h1
