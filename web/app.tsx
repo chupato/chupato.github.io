@@ -34,16 +34,16 @@ const play = async (...args) => {
 }
 
 const mockPlayers = [
-  { id: '1', name: 'Alice', race: 'Human', cls: 'Paladin', level: 19, lastActive: '2m ago' },
-  { id: '2', name: 'Bob', race: 'Orc', cls: 'Warrior', level: 18, lastActive: '5m ago' },
-  { id: '3', name: 'Carolina', race: 'Night Elf', cls: 'Druid', level: 19, lastActive: '7m ago' },
-  { id: '4', name: 'Darius', race: 'Dwarf', cls: 'Hunter', level: 18, lastActive: '10m ago' },
-  { id: '5', name: 'Eliza', race: 'Troll', cls: 'Mage', level: 19, lastActive: '12m ago' },
-  { id: '6', name: 'Frodo', race: 'Gnome', cls: 'Warlock', level: 18, lastActive: '15m ago' },
-  { id: '7', name: 'Gandalf', race: 'Human', cls: 'Priest', level: 19, lastActive: '18m ago' },
-  { id: '8', name: 'Hermione', race: 'Human', cls: 'Mage', level: 18, lastActive: '20m ago' },
-  { id: '9', name: 'Icarus', race: 'Night Elf', cls: 'Rogue', level: 19, lastActive: '22m ago' },
-  { id: '10', name: 'Jaina', race: 'Human', cls: 'Mage', level: 18, lastActive: '25m ago' },
+  { id: '1', name: 'Alice', cls: 'Paladin', lastActive: '2m ago', status: 'World' },
+  { id: '2', name: 'Bob', cls: 'Warrior', lastActive: '5m ago', status: 'Warsong' },
+  { id: '3', name: 'Carolina', cls: 'Druid', lastActive: '7m ago', status: 'Arena' },
+  { id: '4', name: 'Darius', cls: 'Hunter', lastActive: '10m ago', status: 'World' },
+  { id: '5', name: 'Eliza', cls: 'Mage', lastActive: '12m ago', status: 'Warsong' },
+  { id: '6', name: 'Frodo', cls: 'Warlock', lastActive: '15m ago', status: 'Arena' },
+  { id: '7', name: 'Gandalf', cls: 'Priest', lastActive: '18m ago', status: 'World' },
+  { id: '8', name: 'Hermione', cls: 'Mage', lastActive: '20m ago', status: 'Warsong' },
+  { id: '9', name: 'Icarus', cls: 'Rogue', lastActive: '22m ago', status: 'Arena' },
+  { id: '10', name: 'Jaina', cls: 'Mage', lastActive: '25m ago', status: 'World' },
 ]
 
 const mockWarsongCount = 7
@@ -131,6 +131,9 @@ function App() {
                         style={{ borderColor: wowClasses[p.cls.toUpperCase()].color }}
                       />
                       <span class="font-medium">{p.name}</span>
+                      <span class="px-1 py-0.5 rounded-full text-xs uppercase bg-base-200 text-base-content">
+                        {p.status}
+                      </span>
                     </div>
                     <span class="text-xs opacity-70">{p.lastActive}</span>
                   </li>
