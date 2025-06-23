@@ -75,7 +75,6 @@ function App() {
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
-          onClick={() => play()}
           class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3"
         />
         <h1
