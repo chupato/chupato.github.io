@@ -1,14 +1,41 @@
 {
+  "tasks": {
+    "vite": "deno run -A npm:vite",
+    "dev": "deno task vite dev",
+    "build": "deno task vite build",
+    "preview": "deno task vite preview"
+  },
+  "imports": {
+    "@preact/preset-vite": "npm:@preact/preset-vite@latest",
+    "@preact/signals": "npm:@preact/signals@latest",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@latest",
+    "daisyui": "npm:daisyui@latest",
+    "lucide-preact": "npm:lucide-preact@latest",
+    "preact": "npm:preact@latest",
+    "preact/jsx-runtime": "npm:preact@latest/jsx-runtime",
+    "preact/hooks": "npm:preact@latest/hooks",
+    "tailwindcss": "npm:tailwindcss@latest",
+    "vite": "npm:vite@latest"
+  },
   "fmt": {
     "useTabs": false,
     "lineWidth": 80,
     "indentWidth": 2,
     "semiColons": false,
     "singleQuote": true,
-    "exclude": ["vendor/", "metafile.json"]
+    "exclude": ["dist/", "metafile.json", "node_modules/"]
   },
-  "tasks": {
-    "compile": "deno run -A task-compile.js",
-    "dev": "deno serve -A task-dev.ts"
+  "lock": false,
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable",
+      "DOM.AsyncIterable",
+      "webworker"
+    ]
   }
 }
