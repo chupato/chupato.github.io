@@ -1,18 +1,24 @@
 import { effect, Signal } from '@preact/signals'
 import { url } from './router.tsx'
+import type { WoWClasses, WoWRaces } from './wow.ts'
 
 const SOURCE_URL = 'https://wow.devazuka.com'
 
 export const sourceDisconnectedAt = new Signal(Date.now())
 
 const source = new EventSource(sourceUrl)
-const setDisconnected = () =>
+const setDisconnected = () => {
+  startAt.value = 0
   sourceDisconnectedAt.peek() || (sourceDisconnectedAt.value = Date.now())
+}
 
-const STATE = {}
+export const version = new Signal('')
+export const startAt = new Signal(0)
+
 source.addEventListener('init', (event) => {
   const init = JSON.parse(event.data) as InitData
   console.log('server state initialized', init)
+  version.value = init.version
   Object.assign(STATE, init)
 })
 
@@ -32,13 +38,90 @@ setDisconnected()
 
 // type GameEvent<Type, Data> =
 
-// emit('SHUTDOWN', { at: Date.now() })
-// emit('LOGIN', { player, at })
-// emit('LOGOUT', { id: player.id })
-// emit('STARTUP', { at })
-// emit('SHUTDOWN', { at })
-// emit('QUEUE_STATE', { type, arena, queue })
-// emit('BATTLEGROUND_JOIN', { playerId, id, team, at })
-// emit('BATTLEGROUND_LEAVE', { player, id })
-// emit('BATTLEGROUND_START', { id, type, start: at })
-// emit('BATTLEGROUND_END', { id })
+type Player = {
+  id: number
+  name: string
+  account: number
+  class: WoWClasses[keyof WoWClasses]['id']
+  race: WoWRaces[keyof WoWRaces]
+}
+
+type BattlegroundType = 'arena' | 'warsong'
+type Battleground = {
+  id: number
+  type: BattlegroundType
+  participants: Map<Player['id'], { at: number; team: number }>
+}
+
+type Queue = {
+  at: number
+  source: Player['id'] // leader of the group
+}
+
+type Queues = Map<Player['id'], Queue>
+
+type State = ServerStatus & {
+  warsongQueue: Queue[]
+  arenaQueue: Queue[]
+  players: Map<Player['id'], Player>
+  battlegrounds: Map<Battleground['id'], Battleground>
+}
+
+const listen = (type: string, handler: (data: any) => void) => {
+  source.addEventListener(type, (event) => {
+    handler(JSON.parse(event.data))
+  })
+}
+
+listen('SHUTDOWN', ({ at }: { at: number }) => {
+  //
+})
+
+listen('LOGIN', ({ player, at }: { player: Player; at: number }) => {
+  //
+})
+
+listen('LOGOUT', ({ id }: { id: Player['id'] }) => {
+  //
+})
+
+listen('STARTUP', ({ at }: { at: number }) => {
+  //
+})
+
+listen('SHUTDOWN', ({ at }: { at: number }) => {
+  //
+})
+
+listen('QUEUE_STATE', ({ type, queue }: {
+  type: BattlegroundType
+  queue: { id: Player['id']; at: number; source: number }[]
+}) => {
+  // 
+})
+
+listen('BATTLEGROUND_JOIN', ({ playerId, id, team, at }: {
+  playerId: Player['id']
+  id: number
+  team: number
+  at: number
+}) => {
+  // yo
+})
+
+listen(
+  'BATTLEGROUND_LEAVE',
+  ({ player, id }: { player: Player; id: number }) => {
+  },
+)
+
+listen('BATTLEGROUND_START', ({ id, type, start }: {
+  id: Battleground['id']
+  type: BattlegroundType
+  start: number
+}) => {
+  //
+})
+
+listen('BATTLEGROUND_END', ({ id }: { id: Battleground['id'] }) => {
+})
