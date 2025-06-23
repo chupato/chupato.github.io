@@ -11,6 +11,8 @@ import {
   Swords,
   Users,
   XCircle,
+  CloudDownload,
+  MessageCircle,
 } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
@@ -318,16 +320,22 @@ function App() {
             <div class='flex gap-2'>
               <a
                 href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
-                class='btn btn-primary'
+                class='btn btn-primary flex items-center gap-1'
                 target='_blank'
                 rel='noopener'
-              >Download Launcher</a>
+              >
+                <CloudDownload size={16} />
+                Download Launcher
+              </a>
               <a
                 href='https://discord.gg/uHGR3rB'
-                class='btn btn-secondary'
+                class='btn btn-secondary flex items-center gap-1'
                 target='_blank'
                 rel='noopener'
-              >Join Discord</a>
+              >
+                <MessageCircle size={16} />
+                Join Discord
+              </a>
             </div>
           </div>
         </div>
