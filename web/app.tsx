@@ -55,8 +55,7 @@ function App() {
         </h1>
         <p class="absolute inset-x-0 top-16 text-center text-sm text-success drop-shadow-sm">
           Real-time event stream & stats for your WotLK private server
-        </p
-        >
+        </p>
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
