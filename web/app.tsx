@@ -309,14 +309,41 @@ function App() {
 
         <div class='card card-compact bg-base-100 shadow'>
           <div class='card-body p-4 space-y-4'>
-            <p class='text-base'>
-              Chupato is a 3.3.5 WoW private server tailored for twink
-              arena enthusiasts. Experience balanced PvP action, custom
-              events, and active community. Download our launcher to
-              connect instantly, or join our Discord to chat with players,
-              report issues, and stay informed about upcoming events.
-              Adventure awaits—dive in today!
-            </p>
+            <h2 class='card-title flex items-center gap-2'>
+              <Home size={20} />
+              Features
+            </h2>
+            <ul class='list-disc list-inside space-y-2 text-sm'>
+              <li>
+                Pre-patch 3.2 (before the big twink nerf):
+                <ul class='list-disc list-inside ml-4 space-y-1 text-xs'>
+                  <li>High level legs and head enchants available</li>
+                  <li>No speed forms (cheetah aspect, ghost wolf, travel form)</li>
+                </ul>
+              </li>
+              <li>Improved talent trees to rebalance classes and refresh meta</li>
+              <li>No custom spells; AGM not dispellable</li>
+              <li>
+                8v8 cross-faction Warsong with arena rules
+                <span class='italic'>(no consumables, except Warsong consumable)</span>
+              </li>
+              <li>
+                Fast and familiar progression:
+                <ul class='list-disc list-inside ml-4 space-y-1 text-xs'>
+                  <li>Leveling from 18 to 19</li>
+                  <li>BoE items crafted to make professions useful</li>
+                  <li>Plans via rare drops & PvP rewards</li>
+                  <li>Gathering at max skill from start</li>
+                  <li>Quest items from classic Booty Bay quests</li>
+                  <li>Dungeons BoP items through LFG dungeons</li>
+                  <li>Heirlooms via weekly quests at level 19</li>
+                  <li>Daily Fishing Tournament for hat & boots</li>
+                  <li>Full AGM trinket available directly from chest</li>
+                </ul>
+              </li>
+              <li class='italic'>...and a lot more cosmetic upgrades to discover!</li>
+            </ul>
+            <div class='divider' />
             <div class='flex gap-2'>
               <a
                 href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
