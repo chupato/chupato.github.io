@@ -1,4 +1,3 @@
-import tailwindcss from '@tailwindcss/vite'
 import preact from '@preact/preset-vite'
 import { defineConfig } from 'vite'
 import { join } from 'node:path' // Deno uses node: prefix for Node.js compat
@@ -15,15 +14,9 @@ export default defineConfig({
   root: join(import.meta.dirname, './web'), // Set project root to web/
   plugins: [
     preact({ jsxImportSource: 'preact' }),
-    tailwindcss(),
+    // tailwindcss(), // Removed as PostCSS handles it
   ],
   server: {
     port: 3000, // Optional: specify dev server port
   },
-  resolve: { // Ensure Deno can resolve Preact
-    alias: {
-      'react': 'preact/compat',
-      'react-dom': 'preact/compat',
-    }
-  }
 })

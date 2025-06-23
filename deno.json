@@ -8,11 +8,9 @@
   "imports": {
     "@preact/preset-vite": "npm:@preact/preset-vite@latest",
     "@preact/signals": "npm:@preact/signals@latest",
-    "@tailwindcss/vite": "npm:@tailwindcss/vite@latest",
     "daisyui": "npm:daisyui@latest",
     "lucide-preact": "npm:lucide-preact@latest",
     "preact": "npm:preact@latest",
-    "preact/jsx-runtime": "npm:preact@latest/jsx-runtime",
     "preact/hooks": "npm:preact@latest/hooks",
     "tailwindcss": "npm:tailwindcss@latest",
     "vite": "npm:vite@latest"

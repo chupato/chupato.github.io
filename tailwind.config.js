@@ -10,6 +10,6 @@ export default {
     require('daisyui'),
   ],
   daisyui: {
-    themes: ["light", "dark", "cupcake"], // Optional: configure DaisyUI themes
+    themes: ["forest"],
   },
 }
