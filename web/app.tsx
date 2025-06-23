@@ -37,7 +37,7 @@ const mockPlayers = [
   { id: '1', name: 'Alice', cls: 'Paladin', lastActive: '2m ago', status: 'World' },
   { id: '2', name: 'Bob', cls: 'Warrior', lastActive: '5m ago', status: 'Warsong' },
   { id: '3', name: 'Carolina', cls: 'Druid', lastActive: '7m ago', status: 'Arena' },
-  { id: '4', name: 'Darius', cls: 'Hunter', lastActive: '10m ago', status: 'World' },
+  { id: '4', name: 'Darius', cls: 'Hunter', lastActive: '10m ago', status: 'Gurubashi' },
   { id: '5', name: 'Eliza', cls: 'Mage', lastActive: '12m ago', status: 'Warsong' },
   { id: '6', name: 'Frodo', cls: 'Warlock', lastActive: '15m ago', status: 'Arena' },
   { id: '7', name: 'Gandalf', cls: 'Priest', lastActive: '18m ago', status: 'World' },
@@ -73,7 +73,6 @@ function App() {
   }
   return (
     <div class="p-4 pt-20 space-y-6 bg-base-200 min-h-screen">
-      {/* SVG filter for text outline */}
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <defs>
           <filter id="text-outline" x="-50%" y="-50%" width="200%" height="200%">
@@ -142,25 +141,28 @@ function App() {
               <h2 class="card-title flex items-center gap-2 drop-shadow">
                 <Users size={20}/> Recent Active Players
               </h2>
-              <ul class="divide-y divide-base-200">
+            <table class="table-auto w-full border-collapse">
+              <tbody>
                 {mockPlayers.map(p => (
-                  <li key={p.id} class="flex justify-between items-center py-1">
-                    <div class="flex items-center gap-1">
-                      <span
-                        role="img"
-                        aria-label={p.cls}
-                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6 rounded-full border-2`}
-                        style={{ borderColor: wowClasses[p.cls.toUpperCase()].color }}
-                      />
-                      <span class="font-medium">{p.name}</span>
-                      <span class="px-1 py-0.5 rounded-full text-xs uppercase bg-base-200 text-base-content">
-                        {p.status}
-                      </span>
-                    </div>
-                    <span class="text-xs opacity-70">{p.lastActive}</span>
-                  </li>
+                  <tr key={p.id} class="border-b border-base-200">
+                    <td class="py-1 px-2">
+                      {p.status === 'Warsong' ? (
+                        <Flag size={16} class="text-warning" />
+                      ) : p.status === 'Arena' ? (
+                        <Swords size={16} class="text-info" />
+                      ) : p.status === 'Gurubashi' ? (
+                        <Swords size={16} class="text-error" />
+                      ) : (
+                        <Flag size={16} class="text-base-content" />
+                      )}
+                    </td>
+                    <td class="py-1 px-2 font-medium">{p.name}</td>
+                    <td class="py-1 px-2 text-xs opacity-70">{p.lastActive}</td>
+                    <td class="py-1 px-2 text-xs uppercase">{p.status}</td>
+                  </tr>
                 ))}
-              </ul>
+              </tbody>
+            </table>
             </div>
           </div>
         </div>
