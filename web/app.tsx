@@ -304,6 +304,34 @@ function App() {
             </div>
           </div>
         </div>
+
+        <div class='card card-compact bg-base-100 shadow'>
+          <div class='card-body p-4 space-y-4'>
+            <p class='text-base'>
+              Chupato is a 3.3.5 WoW private server tailored for twink
+              arena enthusiasts. Experience balanced PvP action, custom
+              events, and active community. Download our launcher to
+              connect instantly, or join our Discord to chat with players,
+              report issues, and stay informed about upcoming events.
+              Adventure awaits—dive in today!
+            </p>
+            <div class='flex gap-2'>
+              <a
+                href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
+                class='btn btn-primary'
+                target='_blank'
+                rel='noopener'
+              >Download Launcher</a>
+              <a
+                href='https://discord.gg/uHGR3rB'
+                class='btn btn-secondary'
+                target='_blank'
+                rel='noopener'
+              >Join Discord</a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )
