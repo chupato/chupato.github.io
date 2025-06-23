@@ -41,7 +41,7 @@ function App() {
     return `${h}h ${mm}m ${ss}s`
   }
   return (
-    <div class="p-4 space-y-6">
+    <div class="p-4 space-y-6 bg-base-200 min-h-screen">
       <h1 class="text-2xl font-bold flex items-center gap-2">
         <Home size={24}/> CHUPATO Server Activity
       </h1>
