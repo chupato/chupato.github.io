@@ -1,5 +1,5 @@
 import { Fragment, h, render } from 'preact'
-import { Home, Server, Users, LayoutGrid } from 'lucide-preact'
+import { Home, Server, Users, Swords } from 'lucide-preact'
 import logoUrl from '../launcher/logo.avif'
 import bgUrl from '../launcher/background.avif'
 
@@ -45,22 +45,22 @@ function App() {
   return (
     <div class="p-4 space-y-6 bg-base-200 min-h-screen">
       <div
-        class="relative h-48 bg-cover bg-center rounded-lg overflow-hidden"
+        class="relative h-48 bg-cover bg-center rounded-lg overflow-visible"
         style={{ backgroundImage: `url(${bgUrl})` }}
       >
-        <h1
-          class="absolute inset-x-0 top-4 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
-        >
-          <Home size={24}/> CHUPATO Server Activity
-        </h1>
-        <p class="absolute inset-x-0 top-16 text-center text-sm text-success drop-shadow-sm">
-          Real-time event stream & stats for your WotLK private server
-        </p>
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
-          class="h-32 mx-auto absolute inset-x-0 bottom-2"
+          class="h-40 mx-auto absolute inset-x-0 -translate-y-1/3"
         />
+        <h1
+          class="absolute inset-x-0 top-16 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
+        >
+          <Home size={24}/> CHUPATO Server Activity
+        </h1>
+        <p class="absolute inset-x-0 top-28 text-center text-sm text-success drop-shadow-sm">
+          Real-time event stream & stats for your WotLK private server
+        </p>
       </div>
 
       <div class="grid gap-4 md:grid-cols-2 items-start">
@@ -105,7 +105,7 @@ function App() {
         <div class="card card-compact bg-base-100 shadow">
           <div class="card-body p-2 space-y-1">
             <h2 class="card-title flex items-center gap-2 drop-shadow">
-              <LayoutGrid size={20}/> Queue Status
+              <Swords size={20}/> Queue Status
             </h2>
             <div class="stats stats-vertical shadow">
               <div class="stat">
