@@ -308,80 +308,82 @@ function App() {
           </div>
         </div>
 
-        <div class='card card-compact bg-base-100 shadow'>
-          <div class='card-body p-4 space-y-4'>
-            <h2 class='card-title flex items-center gap-2'>
-              <Info size={20} />
+        <div class='card bg-base-100 shadow'>
+          <div class='card-body p-6 space-y-6'>
+            <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
+              <Info size={24} />
               About Chupato
             </h2>
-            <p class='text-sm'>
-              Chupato is a 3.3.5 WoW private server tailored for twink
-              arena enthusiasts. Experience balanced PvP action, custom
-              events, and active community. Download our launcher to
-              connect instantly, or join our Discord to chat with players,
-              report issues, and stay informed about upcoming events.
-              Adventure awaits—dive in today!
+            <p class='text-base leading-relaxed'>
+              Chupato is a <strong>3.3.5 WoW private server</strong> crafted
+              for twink arena enthusiasts. Join us for <strong>balanced PvP
+              battles</strong>, immersive <strong>custom events</strong>, and an
+              <strong>active community</strong> that keeps the action alive.
             </p>
-            <div class='flex gap-2'>
+            <p class='text-base leading-relaxed'>
+              Adventure awaits—dive in today! Download our launcher to
+              connect instantly, or hop on Discord to chat, report issues,
+              and stay up to speed on all server happenings.
+            </p>
+            <div class='flex gap-3'>
               <a
                 href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
-                class='btn btn-primary flex items-center gap-1'
+                class='btn btn-primary flex items-center gap-2'
                 target='_blank'
                 rel='noopener'
               >
-                <CloudDownload size={16} />
+                <CloudDownload size={18} />
                 Download Launcher
               </a>
               <a
                 href='https://discord.gg/uHGR3rB'
-                class='btn btn-secondary flex items-center gap-1'
+                class='btn btn-secondary flex items-center gap-2'
                 target='_blank'
                 rel='noopener'
               >
-                <MessageCircle size={16} />
+                <MessageCircle size={18} />
                 Join Discord
               </a>
             </div>
           </div>
         </div>
 
-        <div class='card card-compact bg-base-100 shadow'>
-          <div class='card-body p-4 space-y-4'>
-            <h2 class='card-title flex items-center gap-2'>
-              <Home size={20} />
+        <div class='card bg-base-100 shadow'>
+          <div class='card-body p-6 space-y-6'>
+            <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
+              <Home size={24} />
               Features
             </h2>
-            <ul class='list-disc list-inside space-y-2 text-sm'>
+            <ul class='list-disc list-inside space-y-4 text-base leading-relaxed'>
               <li>
-                Pre-patch 3.2 (before the big twink nerf):
-                <ul class='list-disc list-inside ml-4 space-y-1 text-xs'>
-                  <li>High level legs and head enchants available</li>
-                  <li>No speed forms (cheetah aspect, ghost wolf, travel form)</li>
+                <strong>Pre-patch 3.2</strong> (before the big twink nerf):
+                <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
+                  <li>High level legs & head enchants available</li>
+                  <li>No speed forms (cheetah, ghost wolf, travel)</li>
                 </ul>
               </li>
-              <li>Improved talent trees to rebalance classes and refresh meta</li>
-              <li>No custom spells; AGM not dispellable</li>
+              <li>Improved talent trees for fresh class balance</li>
+              <li>No custom spells; AGM remains undispellable</li>
               <li>
-                8v8 cross-faction Warsong with arena rules
-                <span class='italic'>(no consumables, except Warsong consumable)</span>
+                <strong>8v8 cross-faction Warsong</strong> with arena rules
+                <span class='italic'>(no consumables except Warsong buff)</span>
               </li>
               <li>
-                Fast and familiar progression:
-                <ul class='list-disc list-inside ml-4 space-y-1 text-xs'>
-                  <li>Leveling from 18 to 19</li>
-                  <li>BoE items crafted to make professions useful</li>
+                <strong>Fast progression</strong>:
+                <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
+                  <li>Level 18 → 19</li>
+                  <li>BoE crafted items for useful professions</li>
                   <li>Plans via rare drops & PvP rewards</li>
-                  <li>Gathering at max skill from start</li>
-                  <li>Quest items from classic Booty Bay quests</li>
-                  <li>Dungeons BoP items through LFG dungeons</li>
-                  <li>Heirlooms via weekly quests at level 19</li>
-                  <li>Daily Fishing Tournament for hat & boots</li>
-                  <li>Full AGM trinket available directly from chest</li>
+                  <li>Max-level gathering from day one</li>
+                  <li>Classic Booty Bay quest items</li>
+                  <li>LFG dungeons for BoP gear</li>
+                  <li>Weekly heirloom quests at 19</li>
+                  <li>Daily Fishing Tournament rewards</li>
+                  <li>Direct AGM trinket from the chest</li>
                 </ul>
               </li>
-              <li class='italic'>...and a lot more cosmetic upgrades to discover!</li>
+              <li class='italic'>…and more cosmetic touches to explore!</li>
             </ul>
-            <div class='divider' />
           </div>
         </div>
 
