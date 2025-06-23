@@ -110,8 +110,8 @@ function App() {
               <h2 class="card-title flex items-center gap-2 drop-shadow">
                 <Server size={20}/> Server Status
               </h2>
-              <div class="stats stats-vertical shadow">
-                <div class="stat">
+              <div class="grid grid-cols-2 gap-4 p-3 shadow">
+                <div class="space-y-2">
                   <div class="flex items-center gap-2">
                     {online ? (
                       <CheckCircle size={20} class="text-success" />
@@ -120,18 +120,21 @@ function App() {
                     ) : (
                       <XCircle size={20} class="text-error" />
                     )}
-                    <span class="stat-title">
+                    <span className={
+                      online ? 'text-success text-lg' :
+                      pending ? 'text-warning text-lg' :
+                      'text-error text-lg'
+                    }>
                       {online ? 'Online' : pending ? 'Pending' : 'Offline'}
                     </span>
                   </div>
+                  <div class="flex items-center gap-2">
+                    <span class="stat-title">{online ? 'Online since' : 'Offline since'}</span>
+                    <span class="stat-value">{fmt(sinceMs)}</span>
+                  </div>
                 </div>
-                <div class="stat">
-                  <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
-                  <div class="stat-value">{fmt(sinceMs)}</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-title">Active Players</div>
-                  <div class="stat-value text-4xl">{mockPlayers.length}</div>
+                <div class="flex items-center justify-center">
+                  <span class="text-6xl font-bold">{mockPlayers.length}</span>
                 </div>
               </div>
             </div>
@@ -182,18 +185,26 @@ function App() {
             <h2 class="card-title flex items-center gap-2 drop-shadow">
               <Hourglass size={20}/> Queue Status
             </h2>
-            <div class="stats shadow">
-              <div class="flex justify-around items-center">
-                <div class="text-center">
-                  <Flag size={20} class="text-warning" />
-                  <div class="stat-value text-2xl">{mockWarsongCount}</div>
-                  <div class="stat-desc">Warsong avg {mockWarsongAvgWait}</div>
-                </div>
-                <div class="text-center">
-                  <Swords size={20} class="text-info" />
-                  <div class="stat-value text-2xl">{mockArena3v3Count}</div>
-                  <div class="stat-desc">3v3 avg {mockArena3v3AvgWait}</div>
-                </div>
+            <div class="stats shadow flex items-center justify-center gap-4 p-2">
+              <div class="flex items-center gap-1">
+                <Flag size={20} class="text-warning" />
+                <span class="font-semibold text-lg">Warsong</span>
+              </div>
+              <div class="border-l border-base-300 h-6" />
+              <div class="flex items-center gap-1">
+                <Swords size={20} class="text-info" />
+                <span class="font-semibold text-lg">3v3</span>
+              </div>
+            </div>
+            <div class="stats shadow flex items-center justify-around p-2">
+              <div class="text-center">
+                <div class="stat-value text-xl">{mockWarsongCount}</div>
+                <div class="stat-desc">avg {mockWarsongAvgWait}</div>
+              </div>
+              <div class="border-l border-base-300 h-6" />
+              <div class="text-center">
+                <div class="stat-value text-xl">{mockArena3v3Count}</div>
+                <div class="stat-desc">avg {mockArena3v3AvgWait}</div>
               </div>
             </div>
           </div>
