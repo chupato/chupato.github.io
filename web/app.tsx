@@ -1,5 +1,5 @@
 import { Fragment, h, render } from 'preact'
-import { Home, Server, Users, Hourglass, Flag, Swords, CheckCircle, RefreshCcw, XCircle } from 'lucide-preact'
+import { Home, Server, Users, Hourglass, Flag, Swords, Map, MapPin, CheckCircle, RefreshCcw, XCircle } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
 import chupatoSoundUrl from './chupato-cute.ogg'
@@ -146,19 +146,27 @@ function App() {
                 {mockPlayers.map(p => (
                   <tr key={p.id} class="border-b border-base-200">
                     <td class="py-1 px-2">
+                      <span
+                        role="img"
+                        aria-label={p.cls}
+                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6 rounded-full border-2`}
+                        style={{ borderColor: wowClasses[p.cls.toUpperCase()].color }}
+                      />
+                    </td>
+                    <td class="py-1 px-2 font-medium">{p.name}</td>
+                    <td class="py-1 px-2 text-xs opacity-70">{p.lastActive}</td>
+                    <td class="py-1 px-2 text-xs uppercase flex items-center gap-1">
                       {p.status === 'Warsong' ? (
                         <Flag size={16} class="text-warning" />
                       ) : p.status === 'Arena' ? (
                         <Swords size={16} class="text-info" />
                       ) : p.status === 'Gurubashi' ? (
-                        <Swords size={16} class="text-error" />
+                        <MapPin size={16} class="text-error" />
                       ) : (
-                        <Flag size={16} class="text-base-content" />
+                        <Map size={16} class="text-neutral-content" />
                       )}
+                      {p.status}
                     </td>
-                    <td class="py-1 px-2 font-medium">{p.name}</td>
-                    <td class="py-1 px-2 text-xs opacity-70">{p.lastActive}</td>
-                    <td class="py-1 px-2 text-xs uppercase">{p.status}</td>
                   </tr>
                 ))}
               </tbody>
