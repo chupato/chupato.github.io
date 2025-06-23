@@ -1,5 +1,7 @@
 import { Fragment, h, render } from 'preact'
 import { Home } from 'lucide-preact'
+import logoUrl from '../launcher/logo.avif'
+import bgUrl from '../launcher/background.avif'
 
 import styles from './class-button.module.css'
 import { wowClasses } from './wow.ts'
@@ -42,6 +44,16 @@ function App() {
   }
   return (
     <div class="p-4 space-y-6 bg-base-200 min-h-screen">
+      <div
+        class="relative h-40 bg-cover bg-center rounded-lg overflow-hidden"
+        style={{ backgroundImage: `url(${bgUrl})` }}
+      >
+        <img
+          src={logoUrl}
+          alt="CHUPATO Logo"
+          class="h-24 mx-auto absolute inset-x-0 bottom-2"
+        />
+      </div>
       <h1 class="text-2xl font-bold flex items-center gap-2">
         <Home size={24}/> CHUPATO Server Activity
       </h1>
