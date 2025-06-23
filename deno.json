@@ -5,10 +5,38 @@
     "indentWidth": 2,
     "semiColons": false,
     "singleQuote": true,
-    "exclude": ["vendor/", "metafile.json"]
+    "exclude": ["vendor/", "metafile.json",  "node_modules/", "web/.vite/", "web/dist/"]
   },
   "tasks": {
-    "compile": "deno run -A task-compile.js",
-    "dev": "deno serve -A task-dev.ts"
+    "launcher:build": "deno run -A task-launcher-build.js",
+    "launcher:dev": "deno serve -A task-launcher-dev.ts",
+    "vite": "deno run -A npm:vite",
+    "web:dev": "deno task vite dev",
+    "web:build": "deno task vite build",
+    "web:preview": "deno task vite preview",
+  },
+  "lock": false,
+  "nodeModulesDir": "auto",
+  "imports": {
+    "@preact/preset-vite": "npm:@preact/preset-vite@^2.10.1",
+    "@preact/signals": "npm:@preact/signals@^2.2.0",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.10",
+    "daisyui": "npm:daisyui@^5.0.43",
+    "lucide-preact": "npm:lucide-preact@^0.522.0",
+    "preact": "npm:preact@^10.26.9",
+    "sonda": "npm:sonda@^0.8.2",
+    "tailwindcss": "npm:tailwindcss@^4.1.10",
+    "vite": "npm:vite@^6.3.5"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable",
+      "DOM.AsyncIterable",
+      "webworker"
+    ]
   }
 }

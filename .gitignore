@@ -1,1 +1,6 @@
+.vite/
+node_modules/
 vendor/
+web/.vite/
+web/dist/
+.env
