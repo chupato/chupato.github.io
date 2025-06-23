@@ -1,5 +1,5 @@
 import { Fragment, h, render } from 'preact'
-import { Home, Server, Users, Swords } from 'lucide-preact'
+import { Home, Server, Users, Hourglass, Flag, Swords, CheckCircle, RefreshCcw, XCircle } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
 import chupatoSoundUrl from './chupato-cute.ogg'
@@ -50,12 +50,16 @@ const mockWarsongCount = 7
 const mockWarsongAvgWait = '2m 15s'
 const mockArena3v3Count = 2
 const mockArena3v3AvgWait = '4m 30s'
+// current server connection status
+const mockServerState: 'online' | 'pending' | 'offline' = 'online'
 // positive = online since that timestamp; negative = offline since abs(timestamp)
 const mockServerSince = Date.now() - 5 * 60 * 1000
 
 function App() {
   // compute server status
   const online = mockServerSince > 0
+  const pending = mockServerState === 'pending'
+  const offline = mockServerState === 'offline'
   const sinceMs = online
     ? Date.now() - mockServerSince
     : Date.now() + mockServerSince
@@ -109,6 +113,20 @@ function App() {
               </h2>
               <div class="stats stats-vertical shadow">
                 <div class="stat">
+                  <div class="flex items-center gap-2">
+                    {online ? (
+                      <CheckCircle size={20} class="text-success" />
+                    ) : pending ? (
+                      <RefreshCcw size={20} class="text-warning" />
+                    ) : (
+                      <XCircle size={20} class="text-error" />
+                    )}
+                    <span class="stat-title">
+                      {online ? 'Online' : pending ? 'Pending' : 'Offline'}
+                    </span>
+                  </div>
+                </div>
+                <div class="stat">
                   <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
                   <div class="stat-value">{fmt(sinceMs)}</div>
                 </div>
@@ -149,18 +167,20 @@ function App() {
         <div class="card card-compact bg-base-100 shadow">
           <div class="card-body p-2 space-y-1">
             <h2 class="card-title flex items-center gap-2 drop-shadow">
-              <Swords size={20}/> Queue Status
+              <Hourglass size={20}/> Queue Status
             </h2>
-            <div class="stats stats-vertical shadow">
-              <div class="stat">
-                <div class="stat-title">Warsong Queue</div>
-                <div class="stat-value text-4xl">{mockWarsongCount}</div>
-                <div class="stat-desc">avg wait {mockWarsongAvgWait}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Arena 3v3 Queue</div>
-                <div class="stat-value text-4xl">{mockArena3v3Count}</div>
-                <div class="stat-desc">avg wait {mockArena3v3AvgWait}</div>
+            <div class="stats shadow">
+              <div class="flex justify-around items-center">
+                <div class="text-center">
+                  <Flag size={20} class="text-warning" />
+                  <div class="stat-value text-2xl">{mockWarsongCount}</div>
+                  <div class="stat-desc">Warsong avg {mockWarsongAvgWait}</div>
+                </div>
+                <div class="text-center">
+                  <Swords size={20} class="text-info" />
+                  <div class="stat-value text-2xl">{mockArena3v3Count}</div>
+                  <div class="stat-desc">3v3 avg {mockArena3v3AvgWait}</div>
+                </div>
               </div>
             </div>
           </div>
