@@ -191,8 +191,8 @@ function App() {
         </p>
       </div>
 
-      <div class='grid gap-4 md:grid-cols-2 items-start'>
-        <div class='space-y-4'>
+      <div class='flex flex-col lg:flex-row gap-6'>
+        <aside class='lg:w-80 flex-shrink-0 space-y-4'>
           <div class='card card-compact bg-base-100 shadow'>
             <div class='card-body p-2 space-y-1'>
               <h2 class='card-title justify-center flex items-center drop-shadow'>
@@ -241,13 +241,9 @@ function App() {
                         <span
                           role='img'
                           aria-label={p.cls}
-                          class={`${styles.classButton} ${
-                            styles[p.cls.toUpperCase()]
-                          } inline-block w-6 h-6 rounded-full`}
+                          class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} inline-block w-6 h-6 rounded-full`}
                           style={{
-                            outline: `2px solid ${
-                              wowClasses[p.cls.toUpperCase()].color
-                            }`,
+                            outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
                             outlineOffset: '2px',
                           }}
                         />
@@ -272,122 +268,103 @@ function App() {
               </table>
             </div>
           </div>
-        </div>
-        <div class='card card-compact bg-base-100 shadow'>
-          <div class='card-body p-2 space-y-1'>
-            <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
-              <Hourglass size={20} /> Queue Status
-            </h2>
-            <div class='flex items-center justify-evenly p-2'>
-              <div class='flex flex-col items-center gap-1'>
-                <div class='flex items-center gap-1 text-warning'>
-                  <Flag size={20} />
-                  <span class='font-semibold text-xl'>Warsong</span>
-                </div>
-                <div class='text-center'>
-                  <div class='stat-value text-xxl'>{mockWarsongCount}</div>
-                  <div class='stat-desc text-sm'>
-                    ~{mockWarsongAvgWait} wait
+          <div class='card card-compact bg-base-100 shadow'>
+            <div class='card-body p-2 space-y-1'>
+              <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
+                <Hourglass size={20} /> Queue Status
+              </h2>
+              <div class='flex items-center justify-evenly p-2'>
+                <div class='flex flex-col items-center gap-1'>
+                  <div class='flex items-center gap-1 text-warning'>
+                    <Flag size={20} />
+                    <span class='font-semibold text-xl'>Warsong</span>
+                  </div>
+                  <div class='text-center'>
+                    <div class='stat-value text-xxl'>{mockWarsongCount}</div>
+                    <div class='stat-desc text-sm'>~{mockWarsongAvgWait} wait</div>
                   </div>
                 </div>
-              </div>
-              <div class='divider divider-horizontal'></div>
-              <div class='flex flex-col items-center gap-1'>
-                <div class='flex items-center gap-1 text-info'>
-                  <Swords size={20} />
-                  <span class='font-semibold text-xl'>3v3</span>
-                </div>
-                <div class='text-center'>
-                  <div class='stat-value text-xxl'>{mockArena3v3Count}</div>
-                  <div class='stat-desc text-sm'>
-                    ~{mockArena3v3AvgWait} wait
+                <div class='divider divider-horizontal'></div>
+                <div class='flex flex-col items-center gap-1'>
+                  <div class='flex items-center gap-1 text-info'>
+                    <Swords size={20} />
+                    <span class='font-semibold text-xl'>3v3</span>
+                  </div>
+                  <div class='text-center'>
+                    <div class='stat-value text-xxl'>{mockArena3v3Count}</div>
+                    <div class='stat-desc text-sm'>~{mockArena3v3AvgWait} wait</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class='card bg-base-100 shadow'>
-          <div class='card-body p-6 space-y-6'>
-            <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
-              <Info size={24} />
-              About Chupato
-            </h2>
-            <p class='text-base leading-relaxed'>
-              Chupato is a <strong>3.3.5 WoW private server</strong>{' '}
-              crafted for twink arena enthusiasts. Join us for{' '}
-              <strong>
-                balanced PvP battles
-              </strong>, immersive <strong>custom events</strong>, and an
-              <strong>active community</strong> that keeps the action alive.
-            </p>
-            <p class='text-base leading-relaxed'>
-              Adventure awaits—dive in today! Download our launcher to connect
-              instantly, or hop on Discord to chat, report issues, and stay up
-              to speed on all server happenings.
-            </p>
-            <div class='flex gap-3'>
-              <a
-                href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
-                class='btn btn-primary flex items-center gap-2'
-                target='_blank'
-                rel='noopener'
-              >
-                <CloudDownload size={18} />
-                Download Launcher
-              </a>
-              <a
-                href='https://discord.gg/uHGR3rB'
-                class='btn btn-secondary flex items-center gap-2'
-                target='_blank'
-                rel='noopener'
-              >
-                <MessageCircle size={18} />
-                Join Discord
-              </a>
+          <div class='card bg-base-100 shadow'>
+            <div class='card-body p-6 space-y-6'>
+              <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
+                <Info size={24} /> About Chupato
+              </h2>
+              <p class='text-base leading-relaxed'>
+                Chupato is a <strong>3.3.5 WoW private server</strong> crafted for
+                twink arena enthusiasts. Join us for <strong>balanced PvP
+                battles</strong>, immersive <strong>custom events</strong>, and an
+                <strong>active community</strong> that keeps the action alive.
+              </p>
+              <p class='text-base leading-relaxed'>
+                Adventure awaits—dive in today! Download our launcher to connect
+                instantly, or hop on Discord to chat, report issues, and stay up
+                to speed on all server happenings.
+              </p>
+              <div class='flex gap-3'>
+                <a class='btn btn-primary flex items-center gap-2' href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe' target='_blank' rel='noopener'>
+                  <CloudDownload size={18} /> Download Launcher
+                </a>
+                <a class='btn btn-secondary flex items-center gap-2' href='https://discord.gg/uHGR3rB' target='_blank' rel='noopener'>
+                  <MessageCircle size={18} /> Join Discord
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class='card bg-base-100 shadow'>
-          <div class='card-body p-6 space-y-6'>
-            <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
-              <Home size={24} />
-              Features
-            </h2>
-            <ul class='list-disc list-inside space-y-4 text-base leading-relaxed'>
-              <li>
-                <strong>Pre-patch 3.2</strong> (before the big twink nerf):
-                <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
-                  <li>High level legs & head enchants available</li>
-                  <li>No speed forms (cheetah, ghost wolf, travel)</li>
-                </ul>
-              </li>
-              <li>Improved talent trees for fresh class balance</li>
-              <li>No custom spells; AGM remains undispellable</li>
-              <li>
-                <strong>8v8 cross-faction Warsong</strong> with arena rules
-                <span class='italic'>(no consumables except Warsong buff)</span>
-              </li>
-              <li>
-                <strong>Fast progression</strong>:
-                <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
-                  <li>Level 18 → 19</li>
-                  <li>BoE crafted items for useful professions</li>
-                  <li>Plans via rare drops & PvP rewards</li>
-                  <li>Max-level gathering from day one</li>
-                  <li>Classic Booty Bay quest items</li>
-                  <li>LFG dungeons for BoP gear</li>
-                  <li>Weekly heirloom quests at 19</li>
-                  <li>Daily Fishing Tournament rewards</li>
-                  <li>Direct AGM trinket from the chest</li>
-                </ul>
-              </li>
-              <li class='italic'>…and more cosmetic touches to explore!</li>
-            </ul>
+          <div class='card bg-base-100 shadow'>
+            <div class='card-body p-6 space-y-6'>
+              <h2 class='card-title text-lg font-semibold flex items-center gap-3'>
+                <Home size={24} /> Features
+              </h2>
+              <ul class='list-disc list-inside space-y-4 text-base leading-relaxed'>
+                <li>
+                  <strong>Pre-patch 3.2</strong> (before the big twink nerf):
+                  <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
+                    <li>High level legs & head enchants available</li>
+                    <li>No speed forms (cheetah, ghost wolf, travel)</li>
+                  </ul>
+                </li>
+                <li>Improved talent trees for fresh class balance</li>
+                <li>No custom spells; AGM remains undispellable</li>
+                <li>
+                  <strong>8v8 cross-faction Warsong</strong> with arena rules
+                  <span class='italic'>(no consumables except Warsong buff)</span>
+                </li>
+                <li>
+                  <strong>Fast progression</strong>:
+                  <ul class='list-disc list-inside ml-6 space-y-2 text-sm'>
+                    <li>Level 18 → 19</li>
+                    <li>BoE crafted items for useful professions</li>
+                    <li>Plans via rare drops & PvP rewards</li>
+                    <li>Max-level gathering from day one</li>
+                    <li>Classic Booty Bay quest items</li>
+                    <li>LFG dungeons for BoP gear</li>
+                    <li>Weekly heirloom quests at 19</li>
+                    <li>Daily Fishing Tournament rewards</li>
+                    <li>Direct AGM trinket from the chest</li>
+                  </ul>
+                </li>
+                <li class='italic'>…and more cosmetic touches to explore!</li>
+              </ul>
+            </div>
           </div>
-        </div>
+        </aside>
+        <main class='flex-1'>
+          {/* Main content area */}
+        </main>
       </div>
     </div>
   )
