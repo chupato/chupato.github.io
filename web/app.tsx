@@ -1,19 +1,19 @@
 import { Fragment, h, render } from 'preact'
 import {
   CheckCircle,
+  CloudDownload,
   Flag,
   Globe,
   Home,
   Hourglass,
+  Info,
   MapPin,
+  MessageCircle,
   RefreshCcw,
   Server,
   Swords,
   Users,
   XCircle,
-  CloudDownload,
-  MessageCircle,
-  Info,
 } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
@@ -220,7 +220,7 @@ function App() {
                     <span class='stat-value font-semibold'>{fmt(sinceMs)}</span>
                   </div>
                 </div>
-                <div class="divider divider-horizontal"></div>
+                <div class='divider divider-horizontal'></div>
                 <div class='flex items-center justify-center flex-col'>
                   <span class='text-lg font-semibold'>Active Players</span>
                   <span class='text-6xl font-bold'>{mockPlayers.length}</span>
@@ -291,7 +291,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div class="divider divider-horizontal"></div>
+              <div class='divider divider-horizontal'></div>
               <div class='flex flex-col items-center gap-1'>
                 <div class='flex items-center gap-1 text-info'>
                   <Swords size={20} />
@@ -315,15 +315,17 @@ function App() {
               About Chupato
             </h2>
             <p class='text-base leading-relaxed'>
-              Chupato is a <strong>3.3.5 WoW private server</strong> crafted
-              for twink arena enthusiasts. Join us for <strong>balanced PvP
-              battles</strong>, immersive <strong>custom events</strong>, and an
+              Chupato is a <strong>3.3.5 WoW private server</strong>{' '}
+              crafted for twink arena enthusiasts. Join us for{' '}
+              <strong>
+                balanced PvP battles
+              </strong>, immersive <strong>custom events</strong>, and an
               <strong>active community</strong> that keeps the action alive.
             </p>
             <p class='text-base leading-relaxed'>
-              Adventure awaits—dive in today! Download our launcher to
-              connect instantly, or hop on Discord to chat, report issues,
-              and stay up to speed on all server happenings.
+              Adventure awaits—dive in today! Download our launcher to connect
+              instantly, or hop on Discord to chat, report issues, and stay up
+              to speed on all server happenings.
             </p>
             <div class='flex gap-3'>
               <a
@@ -386,7 +388,6 @@ function App() {
             </ul>
           </div>
         </div>
-
       </div>
     </div>
   )
