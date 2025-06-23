@@ -46,43 +46,44 @@ function App() {
         <Home size={24}/> CHUPATO Server Activity
       </h1>
 
-      <div class="grid gap-4 md:grid-cols-3">
-        <div class="card card-compact bg-base-100 shadow">
-          <div class="card-body p-2 space-y-1">
-            <h2 class="card-title">Server Status</h2>
-            <div class="stats stats-vertical shadow">
-              <div class="stat">
-                <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
-                <div class="stat-value">{fmt(sinceMs)}</div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-4">
+          <div class="card card-compact bg-base-100 shadow">
+            <div class="card-body p-2 space-y-1">
+              <h2 class="card-title">Server Status</h2>
+              <div class="stats stats-vertical shadow">
+                <div class="stat">
+                  <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
+                  <div class="stat-value">{fmt(sinceMs)}</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="card card-compact bg-base-100 shadow">
-          <div class="card-body p-2 space-y-1">
-            <h2 class="card-title">Recent Active Players</h2>
-            <ul class="divide-y divide-base-200">
-              {mockPlayers.map(p => (
-                <li key={p.id} class="flex justify-between items-center py-1">
-                  <div class="flex items-center gap-1">
-                    <span
-                      role="img"
-                      aria-label={p.cls}
-                      class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
-                      style={{
-                        outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
-                        outlineOffset: '2px',
-                      }}
-                    />
-                    <span class="font-medium">{p.name}</span>
-                  </div>
-                  <span class="text-xs opacity-70">{p.lastActive}</span>
-                </li>
-              ))}
-            </ul>
+          <div class="card card-compact bg-base-100 shadow">
+            <div class="card-body p-2 space-y-1">
+              <h2 class="card-title">Recent Active Players</h2>
+              <ul class="divide-y divide-base-200">
+                {mockPlayers.map(p => (
+                  <li key={p.id} class="flex justify-between items-center py-1">
+                    <div class="flex items-center gap-1">
+                      <span
+                        role="img"
+                        aria-label={p.cls}
+                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
+                        style={{
+                          outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
+                          outlineOffset: '2px',
+                        }}
+                      />
+                      <span class="font-medium">{p.name}</span>
+                    </div>
+                    <span class="text-xs opacity-70">{p.lastActive}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-
         <div class="card card-compact bg-base-100 shadow">
           <div class="card-body p-2 space-y-1">
             <h2 class="card-title">Queue Status</h2>
