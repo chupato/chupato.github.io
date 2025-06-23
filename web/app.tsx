@@ -149,8 +149,11 @@ function App() {
                       <span
                         role="img"
                         aria-label={p.cls}
-                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6 rounded-full border-2`}
-                        style={{ borderColor: wowClasses[p.cls.toUpperCase()].color }}
+                        class={`${styles.classButton} ${styles[p.cls.toUpperCase()]} w-6 h-6`}
+                        style={{
+                          outline: `2px solid ${wowClasses[p.cls.toUpperCase()].color}`,
+                          outlineOffset: '2px',
+                        }}
                       />
                     </td>
                     <td class="py-1 px-2 font-medium">{p.name}</td>
