@@ -45,18 +45,20 @@ function App() {
   return (
     <div class="p-4 space-y-6 bg-base-200 min-h-screen">
       <div
-        class="relative h-40 bg-cover bg-center rounded-lg overflow-hidden"
+        class="relative h-48 bg-cover bg-center rounded-lg overflow-hidden"
         style={{ backgroundImage: `url(${bgUrl})` }}
       >
+        <h1
+          class="absolute inset-x-0 top-4 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2"
+        >
+          <Home size={24}/> CHUPATO Server Activity
+        </h1>
         <img
           src={logoUrl}
           alt="CHUPATO Logo"
-          class="h-24 mx-auto absolute inset-x-0 bottom-2"
+          class="h-32 mx-auto absolute inset-x-0 bottom-2"
         />
       </div>
-      <h1 class="text-2xl font-bold flex items-center gap-2">
-        <Home size={24}/> CHUPATO Server Activity
-      </h1>
 
       <div class="grid gap-4 md:grid-cols-2 items-start">
         <div class="space-y-4">
