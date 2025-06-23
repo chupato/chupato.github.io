@@ -1,5 +1,5 @@
 import { Fragment, h, render } from 'preact'
-import { Home } from 'lucide-preact'
+import { Home, Server, Users, LayoutGrid } from 'lucide-preact'
 import logoUrl from '../launcher/logo.avif'
 import bgUrl from '../launcher/background.avif'
 
@@ -49,7 +49,7 @@ function App() {
         style={{ backgroundImage: `url(${bgUrl})` }}
       >
         <h1
-          class="absolute inset-x-0 top-4 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2"
+          class="absolute inset-x-0 top-4 text-center text-3xl font-bold text-warning flex items-center justify-center gap-2 drop-shadow-lg"
         >
           <Home size={24}/> CHUPATO Server Activity
         </h1>
@@ -64,7 +64,9 @@ function App() {
         <div class="space-y-4">
           <div class="card card-compact bg-base-100 shadow">
             <div class="card-body p-2 space-y-1">
-              <h2 class="card-title">Server Status</h2>
+              <h2 class="card-title flex items-center gap-2 drop-shadow">
+                <Server size={20}/> Server Status
+              </h2>
               <div class="stats stats-vertical shadow">
                 <div class="stat">
                   <div class="stat-title">{online ? 'Online since' : 'Offline since'}</div>
@@ -75,7 +77,9 @@ function App() {
           </div>
           <div class="card card-compact bg-base-100 shadow">
             <div class="card-body p-2 space-y-1">
-              <h2 class="card-title">Recent Active Players</h2>
+              <h2 class="card-title flex items-center gap-2 drop-shadow">
+                <Users size={20}/> Recent Active Players
+              </h2>
               <ul class="divide-y divide-base-200">
                 {mockPlayers.map(p => (
                   <li key={p.id} class="flex justify-between items-center py-1">
@@ -97,7 +101,9 @@ function App() {
         </div>
         <div class="card card-compact bg-base-100 shadow">
           <div class="card-body p-2 space-y-1">
-            <h2 class="card-title">Queue Status</h2>
+            <h2 class="card-title flex items-center gap-2 drop-shadow">
+              <LayoutGrid size={20}/> Queue Status
+            </h2>
             <div class="stats stats-vertical shadow">
               <div class="stat">
                 <div class="stat-title">Warsong Queue</div>
