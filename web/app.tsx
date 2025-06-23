@@ -1,5 +1,5 @@
 import { Fragment, h, render } from 'preact'
-import { Home, Server, Users, Hourglass, Flag, Swords, Map, MapPin, CheckCircle, RefreshCcw, XCircle } from 'lucide-preact'
+import { Home, Server, Users, Hourglass, Flag, Swords, Globe, MapPin, CheckCircle, RefreshCcw, XCircle } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
 import chupatoSoundUrl from './chupato-cute.ogg'
@@ -156,15 +156,15 @@ function App() {
                     <td class="py-1 px-2 font-medium">{p.name}</td>
                     <td class="py-1 px-2 text-xs opacity-70">{p.lastActive}</td>
                     <td class="py-1 px-2 text-xs uppercase flex items-center gap-1">
-                      {p.status === 'Warsong' ? (
-                        <Flag size={16} class="text-warning" />
-                      ) : p.status === 'Arena' ? (
-                        <Swords size={16} class="text-info" />
-                      ) : p.status === 'Gurubashi' ? (
-                        <MapPin size={16} class="text-error" />
-                      ) : (
-                        <Map size={16} class="text-neutral-content" />
-                      )}
+            {p.status === 'Warsong' ? (
+              <Flag size={16} class="text-warning" />
+            ) : p.status === 'Arena' ? (
+              <Swords size={16} class="text-info" />
+            ) : p.status === 'Gurubashi' ? (
+              <MapPin size={16} class="text-error" />
+            ) : (
+              <Globe size={16} class="text-success" />
+            )}
                       {p.status}
                     </td>
                   </tr>
