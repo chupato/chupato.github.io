@@ -13,6 +13,7 @@ import {
   XCircle,
   CloudDownload,
   MessageCircle,
+  Info,
 } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
@@ -310,6 +311,43 @@ function App() {
         <div class='card card-compact bg-base-100 shadow'>
           <div class='card-body p-4 space-y-4'>
             <h2 class='card-title flex items-center gap-2'>
+              <Info size={20} />
+              About Chupato
+            </h2>
+            <p class='text-sm'>
+              Chupato is a 3.3.5 WoW private server tailored for twink
+              arena enthusiasts. Experience balanced PvP action, custom
+              events, and active community. Download our launcher to
+              connect instantly, or join our Discord to chat with players,
+              report issues, and stay informed about upcoming events.
+              Adventure awaits—dive in today!
+            </p>
+            <div class='flex gap-2'>
+              <a
+                href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
+                class='btn btn-primary flex items-center gap-1'
+                target='_blank'
+                rel='noopener'
+              >
+                <CloudDownload size={16} />
+                Download Launcher
+              </a>
+              <a
+                href='https://discord.gg/uHGR3rB'
+                class='btn btn-secondary flex items-center gap-1'
+                target='_blank'
+                rel='noopener'
+              >
+                <MessageCircle size={16} />
+                Join Discord
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class='card card-compact bg-base-100 shadow'>
+          <div class='card-body p-4 space-y-4'>
+            <h2 class='card-title flex items-center gap-2'>
               <Home size={20} />
               Features
             </h2>
@@ -344,26 +382,6 @@ function App() {
               <li class='italic'>...and a lot more cosmetic upgrades to discover!</li>
             </ul>
             <div class='divider' />
-            <div class='flex gap-2'>
-              <a
-                href='https://github.com/chupato/chupato.github.io/releases/download/2025-06-02.1/chupato.exe'
-                class='btn btn-primary flex items-center gap-1'
-                target='_blank'
-                rel='noopener'
-              >
-                <CloudDownload size={16} />
-                Download Launcher
-              </a>
-              <a
-                href='https://discord.gg/uHGR3rB'
-                class='btn btn-secondary flex items-center gap-1'
-                target='_blank'
-                rel='noopener'
-              >
-                <MessageCircle size={16} />
-                Join Discord
-              </a>
-            </div>
           </div>
         </div>
 
