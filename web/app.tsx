@@ -131,6 +131,40 @@ const mockServerState: 'online' | 'pending' | 'offline' = 'online'
 // positive = online since that timestamp; negative = offline since abs(timestamp)
 const mockServerSince = Date.now() - 5 * 60 * 1000
 
+type Player = typeof mockPlayers[number]
+
+function PlayerRow({ player }: { player: Player }) {
+  return (
+    <tr class='border-b border-base-200'>
+      <td class='py-1 px-2'>
+        <span
+          role='img'
+          aria-label={player.cls}
+          class={`${styles.classButton} ${
+            styles[player.cls.toUpperCase()]
+          } inline-block w-6 h-6 rounded-full`}
+          style={{
+            outline: `2px solid ${wowClasses[player.cls.toUpperCase()].color}`,
+            outlineOffset: '2px',
+          }}
+        />
+      </td>
+      <td class='py-1 px-2 font-medium'>{player.name}</td>
+      <td class='py-1 px-2 text-xs opacity-70'>{player.lastActive}</td>
+      <td class='py-1 px-2 text-xs uppercase flex items-center gap-1'>
+        {player.status === 'Warsong'
+          ? <Flag size={16} class='text-warning' />
+          : player.status === 'Arena'
+          ? <Swords size={16} class='text-info' />
+          : player.status === 'Gurubashi'
+          ? <MapPin size={16} class='text-error' />
+          : <Globe size={16} class='text-success' />}
+        {player.status}
+      </td>
+    </tr>
+  )
+}
+
 function App() {
   // compute server status
   const online = mockServerSince > 0
@@ -148,7 +182,7 @@ function App() {
     return `${h}h ${mm}m ${ss}s`
   }
   return (
-    <div class='p-4 pt-20 space-y-6 bg-base-200 min-h-screen'>
+    <div class='p-4 pt-20 pb-20 space-y-6 bg-base-200 min-h-screen'>
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <defs>
           <filter
@@ -176,7 +210,7 @@ function App() {
         </defs>
       </svg>
       <div
-        class='relative z-0 h-90 bg-cover bg-center rounded-lg overflow-visible py-40 mx-auto ml-20 mr-20'
+        class='relative z-0 h-50 lg:h-90 bg-cover bg-center rounded-lg overflow-visible py-40 mx-auto lg:ml-20 lg:mr-20'
         style={{ backgroundImage: `url(${bgUrl})` }}
       >
         <div class='absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-base-200 to-transparent pointer-events-none' />
@@ -184,7 +218,7 @@ function App() {
           src={logoUrl}
           alt='CHUPATO Logo'
           onClick={() => play()}
-          class='h-70 mx-auto absolute top-0 inset-x-0 -translate-y-1/3 cursor-pointer hover:wiggle'
+          class='absolute h-70 min-w-93 top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 cursor-pointer hover:wiggle'
         />
         <p class='text-center text-sm text-success drop-shadow-sm filter-outline-lg'>
           Challenge Heroes Ultimate Private Arena Twink Online
@@ -194,7 +228,7 @@ function App() {
         </h1>
       </div>
 
-      <div class='relative z-10 -mt-32 flex flex-col lg:flex-row gap-6'>
+      <div class='relative z-10 -mt-2 lg:-mt-32 flex flex-col lg:flex-row gap-6'>
         <aside class='lg:w-80 flex-shrink-0 space-y-4'>
           <Card>
             <Card.Title>
@@ -235,39 +269,7 @@ function App() {
             </Card.Title>
             <table class='table-auto w-full border-collapse'>
               <tbody>
-                {mockPlayers.map((p) => (
-                  <tr key={p.id} class='border-b border-base-200'>
-                    <td class='py-1 px-2'>
-                      <span
-                        role='img'
-                        aria-label={p.cls}
-                        class={`${styles.classButton} ${
-                          styles[p.cls.toUpperCase()]
-                        } inline-block w-6 h-6 rounded-full`}
-                        style={{
-                          outline: `2px solid ${
-                            wowClasses[p.cls.toUpperCase()].color
-                          }`,
-                          outlineOffset: '2px',
-                        }}
-                      />
-                    </td>
-                    <td class='py-1 px-2 font-medium'>{p.name}</td>
-                    <td class='py-1 px-2 text-xs opacity-70'>
-                      {p.lastActive}
-                    </td>
-                    <td class='py-1 px-2 text-xs uppercase flex items-center gap-1'>
-                      {p.status === 'Warsong'
-                        ? <Flag size={16} class='text-warning' />
-                        : p.status === 'Arena'
-                        ? <Swords size={16} class='text-info' />
-                        : p.status === 'Gurubashi'
-                        ? <MapPin size={16} class='text-error' />
-                        : <Globe size={16} class='text-success' />}
-                      {p.status}
-                    </td>
-                  </tr>
-                ))}
+                {mockPlayers.map((p) => <PlayerRow player={p} key={p.id} />)}
               </tbody>
             </table>
           </Card>
