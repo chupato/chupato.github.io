@@ -271,7 +271,7 @@ function App() {
             </table>
           </Card>
         </aside>
-        <main class='relative flex-1 space-y-8 py-12'>
+        <main class='relative flex-1 space-y-8 py-4'>
           <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
             <h2 class='flex items-center gap-2'>
               <Info size={28} /> About Chupato
