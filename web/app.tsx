@@ -176,24 +176,25 @@ function App() {
         </defs>
       </svg>
       <div
-        class='relative h-48 bg-cover bg-center rounded-lg overflow-visible'
+        class='relative z-0 h-90 bg-cover bg-center rounded-lg overflow-visible py-40 mx-auto ml-20 mr-20'
         style={{ backgroundImage: `url(${bgUrl})` }}
       >
+        <div class='absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-base-200 to-transparent pointer-events-none' />
         <img
           src={logoUrl}
           alt='CHUPATO Logo'
           onClick={() => play()}
-          class='h-40 mx-auto absolute inset-x-0 -translate-y-1/3 cursor-pointer hover:wiggle'
+          class='h-70 mx-auto absolute top-0 inset-x-0 -translate-y-1/3 cursor-pointer hover:wiggle'
         />
-        <h1 class='absolute inset-x-0 top-28 text-center text-3xl font-bold text-warning filter-outline-lg flex items-center justify-center gap-2'>
-          The Ultimate WoW 19 Twink Experience
-        </h1>
-        <p class='absolute inset-x-0 top-36 text-center text-sm text-success drop-shadow-sm filter-outline-lg'>
+        <p class='text-center text-sm text-success drop-shadow-sm filter-outline-lg'>
           Challenge Heroes Ultimate Private Arena Twink Online
         </p>
+        <h1 class='text-center text-3xl font-bold text-warning filter-outline-lg flex items-center justify-center gap-2'>
+          The Ultimate WoW 19 Twink Experience
+        </h1>
       </div>
 
-      <div class='flex flex-col lg:flex-row gap-6'>
+      <div class='relative z-10 -mt-32 flex flex-col lg:flex-row gap-6'>
         <aside class='lg:w-80 flex-shrink-0 space-y-4'>
           <Card>
             <Card.Title>
@@ -271,7 +272,7 @@ function App() {
             </table>
           </Card>
         </aside>
-        <main class='relative flex-1 space-y-8 py-4'>
+        <main class='relative flex-1 space-y-8 py-10'>
           <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
             <h2 class='flex items-center gap-2'>
               <Info size={28} /> About Chupato
