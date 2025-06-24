@@ -341,7 +341,7 @@ function App() {
             </a>
             <a
               href='https://github.com/chupato/chupato.github.io/releases/latest/download/chupato.exe'
-              class='btn btn-primary w-full justify-center gap-2 font-bold'
+              class='hidden sm:flex btn btn-primary w-full justify-center gap-2 font-bold'
             >
               <CloudDownload size={16} /> Download Launcher
             </a>
