@@ -4,7 +4,7 @@ import {
   CloudDownload,
   Flag,
   Globe,
-  Home,
+  Settings,
   Hourglass,
   Info,
   MapPin,
@@ -14,6 +14,7 @@ import {
   Swords,
   Users,
   XCircle,
+  Link,
 } from 'lucide-preact'
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
@@ -193,9 +194,9 @@ function App() {
 
       <div class='flex flex-col lg:flex-row gap-6'>
         <aside class='lg:w-80 flex-shrink-0 space-y-4'>
-          <div class='card card-compact bg-base-100 shadow'>
+          <div class='card card-compact bg-base-100 shadow border-3 border-base-200/20'>
             <div class='card-body p-2 space-y-1'>
-              <h2 class='card-title justify-center flex items-center drop-shadow'>
+              <h2 class='card-title opacity-70 text-neutral-400 flex items-center drop-shadow'>
                 <Server size={20} /> Server Status
               </h2>
               <div class='flex items-center justify-evenly p-3'>
@@ -221,16 +222,16 @@ function App() {
                   </div>
                 </div>
                 <div class='divider divider-horizontal'></div>
-                <div class='flex items-center justify-center flex-col'>
-                  <span class='text-lg font-semibold'>Active Players</span>
+                <div class='flex items-center justify-center flex-col text-secondary'>
+                  <span class='font-semibold opacity-70'>Active Players</span>
                   <span class='text-6xl font-bold'>{mockPlayers.length}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class='card card-compact bg-base-100 shadow'>
+          <div class='card card-compact bg-base-100 shadow border-3 border-base-200/20'>
             <div class='card-body p-2 space-y-1'>
-              <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
+              <h2 class='card-title opacity-70 text-neutral-400 flex items-center gap-2 drop-shadow'>
                 <Users size={20} /> Recent Active Players
               </h2>
               <table class='table-auto w-full border-collapse'>
@@ -268,9 +269,84 @@ function App() {
               </table>
             </div>
           </div>
-          <div class='card card-compact bg-base-100 shadow'>
+        </aside>
+        <main class='relative flex-1 space-y-8 py-12'>
+          <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
+            <h2 class='flex items-center gap-2'>
+              <Info size={28} /> About Chupato
+            </h2>
+            <p>
+              Chupato is a <strong>3.3.5 WoW private server</strong> crafted for
+              twink arena enthusiasts. Join us for <strong>balanced PvP
+              battles</strong>, immersive <strong>custom events</strong>, and an
+              <strong>active community</strong> that keeps the action alive.
+            </p>
+            <p>
+              Adventure awaits—dive in today! Download our launcher to connect
+              instantly, or hop on Discord to chat, report issues, and stay up
+              to speed on all server happenings.
+            </p>
+          </section>
+          <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
+            <h2 class='flex items-center gap-2'>
+              <Settings size={28} /> Features
+            </h2>
+            <ul>
+              <li>
+                <strong>Pre-patch 3.2</strong> (before the big twink nerf):
+                <ul>
+                  <li>High level legs & head enchants available</li>
+                  <li>No speed forms (cheetah, ghost wolf, travel)</li>
+                </ul>
+              </li>
+              <li>Improved talent trees for fresh class balance</li>
+              <li>No custom spells; AGM remains undispellable</li>
+              <li>
+                <strong>8v8 cross-faction Warsong</strong> with arena rules
+                <span class='italic'>(no consumables except Warsong buff)</span>
+              </li>
+              <li>
+                <strong>Fast progression</strong>:
+                <ul>
+                  <li>Level 18 → 19</li>
+                  <li>BoE crafted items for useful professions</li>
+                  <li>Plans via rare drops & PvP rewards</li>
+                  <li>Max-level gathering from day one</li>
+                  <li>Classic Booty Bay quest items</li>
+                  <li>LFG dungeons for BoP gear</li>
+                  <li>Weekly heirloom quests at 19</li>
+                  <li>Daily Fishing Tournament rewards</li>
+                  <li>Direct AGM trinket from the chest</li>
+                </ul>
+              </li>
+              <li class='italic'>…and more cosmetic touches to explore!</li>
+            </ul>
+          </section>
+        </main>
+        <aside class='lg:w-80 flex-shrink-0 space-y-4'>
+          <div class='card card-compact bg-base-100 shadow border-3 border-base-200/20'>
+            <div class='card-body p-4 flex flex-col items-center gap-2'>
+              <h2 class='card-title opacity-70 text-neutral-400 flex items-center drop-shadow'>
+                <Link size={20} /> Links
+              </h2>
+              <a
+                href='https://discord.gg/uHGR3rB'
+                target='_blank'
+                class='btn btn-primary w-full gap-2'
+              >
+                <MessageCircle size={16} /> Join Discord
+              </a>
+              <a
+                href='https://github.com/chupato/chupato.github.io/releases/latest/download/chupato.exe'
+                class='btn btn-secondary w-full justify-center gap-2'
+              >
+                <CloudDownload size={16} /> Download Launcher
+              </a>
+            </div>
+          </div>
+          <div class='card card-compact bg-base-100 shadow border-3 border-base-200/20'>
             <div class='card-body p-2 space-y-1'>
-              <h2 class='card-title justify-center flex items-center gap-2 drop-shadow'>
+              <h2 class='card-title opacity-70 text-neutral-400 flex items-center gap-2 drop-shadow'>
                 <Hourglass size={20} /> Queue Status
               </h2>
               <div class='flex items-center justify-evenly p-2'>
@@ -299,59 +375,6 @@ function App() {
             </div>
           </div>
         </aside>
-        <main class='flex-1 space-y-8'>
-          <section class='max-w-prose'>
-            <h2 class='text-2xl font-semibold flex items-center gap-2 mb-4'>
-              <Info size={28} /> About Chupato
-            </h2>
-            <p class='text-lg leading-relaxed mb-4'>
-              Chupato is a <strong>3.3.5 WoW private server</strong> crafted for
-              twink arena enthusiasts. Join us for <strong>balanced PvP
-              battles</strong>, immersive <strong>custom events</strong>, and an
-              <strong>active community</strong> that keeps the action alive.
-            </p>
-            <p class='text-lg leading-relaxed'>
-              Adventure awaits—dive in today! Download our launcher to connect
-              instantly, or hop on Discord to chat, report issues, and stay up
-              to speed on all server happenings.
-            </p>
-          </section>
-          <section class='max-w-prose'>
-            <h2 class='text-2xl font-semibold flex items-center gap-2 mb-4'>
-              <Home size={28} /> Features
-            </h2>
-            <ul class='list-disc list-inside space-y-4 text-lg leading-relaxed'>
-              <li>
-                <strong>Pre-patch 3.2</strong> (before the big twink nerf):
-                <ul class='list-disc list-inside ml-6 space-y-2 text-base'>
-                  <li>High level legs & head enchants available</li>
-                  <li>No speed forms (cheetah, ghost wolf, travel)</li>
-                </ul>
-              </li>
-              <li>Improved talent trees for fresh class balance</li>
-              <li>No custom spells; AGM remains undispellable</li>
-              <li>
-                <strong>8v8 cross-faction Warsong</strong> with arena rules
-                <span class='italic'>(no consumables except Warsong buff)</span>
-              </li>
-              <li>
-                <strong>Fast progression</strong>:
-                <ul class='list-disc list-inside ml-6 space-y-2 text-base'>
-                  <li>Level 18 → 19</li>
-                  <li>BoE crafted items for useful professions</li>
-                  <li>Plans via rare drops & PvP rewards</li>
-                  <li>Max-level gathering from day one</li>
-                  <li>Classic Booty Bay quest items</li>
-                  <li>LFG dungeons for BoP gear</li>
-                  <li>Weekly heirloom quests at 19</li>
-                  <li>Daily Fishing Tournament rewards</li>
-                  <li>Direct AGM trinket from the chest</li>
-                </ul>
-              </li>
-              <li class='italic'>…and more cosmetic touches to explore!</li>
-            </ul>
-          </section>
-        </main>
       </div>
     </div>
   )
