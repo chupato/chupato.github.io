@@ -335,13 +335,13 @@ function App() {
             <a
               href='https://discord.gg/uHGR3rB'
               target='_blank'
-              class='btn btn-secondary w-full gap-2'
+              class='btn btn-outline opacity-80 hover:opacity-100 btn-secondary w-full gap-2'
             >
               <MessageCircle size={16} /> Join Discord
             </a>
             <a
               href='https://github.com/chupato/chupato.github.io/releases/latest/download/chupato.exe'
-              class='btn btn-primary w-full justify-center gap-2'
+              class='btn btn-primary w-full justify-center gap-2 font-bold'
             >
               <CloudDownload size={16} /> Download Launcher
             </a>
