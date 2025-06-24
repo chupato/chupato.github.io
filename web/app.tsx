@@ -284,7 +284,7 @@ function App() {
               crafted for twink arena enthusiasts. Join us for{' '}
               <strong>
                 balanced PvP battles
-              </strong>, immersive <strong>custom events</strong>, and an
+              </strong>, immersive <strong>custom events</strong>, and an{' '}
               <strong>active community</strong> that keeps the action alive.
             </p>
             <p>
@@ -299,33 +299,72 @@ function App() {
             </h2>
             <ul>
               <li>
-                <strong>Pre-patch 3.2</strong> (before the big twink nerf):
+                <strong>Pre-patch 3.2</strong> (before the big twink nerf)
                 <ul>
                   <li>High level legs & head enchants available</li>
                   <li>No speed forms (cheetah, ghost wolf, travel)</li>
                 </ul>
               </li>
-              <li>Improved talent trees for fresh class balance</li>
-              <li>No custom spells; AGM remains undispellable</li>
               <li>
-                <strong>8v8 cross-faction Warsong</strong> with arena rules
-                <span class='italic'>(no consumables except Warsong buff)</span>
+                <strong>Improved talent trees</strong> for fresh class balance
               </li>
               <li>
-                <strong>Fast progression</strong>:
+                <strong>Balances adjustements</strong>, AGM undispellable, Naaru
+                gift nerfed, etc...
+              </li>
+              <li>
+                Blizz like vibes, <strong>No new spells or custom gear</strong>
+              </li>
+              <li>
+                <strong>8v8 cross-faction Warsong</strong> with arena rules{' '}
+                <i>(no consumables except Warsong buff)</i>
+              </li>
+              <li>
+                <strong>Clear gearing system</strong>
                 <ul>
-                  <li>Level 18 → 19</li>
-                  <li>BoE crafted items for useful professions</li>
-                  <li>Plans via rare drops & PvP rewards</li>
-                  <li>Max-level gathering from day one</li>
-                  <li>Classic Booty Bay quest items</li>
-                  <li>LFG dungeons for BoP gear</li>
-                  <li>Weekly heirloom quests at 19</li>
-                  <li>Daily Fishing Tournament rewards</li>
-                  <li>Direct AGM trinket from the chest</li>
+                  <li>
+                    <b>[Quest Items]</b>{' '}
+                    obtainable through adjusted classic Booty Bay quests
+                  </li>
+                  <li>
+                    <b>[Bind on Equipped]</b>{' '}
+                    items are now crafted by professions
+                  </li>
+                  <li>
+                    <b>[Bind on Pickup]</b>{' '}
+                    items still drop on the usual bosses, easily accessibile
+                    with LFG
+                  </li>
+                  <li>
+                    <b>[Heirlooms]</b> available by completing{' '}
+                    <strong>weekly quests</strong> (level 19+)
+                  </li>
+                  <li>
+                    <b>[Fishing Hat & Boots]</b> doing the{' '}
+                    <strong>daily fishing tournament</strong>
+                  </li>
+                  <li>
+                    <b>[Arena Grand Master]</b>{' '}
+                    directly available in every gurubashi chest, no quest chain
+                  </li>
                 </ul>
               </li>
-              <li class='italic'>…and more cosmetic touches to explore!</li>
+              <li>
+                <strong>Fast progression</strong>
+                <ul>
+                  <li>Level 18 → 19 to grind</li>
+                  <li>Profession Plans via rare enemies drops & PvP rewards</li>
+                  <li>Max-level gathering from day one</li>
+                  <li>All Enchants and glyphs usable at level 19 available</li>
+                  <li>
+                    <strong>Legs enchants</strong>{' '}
+                    from Tailoring & Leatherworking
+                  </li>
+                </ul>
+              </li>
+              <li class='italic'>
+                …and much more cosmetic upgrades to explore!
+              </li>
             </ul>
           </section>
         </main>
@@ -359,7 +398,7 @@ function App() {
                   <span class='font-semibold text-xl'>Warsong</span>
                 </div>
                 <div class='text-center'>
-                  <div class='stat-value text-xxl'>{mockWarsongCount}</div>
+                  <div class='stat-value text-6xl'>{mockWarsongCount}</div>
                   <div class='stat-desc text-sm'>
                     ~{mockWarsongAvgWait} wait
                   </div>
@@ -372,7 +411,7 @@ function App() {
                   <span class='font-semibold text-xl'>3v3</span>
                 </div>
                 <div class='text-center'>
-                  <div class='stat-value text-xxl'>{mockArena3v3Count}</div>
+                  <div class='stat-value text-6xl'>{mockArena3v3Count}</div>
                   <div class='stat-desc text-sm'>
                     ~{mockArena3v3AvgWait} wait
                   </div>

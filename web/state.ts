@@ -60,12 +60,10 @@ type Queue = {
 
 type Queues = Map<Player['id'], Queue>
 
-type State = ServerStatus & {
-  warsongQueue: Queue[]
-  arenaQueue: Queue[]
-  players: Map<Player['id'], Player>
-  battlegrounds: Map<Battleground['id'], Battleground>
-}
+export const warsongQueue = new Signal<Queue[]>()
+export const arenaQueue = new Signal<Queue[]>()
+export const players = new Signal<Map<Player['id'], Player>>()
+export const battlegrounds = new Map<Battleground['id'], Battleground>()
 
 const listen = (type: string, handler: (data: any) => void) => {
   source.addEventListener(type, (event) => {
