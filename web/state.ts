@@ -97,7 +97,7 @@ listen('QUEUE_STATE', ({ type, queue }: {
   type: BattlegroundType
   queue: { id: Player['id']; at: number; source: number }[]
 }) => {
-  // 
+  //
 })
 
 listen('BATTLEGROUND_JOIN', ({ playerId, id, team, at }: {
