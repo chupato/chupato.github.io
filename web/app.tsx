@@ -69,7 +69,7 @@ const mockPlayers = [
     name: 'Carolina',
     cls: 'Druid',
     lastActive: '7m ago',
-    status: 'Arena',
+    status: 'Dungeon',
   },
   {
     id: '4',
@@ -159,6 +159,8 @@ function PlayerRow({ player }: { player: Player }) {
             ? <Swords size={16} class='text-info' />
             : player.status === 'Gurubashi'
             ? <MapPin size={16} class='text-error' />
+            : player.status === 'Dungeon'
+            ? <Users size={16} class='text-secondary' />
             : <Globe size={16} class='text-success' />}
           {player.status}
         </div>
@@ -319,7 +321,7 @@ function App() {
               <li>
                 <strong>Pre-patch 3.2</strong> (before the big twink nerf)
                 <ul>
-                  <li>High level legs & head enchants available</li>
+                  <li>Legs & Head enchants available</li>
                   <li>No speed forms (cheetah, ghost wolf, travel)</li>
                 </ul>
               </li>
