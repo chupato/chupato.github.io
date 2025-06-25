@@ -20,12 +20,31 @@ import {
 import logoUrl from './logo.avif'
 import bgUrl from './background.avif'
 import chupatoSoundUrl from './chupato-cute.ogg'
+import { STATE } from './state.ts'
 
 import styles from './class-button.module.css'
 import { wowClasses } from './wow.ts'
 import { Card } from './card.tsx'
 
+// reverse mapping from class ID to class name
+const classNameById = Object.fromEntries(
+  Object.entries(wowClasses).map(([name, cls]) => [cls.id, name]),
+) as Record<number, keyof typeof wowClasses>
+
 Object.assign(globalThis, { h, Fragment })
+
+// relative time formatter (uses STATE.now for live updates)
+const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' })
+function rtfFormat(diffMs: number): string {
+  const sec = Math.round(diffMs / 1000)
+  if (Math.abs(sec) < 60) return rtf.format(-sec, 'second')
+  const min = Math.round(sec / 60)
+  if (Math.abs(min) < 60) return rtf.format(-min, 'minute')
+  const hr = Math.round(min / 60)
+  if (Math.abs(hr) < 24) return rtf.format(-hr, 'hour')
+  const day = Math.round(hr / 24)
+  return rtf.format(-day, 'day')
+}
 
 const audioContext = new AudioContext()
 const audioBuffer = fetch(chupatoSoundUrl)
@@ -50,108 +69,22 @@ const play = async (...args) => {
   source.start(0, ...args)
 }
 
-const mockPlayers = [
-  {
-    id: '1',
-    name: 'Alice',
-    cls: 'Paladin',
-    lastActive: '2m ago',
-    status: 'World',
-  },
-  {
-    id: '2',
-    name: 'Bob',
-    cls: 'Warrior',
-    lastActive: '5m ago',
-    status: 'Warsong',
-  },
-  {
-    id: '3',
-    name: 'Carolina',
-    cls: 'Druid',
-    lastActive: '7m ago',
-    status: 'Dungeon',
-  },
-  {
-    id: '4',
-    name: 'Darius',
-    cls: 'Hunter',
-    lastActive: '10m ago',
-    status: 'Gurubashi',
-  },
-  {
-    id: '5',
-    name: 'Eliza',
-    cls: 'Mage',
-    lastActive: '12m ago',
-    status: 'Warsong',
-  },
-  {
-    id: '6',
-    name: 'Frodo',
-    cls: 'Warlock',
-    lastActive: '15m ago',
-    status: 'Arena',
-  },
-  {
-    id: '7',
-    name: 'Gandalf',
-    cls: 'Priest',
-    lastActive: '18m ago',
-    status: 'World',
-  },
-  {
-    id: '8',
-    name: 'Hermione',
-    cls: 'Mage',
-    lastActive: '20m ago',
-    status: 'Warsong',
-  },
-  {
-    id: '9',
-    name: 'Icarus',
-    cls: 'Rogue',
-    lastActive: '22m ago',
-    status: 'Arena',
-  },
-  {
-    id: '10',
-    name: 'Jaina',
-    cls: 'Mage',
-    lastActive: '25m ago',
-    status: 'World',
-  },
-]
-
-const mockWarsongCount = 11
-const mockWarsongAvgWait = '2m 15s'
-const mockArena3v3Count = 2
-const mockArena3v3AvgWait = '4m 30s'
-// current server connection status
-const mockServerState: 'online' | 'pending' | 'offline' = 'online'
-// positive = online since that timestamp; negative = offline since abs(timestamp)
-const mockServerSince = Date.now() - 5 * 60 * 1000
-
-type Player = typeof mockPlayers[number]
-
 const statusIcons = {
-  Warsong: { icon: Flag, color: 'text-warning' },
-  Arena: { icon: Swords, color: 'text-info' },
-  Gurubashi: { icon: MapPin, color: 'text-error' },
-  Dungeons: { icon: Map, color: 'text-primary' },
-  World: { icon: Globe, color: 'text-success' },
+  Gurubashi: [MapPin, 'text-error'],
+  Dungeons: [Users, 'text-primary'],
+  Warsong: [Flag, 'text-warning'],
+  Arena: [Swords, 'text-info'],
+  World: [Globe, 'text-success'],
 } as const
 
 const serverStatusIcons = {
-  online:  { icon: CheckCircle, color: 'text-success' },
-  pending: { icon: RefreshCcw,  color: 'text-warning' },
-  offline: { icon: XCircle,     color: 'text-error' },
+  online: [CheckCircle, 'text-success'],
+  pending: [RefreshCcw, 'text-warning'],
+  offline: [XCircle, 'text-error'],
 } as const
 
-function PlayerRow({ player }: { player: Player }) {
-  const def = statusIcons[player.status] ?? statusIcons.World
-  const Icon = def.icon
-  const color = def.color
+function PlayerRow({ player }: any) {
+  const [Icon, color] = statusIcons[player.status] || statusIcons.World
   return (
     <tr class='border-b border-base-200'>
       <td class='py-1 px-2'>
@@ -168,7 +101,9 @@ function PlayerRow({ player }: { player: Player }) {
         />
       </td>
       <td class='py-1 px-2 font-medium'>{player.name}</td>
-      <td class='py-1 px-2 text-xs opacity-70 text-right'>{player.lastActive}</td>
+      <td class='py-1 px-2 text-xs opacity-70 text-right'>
+        {player.lastActive}
+      </td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
           <Icon size={16} class={color} />
@@ -180,25 +115,22 @@ function PlayerRow({ player }: { player: Player }) {
 }
 
 function App() {
-  // compute server status
-  const online = mockServerSince > 0
-  const pending = mockServerState === 'pending'
-  const offline = mockServerState === 'offline'
-  const sinceMs = online
-    ? Date.now() - mockServerSince
-    : Date.now() + mockServerSince
-  const serverState = online ? 'online' : pending ? 'pending' : 'offline'
-  const serverDef = serverStatusIcons[serverState]
-  const ServerIcon = serverDef.icon
-  const serverColor = serverDef.color
-  const fmt = (ms: number) => {
-    const s = Math.floor(ms / 1000)
-    const m = Math.floor(s / 60)
-    const h = Math.floor(m / 60)
-    const ss = s % 60
-    const mm = m % 60
-    return `${h}h ${mm}m ${ss}s`
-  }
+  const { now, startAt, warsongQueue, arenaQueue, players } = STATE
+  const sinceMs = now - Math.abs(startAt)
+  const serverState = ((!startAt) && 'pending') ||
+    (startAt > 0 ? 'offline' : 'online')
+  // console.log({ sinceMs, now, startAt, serverState })
+  const [ServerIcon, serverColor] = serverStatusIcons[serverState]
+
+  const queueAvgWait = (queue: Map<number, { at: number }>) =>
+    queue.size
+      ? Math.floor(
+        queue.values().reduce((sum, { at }) => sum + (now.value - at), 0) /
+          queue.size,
+      )
+      : 0
+  const warsongAvgWait = queueAvgWait(warsongQueue)
+  const arenaAvgWait = queueAvgWait(arenaQueue)
   return (
     <div class='p-4 pt-20 pb-20 space-y-6 bg-base-200 min-h-screen'>
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
@@ -213,7 +145,7 @@ function App() {
             <feMorphology
               in='SourceAlpha'
               operator='dilate'
-              radius='20' 
+              radius='20'
               result='thicken'
             />
             <feFlood floodColor='black' result='outline' />
@@ -267,16 +199,20 @@ function App() {
               <div class='space-y-2'>
                 <div class='flex items-center gap-2'>
                   <ServerIcon size={20} class={serverColor} />
-                  <span class={`${serverColor} text-lg capitalize`}>{serverState}</span>
+                  <span class={`${serverColor} text-lg capitalize`}>
+                    {serverState}
+                  </span>
                 </div>
-                <div class='flex items-center gap-2'>
-                  <span class={`stat-value font-semibold ${serverColor}`}>{fmt(sinceMs)}</span>
+                <div
+                  class={`stat-value font-semibold text-center ${serverColor}`}
+                >
+                  {startAt === 0 ? '-' : rtfFormat(sinceMs)}
                 </div>
               </div>
-              <div class='divider divider-horizontal'></div>
+              <div class='divider divider-horizontal' />
               <div class='flex items-center justify-center flex-col text-secondary'>
                 <span class='font-semibold opacity-70'>Active Players</span>
-                <span class='text-6xl font-bold'>{mockPlayers.length}</span>
+                <span class='text-6xl font-bold'>{players.size}</span>
               </div>
             </div>
           </Card>
@@ -286,7 +222,22 @@ function App() {
             </Card.Title>
             <table class='table-auto w-full border-collapse'>
               <tbody>
-                {mockPlayers.map((p) => <PlayerRow player={p} key={p.id} />)}
+                {players.values().toArray()
+                  .sort((a, b) => b.since - a.since)
+                  .slice(0, 10)
+                  .map((p) => (
+                    <PlayerRow
+                      player={{
+                        id: p.id,
+                        name: p.name,
+                        since: p.since,
+                        cls: classNameById[p.class],
+                        lastActive: rtfFormat(now.value - p.since),
+                        status: 'World', // not yet available
+                      }}
+                      key={p.id}
+                    />
+                  ))}
               </tbody>
             </table>
           </Card>
@@ -421,22 +372,22 @@ function App() {
                   <span class='font-semibold text-xl'>Warsong</span>
                 </div>
                 <div class='text-center'>
-                  <div class='stat-value text-6xl'>{mockWarsongCount}</div>
+                  <div class='stat-value text-6xl'>{warsongQueue.size}</div>
                   <div class='stat-desc text-sm'>
-                    ~{mockWarsongAvgWait} wait
+                    {rtfFormat(-warsongAvgWait)}
                   </div>
                 </div>
               </div>
-              <div class='divider divider-horizontal'></div>
+              <div class='divider divider-horizontal' />
               <div class='flex flex-col items-center text-info'>
                 <div class='flex items-center gap-1'>
                   <Swords size={20} />
                   <span class='font-semibold text-xl'>3v3</span>
                 </div>
                 <div class='text-center'>
-                  <div class='stat-value text-6xl'>{mockArena3v3Count}</div>
+                  <div class='stat-value text-6xl'>{arenaQueue.size}</div>
                   <div class='stat-desc text-sm'>
-                    ~{mockArena3v3AvgWait} wait
+                    {rtfFormat(-arenaAvgWait)}
                   </div>
                 </div>
               </div>

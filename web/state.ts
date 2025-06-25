@@ -12,7 +12,6 @@ const setDisconnected = () => {
   sourceDisconnectedAt.peek() || (sourceDisconnectedAt.value = Date.now())
 }
 
-
 let timeout = setTimeout(setDisconnected, 20_000)
 const source = new EventSource(SOURCE_URL)
 source.addEventListener('ack', () => {
@@ -44,7 +43,6 @@ type Battleground = {
   participants: Map<Player['id'], { at: number; team: number }>
 }
 
-
 let warsongQueue = new Map<Player['id'], Queue>()
 const warsongQueueVersion = new Signal(0)
 let arenaQueue = new Map<Player['id'], Queue>()
@@ -53,6 +51,9 @@ let players = new Map<Player['id'], Player & { since: number }>()
 const playersVersion = new Signal(0)
 let battlegrounds = new Map<Battleground['id'], Battleground>()
 const battlegroundsVersion = new Signal(0)
+
+const now = new Signal(Date.now())
+setInterval(() => now.value = Date.now(), 990) // update at least once per second
 
 export const STATE = {
   get version() {
@@ -65,7 +66,7 @@ export const STATE = {
     battlegroundsVersion.value
     return battlegrounds
   },
-  get player() {
+  get players() {
     playersVersion.value
     return players
   },
@@ -76,6 +77,9 @@ export const STATE = {
   get arenaQueue() {
     arenaQueueVersion.value
     return arenaQueue
+  },
+  get now() {
+    return now.value
   },
 }
 
