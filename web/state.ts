@@ -15,13 +15,6 @@ const setDisconnected = () => {
 export const version = new Signal('')
 export const startAt = new Signal(0)
 
-source.addEventListener('init', (event) => {
-  const init = JSON.parse(event.data) as InitData
-  console.log('server state initialized', init)
-  version.value = init.version
-  Object.assign(STATE, init)
-})
-
 let timeout = setTimeout(setDisconnected, 20_000)
 source.addEventListener('ack', () => {
   sourceDisconnectedAt.peek() && (sourceDisconnectedAt.value = 0)
@@ -35,8 +28,6 @@ source.addEventListener('open', () => {
 })
 
 setDisconnected()
-
-// type GameEvent<Type, Data> =
 
 type Player = {
   id: number
@@ -70,6 +61,25 @@ const listen = (type: string, handler: (data: any) => void) => {
     handler(JSON.parse(event.data))
   })
 }
+
+listen('INIT', (data: {
+  version: string
+  startAt: number
+  players: Record<number, Player>
+  arenaQueue: Record<number, Queue>
+  warsongQueue: Record<number, Queue>
+  battlegrounds: Record<number, Battleground>
+}) => {
+
+  console.log('server state initialized', init)
+  version.value = init.version
+  startAt.value = init.startAt
+  const toIntEntry = ([k, v]) => [Number(k), v]
+  players.value = new Map(Object.entries(init.players).map(toIntEntry))
+  arenaQueue.value = new Map(Object.entries(init.arenaQueue).map(toIntEntry))
+  warsongQueue.value = new Map(Object.entries(init.warsongQueue).map(toIntEntry))
+  battlegrounds.value = new Map(Object.entries(init.battlegrounds).map(toIntEntry))
+})
 
 listen('SHUTDOWN', ({ at }: { at: number }) => {
   //
