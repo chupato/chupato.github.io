@@ -67,3 +67,4 @@ deno task web:preview │ deno task vite preview │ Serves the production build
 - no semi-colons
 - favor single quote
 
+Never use `Array.from(x)` either spread `[...x]` or if its an iterator use `.toArray()`
