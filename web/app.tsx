@@ -7,6 +7,7 @@ import {
   Hourglass,
   Info,
   Link,
+  Map,
   MapPin,
   MessageCircle,
   RefreshCcw,
@@ -133,7 +134,24 @@ const mockServerSince = Date.now() - 5 * 60 * 1000
 
 type Player = typeof mockPlayers[number]
 
+const statusIcons = {
+  Warsong: { icon: Flag, color: 'text-warning' },
+  Arena: { icon: Swords, color: 'text-info' },
+  Gurubashi: { icon: MapPin, color: 'text-error' },
+  Dungeons: { icon: Map, color: 'text-primary' },
+  World: { icon: Globe, color: 'text-success' },
+} as const
+
+const serverStatusIcons = {
+  online:  { icon: CheckCircle, color: 'text-success' },
+  pending: { icon: RefreshCcw,  color: 'text-warning' },
+  offline: { icon: XCircle,     color: 'text-error' },
+} as const
+
 function PlayerRow({ player }: { player: Player }) {
+  const def = statusIcons[player.status] ?? statusIcons.World
+  const Icon = def.icon
+  const color = def.color
   return (
     <tr class='border-b border-base-200'>
       <td class='py-1 px-2'>
@@ -153,16 +171,8 @@ function PlayerRow({ player }: { player: Player }) {
       <td class='py-1 px-2 text-xs opacity-70 text-right'>{player.lastActive}</td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
-          {player.status === 'Warsong'
-            ? <Flag size={16} class='text-warning' />
-            : player.status === 'Arena'
-            ? <Swords size={16} class='text-info' />
-            : player.status === 'Gurubashi'
-            ? <MapPin size={16} class='text-error' />
-            : player.status === 'Dungeon'
-            ? <Users size={16} class='text-secondary' />
-            : <Globe size={16} class='text-success' />}
-          {player.status}
+          <Icon size={16} class={color} />
+          <span class={color}>{player.status}</span>
         </div>
       </td>
     </tr>
@@ -177,6 +187,10 @@ function App() {
   const sinceMs = online
     ? Date.now() - mockServerSince
     : Date.now() + mockServerSince
+  const serverState = online ? 'online' : pending ? 'pending' : 'offline'
+  const serverDef = serverStatusIcons[serverState]
+  const ServerIcon = serverDef.icon
+  const serverColor = serverDef.color
   const fmt = (ms: number) => {
     const s = Math.floor(ms / 1000)
     const m = Math.floor(s / 60)
@@ -252,23 +266,11 @@ function App() {
             <div class='flex items-center justify-evenly p-3'>
               <div class='space-y-2'>
                 <div class='flex items-center gap-2'>
-                  {online
-                    ? <CheckCircle size={20} class='text-success' />
-                    : pending
-                    ? <RefreshCcw size={20} class='text-warning' />
-                    : <XCircle size={20} class='text-error' />}
-                  <span
-                    className={online
-                      ? 'text-success text-lg'
-                      : pending
-                      ? 'text-warning text-lg'
-                      : 'text-error text-lg'}
-                  >
-                    {online ? 'Online' : pending ? 'Pending' : 'Offline'}
-                  </span>
+                  <ServerIcon size={20} class={serverColor} />
+                  <span class={`${serverColor} text-lg capitalize`}>{serverState}</span>
                 </div>
                 <div class='flex items-center gap-2'>
-                  <span class='stat-value font-semibold'>{fmt(sinceMs)}</span>
+                  <span class={`stat-value font-semibold ${serverColor}`}>{fmt(sinceMs)}</span>
                 </div>
               </div>
               <div class='divider divider-horizontal'></div>
