@@ -1,21 +1,20 @@
-import { effect, Signal } from '@preact/signals'
-import { url } from './router.tsx'
+import { Signal } from '@preact/signals'
+// import { url } from './router.tsx'
 import type { WoWClasses, WoWRaces } from './wow.ts'
 
 const SOURCE_URL = 'https://wow.devazuka.com'
 
 export const sourceDisconnectedAt = new Signal(Date.now())
-
-const source = new EventSource(sourceUrl)
+const version = new Signal('')
+const startAt = new Signal(0)
 const setDisconnected = () => {
   startAt.value = 0
   sourceDisconnectedAt.peek() || (sourceDisconnectedAt.value = Date.now())
 }
 
-export const version = new Signal('')
-export const startAt = new Signal(0)
 
 let timeout = setTimeout(setDisconnected, 20_000)
+const source = new EventSource(SOURCE_URL)
 source.addEventListener('ack', () => {
   sourceDisconnectedAt.peek() && (sourceDisconnectedAt.value = 0)
   clearTimeout(timeout)
@@ -37,6 +36,7 @@ type Player = {
   race: WoWRaces[keyof WoWRaces]
 }
 
+type Queue = { at: number; source: Player['id'] }
 type BattlegroundType = 'arena' | 'warsong'
 type Battleground = {
   id: number
@@ -44,70 +44,108 @@ type Battleground = {
   participants: Map<Player['id'], { at: number; team: number }>
 }
 
-type Queue = {
-  at: number
-  source: Player['id'] // leader of the group
+
+let warsongQueue = new Map<Player['id'], Queue>()
+const warsongQueueVersion = new Signal(0)
+let arenaQueue = new Map<Player['id'], Queue>()
+const arenaQueueVersion = new Signal(0)
+let players = new Map<Player['id'], Player & { since: number }>()
+const playersVersion = new Signal(0)
+let battlegrounds = new Map<Battleground['id'], Battleground>()
+const battlegroundsVersion = new Signal(0)
+
+export const STATE = {
+  get version() {
+    return version.value
+  },
+  get startAt() {
+    return startAt.value
+  },
+  get battlegrounds() {
+    battlegroundsVersion.value
+    return battlegrounds
+  },
+  get player() {
+    playersVersion.value
+    return players
+  },
+  get warsongQueue() {
+    warsongQueueVersion.value
+    return warsongQueue
+  },
+  get arenaQueue() {
+    arenaQueueVersion.value
+    return arenaQueue
+  },
 }
 
-type Queues = Map<Player['id'], Queue>
-
-export const warsongQueue = new Signal<Queue[]>()
-export const arenaQueue = new Signal<Queue[]>()
-export const players = new Signal<Map<Player['id'], Player>>()
-export const battlegrounds = new Map<Battleground['id'], Battleground>()
-
-const listen = (type: string, handler: (data: any) => void) => {
+const listen = <T>(type: string, handler: (data: T) => void) => {
   source.addEventListener(type, (event) => {
     handler(JSON.parse(event.data))
   })
 }
 
-listen('INIT', (data: {
+const toIntEntry = <T>([k, v]: [string, T]) => [Number(k), v] as [number, T]
+listen('INIT', (init: {
   version: string
   startAt: number
-  players: Record<number, Player>
-  arenaQueue: Record<number, Queue>
-  warsongQueue: Record<number, Queue>
-  battlegrounds: Record<number, Battleground>
+  players: { [k: string]: Player & { since: number } }
+  arenaQueue: { [k: string]: Queue }
+  warsongQueue: { [k: string]: Queue }
+  battlegrounds: { [k: string]: Battleground }
 }) => {
-
   console.log('server state initialized', init)
   version.value = init.version
   startAt.value = init.startAt
-  const toIntEntry = ([k, v]) => [Number(k), v]
-  players.value = new Map(Object.entries(init.players).map(toIntEntry))
-  arenaQueue.value = new Map(Object.entries(init.arenaQueue).map(toIntEntry))
-  warsongQueue.value = new Map(Object.entries(init.warsongQueue).map(toIntEntry))
-  battlegrounds.value = new Map(Object.entries(init.battlegrounds).map(toIntEntry))
-})
-
-listen('SHUTDOWN', ({ at }: { at: number }) => {
-  //
-})
-
-listen('LOGIN', ({ player, at }: { player: Player; at: number }) => {
-  //
-})
-
-listen('LOGOUT', ({ id }: { id: Player['id'] }) => {
-  //
+  players = new Map(Object.entries(init.players).map(toIntEntry))
+  playersVersion.value++
+  arenaQueue = new Map(Object.entries(init.arenaQueue).map(toIntEntry))
+  arenaQueueVersion.value++
+  warsongQueue = new Map(Object.entries(init.warsongQueue).map(toIntEntry))
+  warsongQueueVersion.value++
+  battlegrounds = new Map(Object.entries(init.battlegrounds).map(toIntEntry))
+  battlegroundsVersion.value++
 })
 
 listen('STARTUP', ({ at }: { at: number }) => {
-  //
+  startAt.value = at
 })
 
 listen('SHUTDOWN', ({ at }: { at: number }) => {
-  //
+  startAt.value = -at
 })
 
-listen('QUEUE_STATE', ({ type, queue }: {
+listen('LOGIN', ({ player, at }: { player: Player; at: number }) => {
+  players.set(player.id, { ...player, since: at })
+  playersVersion.value++
+})
+
+listen('LOGOUT', ({ id }: { id: Player['id'] }) => {
+  players.delete(id)
+  playersVersion.value++
+})
+
+const toQueueEntry = (
+  { id, at, source }: { id: Player['id']; at: number; source: number },
+) => [id, { at, source }] as [number, Queue]
+
+listen('QUEUE_STATE', ({ type: bgType, queue }: {
   type: BattlegroundType
   queue: { id: Player['id']; at: number; source: number }[]
 }) => {
-  //
+  if (bgType === 'warsong') {
+    warsongQueue = new Map(queue.map(toQueueEntry))
+    warsongQueueVersion.value++
+  } else if (bgType === 'arena') {
+    arenaQueue = new Map(queue.map(toQueueEntry))
+    arenaQueueVersion.value++
+  } else {
+    // Should not happen
+    bgType satisfies never
+  }
 })
-
+/*
+// Not implemented yet
 listen('BATTLEGROUND_JOIN', ({ playerId, id, team, at }: {
   playerId: Player['id']
   id: number
@@ -133,3 +171,4 @@ listen('BATTLEGROUND_START', ({ id, type, start }: {
 
 listen('BATTLEGROUND_END', ({ id }: { id: Battleground['id'] }) => {
 })
+*/
