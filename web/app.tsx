@@ -83,31 +83,31 @@ const serverStatusIcons = {
   offline: [XCircle, 'text-error'],
 } as const
 
-function PlayerRow({ player }: any) {
-  const [Icon, color] = statusIcons[player.status] || statusIcons.World
+function PlayerRow({ player }: { player: RawPlayer & { since: number } }) {
+  const clsName = classNameById[player.class]
+  const clsDef = wowClasses[clsName]
+  const lastActive = rtfFormat(STATE.now - player.since)
+  const statusKey = 'World' // not availble yet, do not change
+  const [Icon, color] = statusIcons[statusKey] || statusIcons.World
   return (
     <tr class='border-b border-base-200'>
       <td class='py-1 px-2'>
         <span
           role='img'
-          aria-label={player.cls}
-          class={`${styles.classButton} ${
-            styles[player.cls.toUpperCase()]
-          } inline-block w-6 h-6 rounded-full`}
+          aria-label={clsName}
+          class={`${styles.classButton} ${styles[clsName]} inline-block w-6 h-6 rounded-full`}
           style={{
-            outline: `2px solid ${wowClasses[player.cls.toUpperCase()].color}`,
+            outline: `2px solid ${clsDef.color}`,
             outlineOffset: '2px',
           }}
         />
       </td>
       <td class='py-1 px-2 font-medium'>{player.name}</td>
-      <td class='py-1 px-2 text-xs opacity-70 text-right'>
-        {player.lastActive}
-      </td>
+      <td class='py-1 px-2 text-xs opacity-70 text-right'>{lastActive}</td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
           <Icon size={16} class={color} />
-          <span class={color}>{player.status}</span>
+          <span class={color}>{statusKey}</span>
         </div>
       </td>
     </tr>
@@ -116,11 +116,11 @@ function PlayerRow({ player }: any) {
 
 function App() {
   const { now, startAt, warsongQueue, arenaQueue, players } = STATE
-  const sinceMs = now - Math.abs(startAt)
-  const serverState = ((!startAt) && 'pending') ||
-    (startAt > 0 ? 'offline' : 'online')
+  const sinceMs = now.value - Math.abs(startAt)
+  const serverState = startAt === 0 ? 'pending' : startAt > 0 ? 'online' : 'offline'
   // console.log({ sinceMs, now, startAt, serverState })
   const [ServerIcon, serverColor] = serverStatusIcons[serverState]
+  const serverSpin = serverState === 'pending' ? 'animate-[spin_4s_linear_infinite]' : ''
 
   const queueAvgWait = (queue: Map<number, { at: number }>) =>
     queue.size
@@ -198,7 +198,7 @@ function App() {
             <div class='flex items-center justify-evenly p-3'>
               <div class='space-y-2'>
                 <div class='flex items-center gap-2'>
-                  <ServerIcon size={20} class={serverColor} />
+                  <ServerIcon size={20} class={`${serverColor} ${serverSpin}`} />
                   <span class={`${serverColor} text-lg capitalize`}>
                     {serverState}
                   </span>
@@ -225,19 +225,7 @@ function App() {
                 {players.values().toArray()
                   .sort((a, b) => b.since - a.since)
                   .slice(0, 10)
-                  .map((p) => (
-                    <PlayerRow
-                      player={{
-                        id: p.id,
-                        name: p.name,
-                        since: p.since,
-                        cls: classNameById[p.class],
-                        lastActive: rtfFormat(now.value - p.since),
-                        status: 'World', // not yet available
-                      }}
-                      key={p.id}
-                    />
-                  ))}
+                  .map((p) => <PlayerRow player={p} key={p.id} />)}
               </tbody>
             </table>
           </Card>
