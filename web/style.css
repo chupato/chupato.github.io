@@ -36,10 +36,8 @@
   --noise: 0;
 }
 
-#app > div {
-  background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><filter id="blur"><feGaussianBlur stdDeviation="15"/></filter></defs><path filter="url(%23blur)" fill="%23001e29" d="M41.2,-76.6C49.5,-66.6,49.6,-47.6,52.3,-33.4C55,-19.1,60.3,-9.6,63.5,1.8C66.6,13.2,67.7,26.4,64.1,39.3C60.6,52.1,52.5,64.5,41.1,67.5C29.6,70.5,14.8,64.1,-0.2,64.5C-15.3,64.9,-30.5,72.1,-43.1,69.7C-55.7,67.4,-65.5,55.4,-73.5,42.2C-81.5,29,-87.6,14.5,-89.1,-0.9C-90.5,-16.2,-87.4,-32.4,-77.3,-42C-67.2,-51.5,-50.2,-54.5,-36.1,-61.2C-22.1,-67.9,-11,-78.4,2.7,-83.1C16.5,-87.8,32.9,-86.7,41.2,-76.6Z" transform="translate(100 100) rotate(55)"/></svg>');
-  background-position: 50px 200px;
-  background-repeat: no-repeat;
+#app {
+  background-color: var(--color-base-200);
 }
 
 .POOR {
