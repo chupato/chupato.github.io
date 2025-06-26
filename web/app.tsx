@@ -143,7 +143,7 @@ const About = () => (
 )
 
 const App = () => (
-  <div class='p-4 pt-20 pb-20 space-y-6 bg-base-200 min-h-screen'>
+  <div class='mx-auto max-w-screen-xl p-4 pt-20 pb-20 space-y-6 bg-base-200 min-h-screen'>
     <Banner />
     <div class='relative z-10 -mt-2 lg:-mt-142 flex flex-col lg:flex-row gap-6'>
       <aside class='lg:w-80 flex-shrink-0 space-y-4'>
