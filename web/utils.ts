@@ -1,12 +1,16 @@
-export const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' })
+const dfmt = new Intl.DurationFormat(undefined, {
+  style: 'narrow',
+})
 
 export function rtfFormat(diffMs: number): string {
-  const sec = Math.round(diffMs / 1000)
-  if (Math.abs(sec) < 60) return rtf.format(-sec, 'second')
-  const min = Math.round(sec / 60)
-  if (Math.abs(min) < 60) return rtf.format(-min, 'minute')
-  const hr = Math.round(min / 60)
-  if (Math.abs(hr) < 24) return rtf.format(-hr, 'hour')
-  const day = Math.round(hr / 24)
-  return rtf.format(-day, 'day')
+  const totalSeconds = Math.floor(Math.abs(diffMs) / 1000)
+  const seconds = totalSeconds % 60
+  const totalMinutes = Math.floor(totalSeconds / 60)
+  if (!totalMinutes) return dfmt.format({ seconds })
+  const minutes = totalMinutes % 60
+  const totalHours = Math.floor(totalMinutes / 60)
+  const hours = totalHours % 24
+  if (!totalHours) return dfmt.format({ minutes, seconds })
+  const days = Math.floor(totalHours / 24)
+  return dfmt.format(days ? { days, hours } : { hours, minutes })
 }
