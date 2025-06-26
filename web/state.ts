@@ -2,7 +2,8 @@ import { Signal } from '@preact/signals'
 // import { url } from './router.tsx'
 import type { WoWClasses, WoWRaces } from './wow.ts'
 
-const SOURCE_URL = 'https://wow.devazuka.com'
+// allows switching between local proxy (dev) and production.
+const SOURCE_URL = import.meta.env.VITE_API_URL
 
 export const sourceDisconnectedAt = new Signal(Date.now())
 const version = new Signal('')
@@ -13,7 +14,7 @@ const setDisconnected = () => {
 }
 
 let timeout = setTimeout(setDisconnected, 20_000)
-const source = new EventSource(SOURCE_URL)
+const source = new EventSource(`${SOURCE_URL}/events`)
 source.addEventListener('ack', () => {
   sourceDisconnectedAt.peek() && (sourceDisconnectedAt.value = 0)
   clearTimeout(timeout)
@@ -90,7 +91,7 @@ const listen = <T>(type: string, handler: (data: T) => void) => {
 }
 
 const toIntEntry = <T>([k, v]: [string, T]) => [Number(k), v] as [number, T]
-listen('INIT', (init: {
+listen('init', (init: {
   version: string
   startAt: number
   players: { [k: string]: Player & { since: number } }
@@ -103,11 +104,11 @@ listen('INIT', (init: {
   startAt.value = init.startAt
   players = new Map(Object.entries(init.players).map(toIntEntry))
   playersVersion.value++
-  arenaQueue = new Map(Object.entries(init.arenaQueue).map(toIntEntry))
+  arenaQueue = new Map(Object.entries(init.arenaQueue || {}).map(toIntEntry))
   arenaQueueVersion.value++
-  warsongQueue = new Map(Object.entries(init.warsongQueue).map(toIntEntry))
+  warsongQueue = new Map(Object.entries(init.warsongQueue || {}).map(toIntEntry))
   warsongQueueVersion.value++
-  battlegrounds = new Map(Object.entries(init.battlegrounds).map(toIntEntry))
+  battlegrounds = new Map(Object.entries(init.battlegrounds || {}).map(toIntEntry))
   battlegroundsVersion.value++
 })
 
@@ -131,7 +132,7 @@ listen('LOGOUT', ({ id }: { id: Player['id'] }) => {
 
 const toQueueEntry = (
   { id, at, source }: { id: Player['id']; at: number; source: number },
-) => [id, { at, source }] as [number, Queue]
+) => [id, { at: at + startAt.peek(), source }] as [number, Queue]
 
 listen('QUEUE_STATE', ({ type: bgType, queue }: {
   type: BattlegroundType
