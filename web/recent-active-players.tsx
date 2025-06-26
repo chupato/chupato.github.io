@@ -40,7 +40,9 @@ function PlayerRow({ player }: { player: Player & { since: number } }) {
         />
       </td>
       <td class='py-1 px-2 font-medium'>{player.name}</td>
-      <td class='py-1 px-2 text-xs opacity-70 text-right font-mono'>{lastActive}</td>
+      <td class='py-1 px-2 text-xs opacity-70 text-right font-mono'>
+        {lastActive}
+      </td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
           <Icon size={16} class={color} />

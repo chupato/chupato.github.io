@@ -18,22 +18,35 @@ export function ServerStatus() {
   const { startAt, players } = STATE
   const state = (!startAt && 'pending') ||
     (startAt > 0 ? 'online' : 'offline')
-  const [Icon, color, anim] = serverStates[state]
+  const [Icon, color, iconAnim] = serverStates[state]
+  const wrapperAnim = state !== 'pending' ? 'animate-fade-in' : ''
   return (
     <Card>
       <Card.Title>
         <Server size={20} /> Server Status
       </Card.Title>
       <div class='flex items-center justify-evenly p-3'>
-        <div class='space-y-2'>
+        <div key={state} class={`space-y-2 ${wrapperAnim}`}>
           <div class='flex items-center gap-2'>
-            <Icon size={20} class={`${color} ${anim}`} />
+            <Icon size={20} class={`${color} ${iconAnim}`} />
             <span class={`${color} text-lg capitalize`}>
               {state}
             </span>
           </div>
-          <div class={`stat-value font-semibold text-center ${color} font-mono`}>
-            {startAt === 0 ? '-' : rtfFormat(STATE.now - Math.abs(startAt))}
+          <div
+            class={`stat-value font-semibold text-center ${color} font-mono`}
+          >
+            {state === 'pending'
+              ? (
+                <button
+                  type='button'
+                  class='btn btn-outline btn-sm'
+                  onClick={location.reload}
+                >
+                  Reload
+                </button>
+              )
+              : rtfFormat(STATE.now - Math.abs(startAt))}
           </div>
         </div>
         <div class='divider divider-horizontal' />

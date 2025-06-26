@@ -44,14 +44,35 @@ export type Battleground = {
   participants: Map<Player['id'], { at: number; team: number }>
 }
 
-let warsongQueue = new Map<Player['id'], Queue>()
-const warsongQueueVersion = new Signal(0)
-let arenaQueue = new Map<Player['id'], Queue>()
-const arenaQueueVersion = new Signal(0)
-let players = new Map<Player['id'], Player & { since: number }>()
-const playersVersion = new Signal(0)
-let battlegrounds = new Map<Battleground['id'], Battleground>()
-const battlegroundsVersion = new Signal(0)
+const signalMap = <K, V>() => {
+  const version = new Signal(0)
+  const map = new Map<K, V>()
+  return {
+    get: () => (version.value, map),
+    from(entries: [K, V][]) {
+      map.clear()
+      for (const [k, v] of entries) map.set(k, v)
+      version.value++
+    },
+    set(k: K, v: V) {
+      map.set(k, v)
+      version.value++
+    },
+    delete(k: K) {
+      map.delete(k)
+      version.value++
+    },
+    clear() {
+      map.clear()
+      version.value = 0
+    },
+  }
+}
+
+const warsongQueue = signalMap<Player['id'], Queue>()
+const arenaQueue = signalMap<Player['id'], Queue>()
+const players = signalMap<Player['id'], Player & { since: number }>()
+const battlegrounds = signalMap<Battleground['id'], Battleground>()
 
 const now = new Signal(Date.now())
 setInterval(() => now.value = Date.now(), 990) // update at least once per second
@@ -64,20 +85,16 @@ export const STATE = {
     return startAt.value
   },
   get battlegrounds() {
-    battlegroundsVersion.value
-    return battlegrounds
+    return battlegrounds.get()
   },
   get players() {
-    playersVersion.value
-    return players
+    return players.get()
   },
   get warsongQueue() {
-    warsongQueueVersion.value
-    return warsongQueue
+    return warsongQueue.get()
   },
   get arenaQueue() {
-    arenaQueueVersion.value
-    return arenaQueue
+    return arenaQueue.get()
   },
   get now() {
     return now.value
@@ -102,21 +119,17 @@ listen('init', (init: {
   console.log('server state initialized', init)
   version.value = init.version
   startAt.value = init.startAt
-  players = new Map(Object.entries(init.players).map(toIntEntry))
-  playersVersion.value++
-  arenaQueue = new Map(Object.entries(init.arenaQueue || {}).map(toIntEntry))
-  arenaQueueVersion.value++
-  warsongQueue = new Map(
-    Object.entries(init.warsongQueue || {}).map(toIntEntry),
-  )
-  warsongQueueVersion.value++
-  battlegrounds = new Map(
-    Object.entries(init.battlegrounds || {}).map(toIntEntry),
-  )
-  battlegroundsVersion.value++
+  players.from(Object.entries(init.players || {}).map(toIntEntry))
+  arenaQueue.from(Object.entries(init.arenaQueue || {}).map(toIntEntry))
+  warsongQueue.from(Object.entries(init.warsongQueue || {}).map(toIntEntry))
+  battlegrounds.from(Object.entries(init.battlegrounds || {}).map(toIntEntry))
 })
 
 listen('STARTUP', ({ at }: { at: number }) => {
+  players.clear()
+  arenaQueue.clear()
+  warsongQueue.clear()
+  battlegrounds.clear()
   startAt.value = at
 })
 
@@ -126,12 +139,10 @@ listen('SHUTDOWN', ({ at }: { at: number }) => {
 
 listen('LOGIN', ({ player, at }: { player: Player; at: number }) => {
   players.set(player.id, { ...player, since: at })
-  playersVersion.value++
 })
 
 listen('LOGOUT', ({ id }: { id: Player['id'] }) => {
   players.delete(id)
-  playersVersion.value++
 })
 
 const toQueueEntry = (
@@ -143,11 +154,9 @@ listen('QUEUE_STATE', ({ type: bgType, queue }: {
   queue: { id: Player['id']; at: number; source: number }[]
 }) => {
   if (bgType === 'warsong') {
-    warsongQueue = new Map(queue.map(toQueueEntry))
-    warsongQueueVersion.value++
+    warsongQueue.from(queue.map(toQueueEntry))
   } else if (bgType === 'arena') {
-    arenaQueue = new Map(queue.map(toQueueEntry))
-    arenaQueueVersion.value++
+    arenaQueue.from(queue.map(toQueueEntry))
   } else {
     // Should not happen
     bgType satisfies never
