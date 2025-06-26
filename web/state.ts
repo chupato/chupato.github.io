@@ -27,7 +27,7 @@ source.addEventListener('open', () => {
 
 setDisconnected()
 
-type Player = {
+export type Player = {
   id: number
   name: string
   account: number
@@ -35,9 +35,9 @@ type Player = {
   race: WoWRaces[keyof WoWRaces]
 }
 
-type Queue = { at: number; source: Player['id'] }
-type BattlegroundType = 'arena' | 'warsong'
-type Battleground = {
+export type Queue = { at: number; source: Player['id'] }
+export type BattlegroundType = 'arena' | 'warsong'
+export type Battleground = {
   id: number
   type: BattlegroundType
   participants: Map<Player['id'], { at: number; team: number }>

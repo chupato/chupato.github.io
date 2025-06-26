@@ -49,6 +49,8 @@ deno task web:preview │ deno task vite preview │ Serves the production build
 - no useless wrapper function `onclick={() => handleClick()}` should be `onclick={handleClick}`
 - Never use `.forEach` unless the function called in the loop already exists, use `for .. of` instead
 - Never use `for .. in`, use `for .. of` with `Object.keys` / `Object.entries` or `Object.values`
+- Never use `Array.from(x)` either spread `[...x]` or if its an iterator use `.toArray()`
+- Every static constant records or array should be declared in the root scope
 - `.reduce` is to be avoided aside from very simple accumulation that do not imply re-spreading / object creation. Valid cases are total, descending a tree, chaining promises .then, suggest `for .. of` instead, if the goal was to recreate an object, suggest to `.map` to entries and use `Object.fromEntries` like so: `Object.fromEntries(xx.map(x => [x.k, x.v]))` instead.
 - In switch cases over enums, make sure we have an exhaustive check in the `default` case:
     ```
@@ -61,10 +63,9 @@ deno task web:preview │ deno task vite preview │ Serves the production build
     ```
     or require a comment justifying why all the case are not needed.
 
+
 ### 3.1 Format Rules
 - indent: 2 spaces
 - line width: 80 chars
 - no semi-colons
 - favor single quote
-
-Never use `Array.from(x)` either spread `[...x]` or if its an iterator use `.toArray()`
