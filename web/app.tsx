@@ -11,18 +11,12 @@ import { QueueStats } from './queue-stats.tsx'
 
 // Assets
 import logoUrl from './logo.avif'
-import bgUrl from './background.avif'
+import styles from './app.module.css'
 
 Object.assign(globalThis, { h, Fragment })
 
 const Banner = () => (
-  <div
-    class='relative z-0 h-50 lg:h-90 bg-cover bg-center rounded-lg overflow-visible py-40 mx-auto lg:ml-20 lg:mr-20'
-    style={{
-      backgroundImage: `url(${bgUrl})`,
-      maskImage: `linear-gradient(to bottom, white 50%, transparent 100%)`,
-    }}
-  >
+  <div class={styles.banner} >
     <img
       src={logoUrl}
       alt='CHUPATO Logo'

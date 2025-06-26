@@ -1,0 +1,14 @@
+@reference "tailwindcss";
+
+.banner {
+  @apply relative z-0 h-50 lg:h-90 bg-cover bg-center rounded-lg overflow-visible py-40 mx-auto lg:ml-20 lg:mr-20;
+}
+
+.banner::before {
+  content: "";
+  @apply absolute inset-0 pointer-events-none;
+  background-image: url(./background.avif);
+  background-size: cover;
+  mask-image: linear-gradient(to bottom, white 50%, transparent 100%);
+  z-index: -10;
+}
