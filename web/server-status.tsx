@@ -32,7 +32,7 @@ export function ServerStatus() {
               {state}
             </span>
           </div>
-          <div class={`stat-value font-semibold text-center ${color}`}>
+          <div class={`stat-value font-semibold text-center ${color} font-mono`}>
             {startAt === 0 ? '-' : rtfFormat(STATE.now - Math.abs(startAt))}
           </div>
         </div>

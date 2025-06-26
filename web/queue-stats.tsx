@@ -25,7 +25,7 @@ export function QueueStats() {
           </div>
           <div class='text-center'>
             <div class='stat-value text-6xl'>{warsongQueue.size}</div>
-            <div class='stat-desc text-sm'>
+            <div class='stat-desc text-sm font-mono'>
               {rtfFormat(-queueAvgWait(warsongQueue))}
             </div>
           </div>
@@ -38,7 +38,7 @@ export function QueueStats() {
           </div>
           <div class='text-center'>
             <div class='stat-value text-6xl'>{arenaQueue.size}</div>
-            <div class='stat-desc text-sm'>
+            <div class='stat-desc text-sm font-mono'>
               {rtfFormat(-queueAvgWait(arenaQueue))}
             </div>
           </div>
