@@ -16,7 +16,7 @@ import styles from './app.module.css'
 Object.assign(globalThis, { h, Fragment })
 
 const Banner = () => (
-  <div class={styles.banner} >
+  <div class={styles.banner}>
     <img
       src={logoUrl}
       alt='CHUPATO Logo'

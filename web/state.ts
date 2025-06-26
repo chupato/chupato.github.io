@@ -106,9 +106,13 @@ listen('init', (init: {
   playersVersion.value++
   arenaQueue = new Map(Object.entries(init.arenaQueue || {}).map(toIntEntry))
   arenaQueueVersion.value++
-  warsongQueue = new Map(Object.entries(init.warsongQueue || {}).map(toIntEntry))
+  warsongQueue = new Map(
+    Object.entries(init.warsongQueue || {}).map(toIntEntry),
+  )
   warsongQueueVersion.value++
-  battlegrounds = new Map(Object.entries(init.battlegrounds || {}).map(toIntEntry))
+  battlegrounds = new Map(
+    Object.entries(init.battlegrounds || {}).map(toIntEntry),
+  )
   battlegroundsVersion.value++
 })
 
