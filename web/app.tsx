@@ -44,7 +44,7 @@ const Banner = () => (
 )
 
 const Features = () => (
-  <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
+  <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary mx-auto'>
     <h2 class='flex items-center gap-2'>
       <Settings size={28} /> Features
     </h2>
@@ -118,7 +118,7 @@ const Features = () => (
 )
 
 const About = () => (
-  <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary'>
+  <section class='max-w-prose prose prose-invert prose-headings:text-primary prose-strong:text-secondary mx-auto'>
     <h2 class='flex items-center gap-2'>
       <Info size={28} /> About Chupato
     </h2>
