@@ -4,6 +4,7 @@ import { STATE } from './state.ts'
 import type { Player } from './state.ts'
 import { rtfFormat } from './utils.ts'
 import { wowClasses } from './wow.ts'
+import { A } from './router.tsx'
 import styles from './class-button.module.css'
 
 const classNameById = Object.fromEntries(
@@ -39,7 +40,15 @@ function PlayerRow({ player }: { player: Player & { since: number } }) {
           }}
         />
       </td>
-      <td class='py-1 px-2 font-medium'>{player.name}</td>
+      <td class='py-1 px-2 font-medium'>
+        <A
+          params={{ player: player.id }}
+          class='border-b-2 border-dotted hover:border-solid'
+          style={{ borderColor: clsDef.color }}
+        >
+          {player.name}
+        </A>
+      </td>
       <td class='py-1 px-2 text-xs opacity-70 text-right font-mono'>
         {lastActive}
       </td>
