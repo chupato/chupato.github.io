@@ -8,7 +8,7 @@
 .banner::before {
   content: '';
   @apply absolute inset-0 pointer-events-none rounded-lg;
-  background-image: url(./assets/background.avif);
+  background-image: url(https://rawcdn.githack.com/chupato/chupato.github.io/d4b928bd955c26ca2ec10c7c6c90d188ca474563/launcher/background.avif);
   background-color: #213029;
   background-size: cover;
   background-position: center;

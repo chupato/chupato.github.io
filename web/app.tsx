@@ -10,8 +10,8 @@ import { Links } from './links.tsx'
 import { QueueStats } from './queue-stats.tsx'
 
 // Assets
-import logoUrl from './assets/logo.avif'
 import styles from './app.module.css'
+const logoUrl = 'https://rawcdn.githack.com/chupato/chupato.github.io/d4b928bd955c26ca2ec10c7c6c90d188ca474563/launcher/logo.avif'
 
 Object.assign(globalThis, { h, Fragment })
 
