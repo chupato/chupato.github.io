@@ -22,9 +22,11 @@ jobs:
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-          cache-hash: ${{ hashFiles('**/deno.json') }}
 
-      - name: Install Deno dependencies and build
+      - name: Install dependencies
+        run: deno install --allow-scripts=npm:@tailwindcss/oxide
+
+      - name: Build
         run: deno task web:build
 
       - name: Upload Pages artifact

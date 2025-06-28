@@ -26,7 +26,6 @@
     "daisyui": "npm:daisyui@^5.0.43",
     "lucide-preact": "npm:lucide-preact@^0.522.0",
     "preact": "npm:preact@^10.26.9",
-    "sonda": "npm:sonda@^0.8.2",
     "tailwindcss": "npm:tailwindcss@^4.1.10",
     "vite": "npm:vite@^6.3.5"
   },
