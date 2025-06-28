@@ -1,8 +1,7 @@
-import { h } from 'preact'
 import { CheckCircle, RefreshCcw, Server, XCircle } from 'lucide-preact'
 import { Card } from './card.tsx'
 import { STATE } from './state.ts'
-import { rtfFormat } from './utils.ts'
+import { rtfFormat } from './utils.tsx'
 
 const serverStates = {
   online: [CheckCircle, 'text-success', ''],

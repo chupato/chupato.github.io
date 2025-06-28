@@ -1,7 +1,7 @@
 import { Flag, Hourglass, Swords } from 'lucide-preact'
 import { Card } from './card.tsx'
 import { STATE } from './state.ts'
-import { rtfFormat } from './utils.ts'
+import { rtfFormat } from './utils.tsx'
 
 const queueAvgWait = (queue: Map<number, { at: number }>) => {
   const totalTime = queue

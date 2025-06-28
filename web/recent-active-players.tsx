@@ -1,8 +1,9 @@
 import { Flag, Globe, MapPin, Swords, Users } from 'lucide-preact'
+
 import { Card } from './card.tsx'
 import { STATE } from './state.ts'
-import type { Player } from './state.ts'
-import { rtfFormat } from './utils.ts'
+import type { PlayerWithStatus } from './state.ts'
+import { Duration } from './utils.tsx'
 import { wowClasses } from './wow.ts'
 import { A } from './router.tsx'
 import styles from './class-button.module.css'
@@ -19,15 +20,18 @@ const statusIcons = {
   World: [Globe, 'text-success'],
 } as const
 
-function PlayerRow({ player }: { player: Player & { since: number } }) {
+function PlayerRow({ player }: { player: PlayerWithStatus }) {
   const clsName = classNameById[player.class]
   const clsDef = wowClasses[clsName]
-  const lastActive = rtfFormat(STATE.now - player.since)
+  console.log(player)
   const statusKey = 'World'
   const [Icon, color] = statusIcons[statusKey] || statusIcons.World
   return (
     <tr class='border-b border-base-200'>
-      <td class='py-1 px-2'>
+      <td class="pr-2">
+        <div class={`h-3 w-3 ${player.loginAt ? 'bg-success' : 'bg-neutral'} rounded-full`} />
+      </td>
+      <td class='py-1 px-2 flex items-center'>
         <span
           role='img'
           aria-label={clsName}
@@ -50,7 +54,7 @@ function PlayerRow({ player }: { player: Player & { since: number } }) {
         </A>
       </td>
       <td class='py-1 px-2 text-xs opacity-70 text-right font-mono'>
-        {lastActive}
+        <Duration duration={player.loginAt || player.logoutAt} />
       </td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
@@ -69,9 +73,7 @@ export const RecentActivePlayers = () => (
     </Card.Title>
     <table class='table-auto w-full border-collapse'>
       <tbody>
-        {STATE.players.values().toArray()
-          .sort((a, b) => b.since - a.since)
-          .slice(0, 10)
+        {STATE.last10Active
           .map((p) => <PlayerRow player={p} key={p.id} />)}
       </tbody>
     </table>

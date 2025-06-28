@@ -1,3 +1,5 @@
+import { STATE } from './state.ts'
+
 const pad = (n: number) => n < 10 ? `0${n}` : n
 
 export function rtfFormat(diffMs: number): string {
@@ -12,3 +14,18 @@ export function rtfFormat(diffMs: number): string {
   const days = Math.floor(totalHours / 24)
   return days ? `${days}d${pad(hours)}` : `${hours}h${pad(minutes)}m`
 }
+
+export const Duration = ({ duration }: { duration: number }) => (
+  <span>
+    {rtfFormat(STATE.now - duration)}
+  </span>
+)
+
+// TODO:
+// move to an effect maybe ?
+
+// add since to active players
+
+
+// [PENDING] fix duration in queue
+
