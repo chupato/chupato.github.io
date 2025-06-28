@@ -18,16 +18,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
-          deno-version: v2.x
+          node-version: '*'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: deno install --allow-scripts=npm:@tailwindcss/oxide
+        run: npm install
 
       - name: Build
-        run: deno task web:build
+        run: node node_modules/.bin/vite build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,32 @@
+{
+  "name": "chupato.github.io",
+  "version": "1.0.0",
+  "description": "Challenge Heroes Ultimate Private Arena Twink Online",
+  "main": "task-launcher-build.js",
+  "dependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "@preact/signals": "^2.2.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/vite": "^4.1.11",
+    "daisyui": "^5.0.43",
+    "lucide-preact": "^0.522.0",
+    "preact": "^10.26.9",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5"
+  },
+  "scripts": {
+    "build": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chupato/chupato.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/chupato/chupato.github.io/issues"
+  },
+  "homepage": "https://github.com/chupato/chupato.github.io#readme"
+}
