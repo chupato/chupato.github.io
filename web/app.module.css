@@ -8,7 +8,8 @@
 .banner::before {
   content: '';
   @apply absolute inset-0 pointer-events-none rounded-lg;
-  background-image: url(./background.avif);
+  background-image: url(./assets/background.avif);
+  background-color: #213029;
   background-size: cover;
   background-position: center;
   mask-image: linear-gradient(

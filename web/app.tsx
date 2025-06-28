@@ -10,7 +10,7 @@ import { Links } from './links.tsx'
 import { QueueStats } from './queue-stats.tsx'
 
 // Assets
-import logoUrl from './logo.avif'
+import logoUrl from './assets/logo.avif'
 import styles from './app.module.css'
 
 Object.assign(globalThis, { h, Fragment })

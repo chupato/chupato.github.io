@@ -27,7 +27,7 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
   const statusKey = 'World'
   const [Icon, color] = statusIcons[statusKey] || statusIcons.World
   return (
-    <tr class='border-b border-base-200'>
+    <tr class='border-b border-base-200 odd:bg-gradient-to-r odd:from-transparent odd:via-[var(--color-base-200)] odd:to-transparent'>
       <td class="pr-2">
         <div class={`h-3 w-3 ${player.loginAt ? 'bg-success' : 'bg-neutral'} rounded-full`} />
       </td>

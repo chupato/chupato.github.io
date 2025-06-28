@@ -1,6 +1,6 @@
 /* sprite-based class icons; Vite will inline or emit as separate asset */
 .classButton {
-  background-image: url('./classes.svg?inline');
+  background-image: url('./assets/classes.svg?inline');
   background-repeat: no-repeat;
   /* 4 columns × 3 rows grid */
   background-size: 400% 300%;

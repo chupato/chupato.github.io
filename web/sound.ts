@@ -1,4 +1,4 @@
-import chupatoSoundUrl from './chupato-cute.ogg'
+import chupatoSoundUrl from './assets/chupato-cute.ogg'
 
 const audioContext = new AudioContext()
 const audioBuffer = fetch(chupatoSoundUrl)
