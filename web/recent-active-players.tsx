@@ -1,11 +1,20 @@
-import { Flag, Globe, MapPin, PowerOff, Swords, Users } from 'lucide-preact'
+import {
+  Flag,
+  Globe,
+  MapPin,
+  Maximize,
+  Minimize,
+  PowerOff,
+  Swords,
+  Users,
+} from 'lucide-preact'
 
 import { Card } from './card.tsx'
 import { STATE } from './state.ts'
 import type { PlayerWithStatus } from './state.ts'
 import { Duration } from './utils.tsx'
 import { wowClasses } from './wow.ts'
-import { A } from './router.tsx'
+import { A, url } from './router.tsx'
 import styles from './class-button.module.css'
 
 const classNameById = Object.fromEntries(
@@ -26,9 +35,11 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
   const clsDef = wowClasses[clsName]
   const statusKey = player.loginAt ? player.location : 'Offline'
   const [Icon, color] = statusIcons[statusKey]
-  console.log('PLAYER_ROW', player)
   return (
-    <tr class='odd:bg-gradient-to-r odd:from-transparent odd:via-[var(--color-base-200)] odd:to-transparent'>
+    <tr
+      class='odd:bg-gradient-to-r odd:from-transparent odd:via-[var(--color-base-200)] odd:to-transparent'
+      style={{ viewTransitionName: `player-row-${player.id}` }}
+    >
       <td class='py-1 px-2 flex items-center pb-2 pt-2'>
         <span
           role='img'
@@ -39,6 +50,7 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
           style={{
             outline: `2px solid ${clsDef.color}`,
             outlineOffset: '2px',
+            viewTransitionName: `class-icon-${player.id}`,
           }}
         />
       </td>
@@ -46,7 +58,10 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
         <A
           params={{ player: player.id }}
           class='border-b-2 border-dotted hover:border-solid'
-          style={{ borderColor: clsDef.color }}
+          style={{
+            borderColor: clsDef.color,
+            viewTransitionName: `name-${player.id}`,
+          }}
         >
           {player.name}
         </A>
@@ -55,7 +70,10 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
         <Duration duration={player.loginAt || player.logoutAt} />
       </td>
       <td class='py-1 px-2 text-xs uppercase'>
-        <div class='flex items-center gap-1'>
+        <div
+          class='flex items-center gap-1'
+          style={{ viewTransitionName: `map-${player.id}` }}
+        >
           <Icon size={16} class={color} />
           <span class={color}>{statusKey}</span>
         </div>
@@ -64,16 +82,41 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
   )
 }
 
-export const RecentActivePlayers = () => (
-  <Card>
-    <Card.Title>
-      <Users size={20} /> Recent Active Players
-    </Card.Title>
-    <table class='table-auto w-full border-collapse'>
-      <tbody>
-        {STATE.last10Active
-          .map((p) => <PlayerRow player={p} key={p.id} />)}
-      </tbody>
-    </table>
-  </Card>
-)
+export const RecentActivePlayers = () => {
+  const isFullScreen = url.params.card === 'active-players'
+
+  const toggleFullScreenParams = isFullScreen
+    ? { card: null }
+    : { card: 'active-players' }
+
+  return (
+    <Card
+      class={isFullScreen ? 'full-screen-card' : ''}
+      style={{ viewTransitionName: 'active-players-card' }}
+    >
+      <Card.Title style={{ viewTransitionName: 'active-players-title' }}>
+        <Users
+          size={20}
+          style={{ viewTransitionName: 'active-players-title-icon' }}
+        />{' '}
+        <span style={{ viewTransitionName: 'active-players-title-text' }}>
+          Recent Active Players
+        </span>
+        <A
+          params={toggleFullScreenParams}
+          class='btn btn-sm btn-ghost'
+          style={{ viewTransitionName: 'active-players-title-link' }}
+        >
+          {isFullScreen ? <Minimize size={20} /> : <Maximize size={20} />}
+        </A>
+      </Card.Title>
+      <table class='table-auto w-full border-collapse'>
+        <tbody>
+          {STATE.last10Active.map((p) => (
+            <PlayerRow player={p} key={p.id} />
+          ))}
+        </tbody>
+      </table>
+    </Card>
+  )
+}

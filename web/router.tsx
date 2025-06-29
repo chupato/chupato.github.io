@@ -127,7 +127,17 @@ export const A = ({
 
     // In the normal case we handle the routing internally
     event.preventDefault()
-    navigateUrl(url.href, replace)
+    // @ts-ignore
+    if (document.startViewTransition) {
+      console.log('Starting view transition...')
+      // @ts-ignore
+      document.startViewTransition(() => {
+        navigateUrl(url.href, replace)
+      })
+    } else {
+      console.log('View transitions not supported, navigating directly.')
+      navigateUrl(url.href, replace)
+    }
   }
 
   return (

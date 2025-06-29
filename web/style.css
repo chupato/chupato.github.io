@@ -73,6 +73,34 @@
   background-color: #0002;
 }
 
+.full-screen-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: var(--color-base-100);
+  padding: 1rem;
+}
+
+::view-transition-old(active-players-card) {
+  animation: fade-out 0.2s ease-in-out forwards;
+}
+
+::view-transition-new(active-players-card) {
+  animation: fade-in 0.2s ease-in-out forwards;
+}
+
+/* View transitions for individual player rows */
+::view-transition-old(player-row-*) {
+  animation: fade-out 0.2s ease-in-out forwards;
+}
+
+::view-transition-new(player-row-*) {
+  animation: fade-in 0.2s ease-in-out forwards;
+}
+
 @layer utilities {
   @keyframes wiggle {
     0% {
@@ -112,5 +140,13 @@
   }
   .animate-fade-in {
     animation: fade-in 0.5s ease-in-out forwards;
+  }
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 }
