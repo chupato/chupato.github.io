@@ -5,7 +5,13 @@
     "indentWidth": 2,
     "semiColons": false,
     "singleQuote": true,
-    "exclude": ["vendor/", "metafile.json",  "node_modules/", "web/.vite/", "web/dist/"]
+    "exclude": [
+      "vendor/",
+      "metafile.json",
+      "node_modules/",
+      "web/.vite/",
+      "web/dist/"
+    ]
   },
   "tasks": {
     "launcher:build": "deno run -A task-launcher-build.js",
@@ -14,7 +20,7 @@
     "web:dev": "deno task web:proxy & deno task vite dev",
     "web:build": "deno task vite build",
     "web:preview": "deno task vite preview",
-    "web:proxy": "deno serve --allow-net --port 8979 proxy.ts",
+    "web:proxy": "deno serve --allow-net --port 8979 proxy.ts"
   },
   "lock": false,
   "nodeModulesDir": "auto",

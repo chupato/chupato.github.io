@@ -1,4 +1,4 @@
-import { Signal, computed } from '@preact/signals'
+import { computed, Signal } from '@preact/signals'
 import { url } from './router.tsx'
 import type { WoWClasses, WoWRaces } from './wow.ts'
 
@@ -28,6 +28,12 @@ source.addEventListener('open', () => {
 
 setDisconnected()
 
+export type PlayerLocation =
+  | 'World'
+  | 'Dungeons'
+  | 'Gurubashi'
+  | 'Warsong'
+  | 'Arena'
 export type Player = {
   id: number
   name: string
@@ -39,6 +45,7 @@ export type Player = {
 export type PlayerWithStatus = Player & {
   loginAt: number
   logoutAt: number
+  location: PlayerLocation
 }
 
 export type Queue = { at: number; source: Player['id'] }
@@ -54,6 +61,7 @@ const signalMap = <K, V>() => {
   const map = new Map<K, V>()
   return {
     peek: () => map,
+    bump: () => version.value++,
     get: () => (version.value, map),
     from(entries: [K, V][]) {
       map.clear()
@@ -110,7 +118,7 @@ export const STATE = {
   get last10Active() {
     last10ActiveVersion.value
     return last10Active
-  }
+  },
 }
 
 const itemParam = computed(() => Number(url.params.item) || 0)
@@ -139,13 +147,16 @@ listen('init', (init: {
   console.log('server state initialized', init)
   version.value = init.version
   startAt.value = init.startAt
-  last10Active.length = 0
-  last10Active.push(...init.last10Active)
-  last10ActiveVersion.value++
   players.from(Object.entries(init.players || {}).map(toIntEntry))
   arenaQueue.from(Object.entries(init.arenaQueue || {}).map(toIntEntry))
   warsongQueue.from(Object.entries(init.warsongQueue || {}).map(toIntEntry))
   battlegrounds.from(Object.entries(init.battlegrounds || {}).map(toIntEntry))
+  last10Active.length = 0
+  for (const activePlayer of init.last10Active) {
+    const player = players.peek().get(activePlayer.id)
+    last10Active.push(player || activePlayer)
+  }
+  last10ActiveVersion.value++
 })
 
 listen('STARTUP', ({ at }: { at: number }) => {
@@ -161,6 +172,7 @@ listen('SHUTDOWN', ({ at }: { at: number }) => {
 })
 
 listen('LOGIN', ({ player }: { player: PlayerWithStatus }) => {
+  player.location || (player.location = 'World')
   players.set(player.id, player)
 
   let prev = last10Active[0]
@@ -171,14 +183,18 @@ listen('LOGIN', ({ player }: { player: PlayerWithStatus }) => {
       const tmp = last10Active[i]
       if (!prev) break
       last10Active[i] = prev
-      if (!tmp || tmp.id === player.id) break
+      if (!tmp) break
+      if (tmp.id === player.id) {
+        last10Active[i] = player
+        break
+      }
       prev = tmp
     }
   }
   last10ActiveVersion.value++
 })
 
-listen('LOGOUT', ({ at, id }: { at: number, id: Player['id'] }) => {
+listen('LOGOUT', ({ at, id }: { at: number; id: Player['id'] }) => {
   const player = players.peek().get(id)
   if (!player) return
   players.delete(id)
@@ -221,6 +237,18 @@ listen('QUEUE_STATE', ({ type: bgType, queue }: {
     bgType satisfies never
   }
 })
+
+listen(
+  'PLAYER_LOCATION',
+  ({ id, location }: { id: Player['id']; location: PlayerLocation }) => {
+    const player = players.peek().get(id)
+    if (!player || player.location === location) return
+    player.location = location
+    players.bump()
+    last10Active.includes(player) && (last10ActiveVersion.value++)
+  },
+)
+
 /*
 // Not implemented yet
 listen('BATTLEGROUND_JOIN', ({ playerId, id, team, at }: {

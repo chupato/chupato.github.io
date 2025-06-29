@@ -1,4 +1,4 @@
-import { Flag, Globe, MapPin, Swords, Users } from 'lucide-preact'
+import { Flag, Globe, MapPin, PowerOff, Swords, Users } from 'lucide-preact'
 
 import { Card } from './card.tsx'
 import { STATE } from './state.ts'
@@ -18,19 +18,17 @@ const statusIcons = {
   Warsong: [Flag, 'text-warning'],
   Arena: [Swords, 'text-info'],
   World: [Globe, 'text-success'],
+  Offline: [PowerOff, 'text-neutral'],
 } as const
 
 function PlayerRow({ player }: { player: PlayerWithStatus }) {
   const clsName = classNameById[player.class]
   const clsDef = wowClasses[clsName]
-  const statusKey = 'World'
-  const [Icon, color] = statusIcons[statusKey] || statusIcons.World
-  const mapColor = player.loginAt ? color : 'text-neutral'
+  const statusKey = player.loginAt ? player.location : 'Offline'
+  const [Icon, color] = statusIcons[statusKey]
+  console.log('PLAYER_ROW', player)
   return (
     <tr class='odd:bg-gradient-to-r odd:from-transparent odd:via-[var(--color-base-200)] odd:to-transparent'>
-      <td class="pr-2">
-        <div class={`h-3 w-3 ${player.loginAt ? 'bg-success' : 'bg-neutral'} rounded-full`} />
-      </td>
       <td class='py-1 px-2 flex items-center pb-2 pt-2'>
         <span
           role='img'
@@ -58,8 +56,8 @@ function PlayerRow({ player }: { player: PlayerWithStatus }) {
       </td>
       <td class='py-1 px-2 text-xs uppercase'>
         <div class='flex items-center gap-1'>
-          <Icon size={16} class={mapColor} />
-          <span class={mapColor}>{statusKey}</span>
+          <Icon size={16} class={color} />
+          <span class={color}>{statusKey}</span>
         </div>
       </td>
     </tr>

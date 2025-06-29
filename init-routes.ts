@@ -435,9 +435,8 @@ const dbcSchemas: { [k in string]: DBC.Schema } = {
     Description_Lang_itIT: 'string',
     Description_Lang_Unk: 'string',
     Description_Lang_Mask: 'uint',
-  }
+  },
 } as const
-
 
 // -----------
 // Config File
@@ -480,7 +479,7 @@ try {
 // Scan drive to find a valid wow directory
 // ----------------------------------------
 
-const wowExeDirectories: { path: string, isValid: boolean }[] = []
+const wowExeDirectories: { path: string; isValid: boolean }[] = []
 const alreadyScanned = new Set()
 const pathToScan: string[] = []
 let abortScan = false
@@ -572,8 +571,6 @@ if (!(await isValidWowDir(config.wowDir))) {
   setConfig('wowDir', undefined)
 }
 
-
-
 // ---------
 // Start WoW
 // ---------
@@ -604,17 +601,26 @@ const startWoW = async () => {
   try {
     await Deno.remove(`${config.wowDir}\\Cache`, { recursive: true })
     log({ status: 'clear cache' })
-  } catch(err) {
+  } catch (err) {
     log({ error: 'unable to clear cache', message: (err as Error).message })
   }
-  log({ status: 'creating realmlist.wtf', realmList: defaultWTFConfig.realmList })
+  log({
+    status: 'creating realmlist.wtf',
+    realmList: defaultWTFConfig.realmList,
+  })
   for await (const locale of Deno.readDir(`${config.wowDir}\\Data`)) {
     if (!locale.isDirectory) continue
     log({ locale: locale.name })
     await Deno.writeTextFile(
       `${config.wowDir}\\Data\\${locale.name}\\realmlist.wtf`,
       `SET realmList ${defaultWTFConfig.realmList}\r\n`,
-    ).catch((err) => log({ error: 'unable to save reamlist file', message: err.message, locale: locale.name }))
+    ).catch((err) =>
+      log({
+        error: 'unable to save reamlist file',
+        message: err.message,
+        locale: locale.name,
+      })
+    )
   }
 
   const configPath = `${config.wowDir}\\WTF\\Config.wtf`
@@ -630,7 +636,9 @@ const startWoW = async () => {
   await Deno.writeTextFile(
     configPath,
     stringifyWTFConf({ ...configFile, ...defaultWTFConfig }),
-  ).catch((err) => log({ error: 'unable to save config file', message: err.message }))
+  ).catch((err) =>
+    log({ error: 'unable to save config file', message: err.message })
+  )
   log({ action: 'starting wow.exe...' })
 
   const wow = new Deno.Command(`${config.wowDir}\\Wow.exe`, {
@@ -649,9 +657,7 @@ const startWoW = async () => {
   for await (const data of mux) {
     log({ clientLog: decode(data) })
   }
-
 }
-
 
 // ----------------
 // Patch the client
@@ -685,7 +691,11 @@ const openDBC = <T extends DBCName>(name: T) => {
   throw new Deno.errors.NotFound(`${name} not found`)
 }
 
-type Updates = { name: DBCName; data: Record<string, string| number | undefined>[]; replace?: boolean }[]
+type Updates = {
+  name: DBCName
+  data: Record<string, string | number | undefined>[]
+  replace?: boolean
+}[]
 const makePatch = async (updates: Updates) => {
   const { tmpDir } = config
   try {
@@ -723,11 +733,14 @@ const sheetID = '11PVL9YA1lmCoqaIguKjwuDFX58e8hzAh6kzDXA4jBV4'
 const getSheet = async (page: string) =>
   (await fetch(`https://opensheet.elk.sh/${sheetID}/${page}`)).json()
 
-const cleanupSheetRow = row => Object.fromEntries(Object.entries(row).flatMap(([k, v]) =>  {
-  const valueStr = v.trim()
-  const valueNbr = Number(v)
-  return valueStr ? [[k, Number.isNaN(valueNbr) ? valueStr : valueNbr]] : []
-}))
+const cleanupSheetRow = (row) =>
+  Object.fromEntries(
+    Object.entries(row).flatMap(([k, v]) => {
+      const valueStr = v.trim()
+      const valueNbr = Number(v)
+      return valueStr ? [[k, Number.isNaN(valueNbr) ? valueStr : valueNbr]] : []
+    }),
+  )
 
 const fetchUpdates = async (): Promise<Updates> => {
   const talentData = getSheet('TALENT.DBC')
@@ -746,11 +759,11 @@ const fetchUpdates = async (): Promise<Updates> => {
     skill.AcquireMethod = 0
   }
   for (const row of await getSheet('PROFESSION')) {
-  const skillReq = Number(row.ReqSkillRank)
+    const skillReq = Number(row.ReqSkillRank)
     const {
       ID, // "100015",
       item, // "4315",
-      new_name,// "Reinforced Woolen Shoulders",
+      new_name, // "Reinforced Woolen Shoulders",
       Reagent_1 = 0, // "3839",
       ReagentCount_1 = 0, // "9",
       Reagent_2 = 0, // "2319",
@@ -763,14 +776,18 @@ const fetchUpdates = async (): Promise<Updates> => {
 
     addSpell({
       ID: Number(ID),
-      Reagent_1, ReagentCount_1,
-      Reagent_2, ReagentCount_2,
-      Reagent_3, ReagentCount_3,
-      Reagent_4, ReagentCount_4,
+      Reagent_1,
+      ReagentCount_1,
+      Reagent_2,
+      ReagentCount_2,
+      Reagent_3,
+      ReagentCount_3,
+      Reagent_4,
+      ReagentCount_4,
       ...(item && ({
         EffectItemType_1: item,
         Name_Lang_enUS: new_name,
-      }))
+      })),
     })
 
     const skill = bySpell[ID]
@@ -791,7 +808,7 @@ const fetchUpdates = async (): Promise<Updates> => {
     addSpell(cleanupSheetRow(row))
   }
 
-  const dungeons =  (await LFGDungeonsData).map(cleanupSheetRow)
+  const dungeons = (await LFGDungeonsData).map(cleanupSheetRow)
 
   return [
     { name: 'SkillLine.dbc', data: gatheringAsSecondarySkills },
@@ -802,7 +819,7 @@ const fetchUpdates = async (): Promise<Updates> => {
       name: 'Talent.dbc',
       data: await talentData,
       replace: true,
-    }
+    },
   ]
 }
 
@@ -815,7 +832,9 @@ const events = Promise.withResolvers<ReadableStreamDefaultController<any>>()
 const log = (payload: unknown) => dispatch('log', payload)
 const dispatch = async (type: string, payload: unknown) => {
   controller || (controller = await events.promise)
-  controller.enqueue(encode(`data: ${JSON.stringify({ type, payload })}\r\n\r\n`))
+  controller.enqueue(
+    encode(`data: ${JSON.stringify({ type, payload })}\r\n\r\n`),
+  )
 }
 
 type Handler = (req: Request, url: URL) => Response | Promise<Response>
@@ -869,21 +888,26 @@ const R: Record<string, Handler> = {
         'Access-Control-Allow-Origin': '*',
       },
     })
-  }
+  },
 }
 
-const routes = Object.fromEntries(Object.entries(R).map(([path, handler]) => [
-  path,
-  async (req: Request, url: URL) => {
-    const start = performance.now()
-    try {
-      const result = await handler(req, url)
-      const duration = Math.round((performance.now() - start) * 1000) / 1000
-      log({ action: url.pathname.slice(1), success: true, duration })
-      return result
-    } catch (err) {
-      log({ action: url.pathname.slice(1), error: true, message: (err as Error)?.message })
-    }
-  }
-]))
-
+const routes = Object.fromEntries(
+  Object.entries(R).map(([path, handler]) => [
+    path,
+    async (req: Request, url: URL) => {
+      const start = performance.now()
+      try {
+        const result = await handler(req, url)
+        const duration = Math.round((performance.now() - start) * 1000) / 1000
+        log({ action: url.pathname.slice(1), success: true, duration })
+        return result
+      } catch (err) {
+        log({
+          action: url.pathname.slice(1),
+          error: true,
+          message: (err as Error)?.message,
+        })
+      }
+    },
+  ]),
+)

@@ -26,6 +26,4 @@ export const Duration = ({ duration }: { duration: number }) => (
 
 // add since to active players
 
-
 // [PENDING] fix duration in queue
-

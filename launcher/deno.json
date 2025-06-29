@@ -6,5 +6,5 @@
     "semiColons": false,
     "singleQuote": true,
     "exclude": ["vendor/", "metafile.json"]
-  },
+  }
 }

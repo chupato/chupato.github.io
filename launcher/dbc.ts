@@ -1,7 +1,7 @@
 const MAGIC_NUMBER = 1128416343 // 'WDBC'
 const HEADER_SIZE = 20
 
-type SchemaType =  'int' | 'uint' | 'byte' | 'float' | 'string'
+type SchemaType = 'int' | 'uint' | 'byte' | 'float' | 'string'
 
 // Record Structure
 const view = (arrayBuffer: ArrayBuffer) => {
@@ -99,7 +99,10 @@ export const fromBytes = <T extends Schema>(
   const STRING_SIZE = view.getUint32(16, true)
   if (WORD !== MAGIC_NUMBER) throw Error('invalid dbc signature')
   const fields = Object.entries(schema) as SchemaEntry[]
-  const recordSize = fields.reduce((acc, e) => acc + (e[1] === 'byte' ? 1 : 4), 0)
+  const recordSize = fields.reduce(
+    (acc, e) => acc + (e[1] === 'byte' ? 1 : 4),
+    0,
+  )
 
   if (
     FIELD_COUNT !== fields.length ||

@@ -108,18 +108,19 @@ enum CreateFlags {
   ARCHIVE_V4 = 0x03000000,
 }
 
-const errorMessages =  {
-  10000:`Not a MPQ file, but an AVI file`,
-  10001:`Cannot find file key`,
-  10002:`Sector CRC doesn\'t match`,
-  10003:`The given operation is not allowed on internal file`,
-  10004:`The file is present as incremental patch file, but base file is missing`,
-  10005:`The file was marked as "deleted" in the MPQ`,
-  10006:`The required file part is missing`,
-  10007:`A name of at least one file is unknown`,
-  10008:`Unable to find patch prefix for the patches`,
-  10009:`The header at this position is fake header`,
-  10010:`The file is present but contains delete marker`,
+const errorMessages = {
+  10000: `Not a MPQ file, but an AVI file`,
+  10001: `Cannot find file key`,
+  10002: `Sector CRC doesn\'t match`,
+  10003: `The given operation is not allowed on internal file`,
+  10004:
+    `The file is present as incremental patch file, but base file is missing`,
+  10005: `The file was marked as "deleted" in the MPQ`,
+  10006: `The required file part is missing`,
+  10007: `A name of at least one file is unknown`,
+  10008: `Unable to find patch prefix for the patches`,
+  10009: `The header at this position is fake header`,
+  10010: `The file is present but contains delete marker`,
 } as const
 
 const GetLastError: Deno.ForeignFunction = { result: 'u32', parameters: [] }
