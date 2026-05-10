@@ -772,6 +772,10 @@ const fetchUpdates = async (): Promise<Updates> => {
       ReagentCount_3 = 0, // "2",
       Reagent_4 = 0, // "2321",
       ReagentCount_4 = 0, // "1"
+      Reagent_5 = 0, // "2321",
+      ReagentCount_5 = 0, // "1"
+      Reagent_6 = 0, // "2321",
+      ReagentCount_6 = 0, // "1"
     } = row
 
     addSpell({
@@ -784,6 +788,10 @@ const fetchUpdates = async (): Promise<Updates> => {
       ReagentCount_3,
       Reagent_4,
       ReagentCount_4,
+      Reagent_5,
+      ReagentCount_5,
+      Reagent_6,
+      ReagentCount_6,
       ...(item && ({
         EffectItemType_1: item,
         Name_Lang_enUS: new_name,
