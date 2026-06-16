@@ -49,12 +49,12 @@ export const wowClasses = {
     excludeStats: magical,
     color: '#c69b6d', // Tan
   },
-  /*
   DEATHKNIGHT: {
     id: 6,
     excludeStats: magical,
     color: '#c41e3a', // Red
   },
+  /*
   DEMONHUNTER: {
     excludeStats: magical,
     color: '#a330c9', // Dark Magenta

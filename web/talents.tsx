@@ -21,6 +21,22 @@ const CLASS_BY_MASK = {
 
 const classIds = Object.values(CLASS_BY_MASK).map((v) => v.icon)
 
+type Values<T> = T[keyof T]
+type TalentData = typeof talents
+type TalentSpecs = Values<TalentData>
+type TalentRows = TalentSpecs extends Record<string, infer Rows> ? Rows : never
+type TalentRow = TalentRows extends Array<infer Row> ? Row : never
+type Spell = TalentRow extends Array<infer Talent> ? NonNullable<Talent> : never
+type SpecState = {
+  total: number
+  talents: number[]
+}
+type ClassState = {
+  total: number
+  specs: SpecState[]
+}
+type TalentState = Record<string, ClassState>
+
 const rawTalentState = computed(() => url.params.talents || '')
 const talentState = computed(() => {
   const newState = Object.fromEntries(classIds.map((classId) => [classId, {
@@ -29,7 +45,7 @@ const talentState = computed(() => {
       total: 0,
       talents: Array(7).fill(0),
     })),
-  }]))
+  }])) as TalentState
   for (const classes of rawTalentState.value.split('-')) {
     const [classId, specsState] = classes.split('_')
     const classState = newState[classId]
@@ -107,10 +123,6 @@ const addTalentRank = (
     .join('-')
 }
 
-type Spell = {}
-type ClassState = {}
-type TalentRow = {}
-
 const Talent = ({
   spell,
   specIndex,
@@ -119,19 +131,22 @@ const Talent = ({
   rows,
   talentIndex,
 }: {
-  spell: Spell,
-  specIndex: number,
-  classId: string,
-  classState: ClassState,
-  rows: TalentRow[],
-  talentIndex: number,
+  spell: Spell
+  specIndex: number
+  classId: string
+  classState: ClassState
+  rows: TalentRow[]
+  talentIndex: number
 }) => {
   const spec = classState.specs[specIndex]
   const count = spec.talents[talentIndex]
   const maxRank = count >= spell.ranks.length
   const hasTalentLeft = classState.total < 10
-  const requirementIndex = spell.requires != null ? Number(spell.requires) : null
-  const requiredTalent = requirementIndex != null && getTalentAtIndex(rows, requirementIndex)
+  const requirementIndex = spell.requires != null
+    ? Number(spell.requires)
+    : null
+  const requiredTalent = requirementIndex != null &&
+    getTalentAtIndex(rows, requirementIndex)
   const meetRequirement = requirementIndex != null && requiredTalent
     ? spec.talents[requirementIndex] >= requiredTalent.ranks.length
     : true
@@ -163,7 +178,9 @@ const Talent = ({
   )
   const tw =
     `relative z-10 block aspect-square size-16 shrink-0 rounded border-2 bg-base-300 ${color} cursor-default`
-  const decrement = (e: JSX.TargetedMouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+  const decrement = (
+    e: JSX.TargetedMouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) => {
     e.preventDefault()
     count > 0 &&
       navigate({
