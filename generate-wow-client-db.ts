@@ -37,12 +37,14 @@ const spellIcons = await openDBC('SpellIcon.dbc')
 const spellDurations = await openDBC('SpellDuration.dbc')
 
 const dlIcon = async (iconName: string) => {
-  const iconPath = `./web/assets/icon/${iconName}.jpg`
+  const iconPath = `./web/public/assets/icon/${iconName}.jpg`
   try {
-    Deno.statSync(`./web/assets/icon/${iconName}.jpg`)
+    Deno.statSync(iconPath)
   } catch {
     console.log('fetching', iconName)
-    const res = await fetch(`https://wow.zamimg.com/images/wow/icons/large/${iconName.toLowerCase()}.jpg`)
+    const res = await fetch(
+      `https://wow.zamimg.com/images/wow/icons/large/${iconName.toLowerCase()}.jpg`,
+    )
     if (!res.ok) throw Error(`${iconName} not found`)
     const img = await res.arrayBuffer()
     await Deno.writeFile(iconPath, new Uint8Array(img))
@@ -251,7 +253,7 @@ for (const talent of talents) {
   const talentData = {
     name: r1.name,
     icon: r1.icon,
-    index: index + rid*4,
+    index: index + rid * 4,
     requires: [
       Number(talent.PrereqTalent_1),
       Number(talent.PrereqTalent_2),
