@@ -824,6 +824,7 @@ export const dbcSchema = {
     Name_Lang_Mask: 'uint',
     SpellIconID: 'int',
   },
+  'SpellIcon.dbc': { ID: 'int', File: 'string' },
   'DurabilityCosts.dbc': {
     ID: 'int',
     WeaponSubClassCost_1: 'int',
