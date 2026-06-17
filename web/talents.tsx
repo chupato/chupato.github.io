@@ -4,6 +4,7 @@ import talents from './talent.json' with { type: 'json' }
 import styles from './class-button.module.css'
 import { A, navigate, url } from './router.tsx'
 import { setTipData } from './tooltip.tsx'
+import { wowClasses } from './wow.ts'
 
 // Custom talent preview
 
@@ -127,8 +128,21 @@ const addTalentRank = (
   spec.talents[talentIndex] += amount
   spec.total += amount
   nextState[classId].total += amount
+  return stringifyTalentState(nextState)
+}
 
-  return Object.entries(nextState)
+const resetClassTalents = (classId: string) => {
+  const nextState = structuredClone(talentState.value)
+  nextState[classId].total = 0
+  nextState[classId].specs = nextState[classId].specs.map(() => ({
+    total: 0,
+    talents: Array(7).fill(0),
+  }))
+  return stringifyTalentState(nextState)
+}
+
+const stringifyTalentState = (state: TalentState) =>
+  Object.entries(state)
     .filter(([, classState]) => classState.total > 0)
     .map(([classId, classState]) => {
       const specs = classState.specs
@@ -138,7 +152,6 @@ const addTalentRank = (
       return `${classId}_${specs}`
     })
     .join('-')
-}
 
 const Talent = ({
   spell,
@@ -204,7 +217,7 @@ const Talent = ({
         })}
       />
       <span class='pointer-events-none absolute inset-0 rounded shadow-[inset_0_0_2px_1px_black]' />
-      <span class='absolute -right-1.5 -bottom-1.5 rounded-full bg-black px-1.5 py-0.5 text-xs leading-none font-bold text-white opacity-80 shadow'>
+      <span class='absolute right-0.5 bottom-0.5 rounded-sm bg-black px-0.5 py-px text-xs leading-none font-bold text-white opacity-80 shadow'>
         {count}/{spell.ranks.length}
       </span>
     </>
@@ -236,12 +249,13 @@ const Talent = ({
       </button>
     )
   return (
-    <span class='relative block aspect-square size-16 shrink-0'>
+    <span class='group relative block aspect-square size-16 shrink-0'>
       {unlocks.map((unlockIndex) => (
         <span
           class={[
             'pointer-events-none absolute z-0 size-0 border-x-6 border-t-8 border-x-transparent',
             arrowColor,
+            canAdd ? 'group-hover:border-t-primary' : '',
             getUnlockMarkerClass(talentIndex, unlockIndex),
           ].join(' ')}
         />
@@ -259,28 +273,49 @@ export const Talents = () => {
         const wowClass =
           CLASS_BY_MASK[Number(classMask) as keyof typeof CLASS_BY_MASK] ||
           CLASS_BY_MASK[1]
+        const classColor = wowClasses[wowClass.icon]?.color
         const classState = state[wowClass.icon]
         return (
           <section class='mx-auto w-fit max-w-full rounded-lg border border-base-300 bg-base-100/70 shadow-lg shadow-black/20'>
-            <header class='flex items-center gap-3 border-b border-base-300 bg-base-200/70 px-3 py-2'>
+            <header class='relative flex items-center gap-3 border-b border-base-300 bg-base-200/70 px-3 py-0.5'>
               <span
                 class={[
-                  styles.classButton,
+                  styles.classIcon,
                   styles[wowClass.icon],
-                  'block size-9 shrink-0 rounded border border-base-content/30',
+                  'block size-9 shrink-0 translate-y-2 rounded-full outline-2 outline-offset-1 outline-current',
                 ].join(' ')}
+                style={{ color: classColor }}
               />
-              <h2 class='text-lg font-bold leading-tight text-base-content'>
+              <h2
+                class='text-lg font-bold leading-tight'
+                style={{ color: classColor }}
+              >
                 {wowClass.name}
               </h2>
+              {classState.total > 0 && (
+                <A
+                  class='ml-auto inline-flex h-5 items-center gap-1 px-1 text-xs leading-none text-base-content/70 hover:text-error'
+                  params={{
+                    talents: resetClassTalents(wowClass.icon) || null,
+                  }}
+                >
+                  <span class='inline-flex size-4 items-center justify-center text-2xl leading-none font-bold text-error'>
+                    ×
+                  </span>
+                  <span>Reset</span>
+                </A>
+              )}
             </header>
 
-            <div class='mx-auto grid w-fit max-w-full gap-3 p-3 lg:grid-cols-3'>
+            <div class='mx-auto grid w-fit max-w-full gap-3 p-3 pt-4 lg:grid-cols-3'>
               {Object.entries(specs).map(([specName, rows], specIndex) => {
                 const unlocksByIndex = getUnlocksByIndex(rows)
                 return (
                   <section class='min-w-0 rounded-md border border-base-300 bg-base-200/40'>
-                    <h3 class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary'>
+                    <h3
+                      class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide'
+                      style={{ color: classColor }}
+                    >
                       {specName}
                     </h3>
 
