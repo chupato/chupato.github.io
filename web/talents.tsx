@@ -3,6 +3,7 @@ import type { JSX } from 'preact'
 import talents from './talent.json' with { type: 'json' }
 import styles from './class-button.module.css'
 import { A, navigate, url } from './router.tsx'
+import { setTipData } from './tooltip.tsx'
 
 // Custom talent preview
 
@@ -73,28 +74,44 @@ const talentState = computed(() => {
 const getTalentAtIndex = (rows: TalentRow[], talentIndex: number) =>
   rows[Math.floor(talentIndex / 4)]?.[talentIndex % 4]
 
-const getRequirementMarkerClass = (from: number, to: number) => {
+const getUnlocksByIndex = (rows: TalentRow[]) => {
+  const unlocks = new Map<number, number[]>()
+  for (const [rowIndex, row] of rows.entries()) {
+    for (const [spellIndex, spell] of row.entries()) {
+      if (spell.requires == null) continue
+      const requirementIndex = Number(spell.requires)
+      const talentIndex = rowIndex * 4 + spellIndex
+      unlocks.set(
+        requirementIndex,
+        [...(unlocks.get(requirementIndex) || []), talentIndex],
+      )
+    }
+  }
+  return unlocks
+}
+
+const getUnlockMarkerClass = (from: number, to: number) => {
   const fromRow = Math.floor(from / 4)
   const fromColumn = from % 4
   const toRow = Math.floor(to / 4)
   const toColumn = to % 4
   const top = toRow < fromRow
-    ? '-top-3'
+    ? '-top-2'
     : toRow > fromRow
-    ? '-bottom-3'
+    ? '-bottom-2'
     : 'top-1/2 -translate-y-1/2'
   const left = toColumn < fromColumn
-    ? '-left-3.5'
+    ? '-left-2.5'
     : toColumn > fromColumn
-    ? '-right-3.5'
+    ? '-right-2.5'
     : 'left-1/2 -translate-x-1/2'
   const rotation = toRow < fromRow
-    ? 'rotate-0'
-    : toRow > fromRow
     ? 'rotate-180'
+    : toRow > fromRow
+    ? 'rotate-0'
     : toColumn < fromColumn
-    ? '-rotate-90'
-    : 'rotate-90'
+    ? 'rotate-90'
+    : '-rotate-90'
 
   return `${top} ${left} ${rotation}`
 }
@@ -130,6 +147,7 @@ const Talent = ({
   classState,
   rows,
   talentIndex,
+  unlocks,
 }: {
   spell: Spell
   specIndex: number
@@ -137,6 +155,7 @@ const Talent = ({
   classState: ClassState
   rows: TalentRow[]
   talentIndex: number
+  unlocks: number[]
 }) => {
   const spec = classState.specs[specIndex]
   const count = spec.talents[talentIndex]
@@ -154,13 +173,21 @@ const Talent = ({
     (talentIndex < 4 || spec.total >= 5) &&
     meetRequirement &&
     !maxRank
-  let color = 'border-zinc-700 saturate-15 opacity-80'
+  let borderColor = 'border-zinc-700'
+  let arrowColor = 'border-t-zinc-700'
+  let color = `${borderColor} saturate-15 opacity-80`
   if (maxRank) {
-    color = 'border-warning'
+    borderColor = 'border-warning'
+    arrowColor = 'border-t-warning'
+    color = borderColor
   } else if (canAdd) {
-    color = 'border-primary-content hover:border-primary'
+    borderColor = 'border-primary-content'
+    arrowColor = 'border-t-primary-content'
+    color = `${borderColor} hover:border-primary`
   } else if (count > 0) {
-    color = 'border-primary-content'
+    borderColor = 'border-primary-content'
+    arrowColor = 'border-t-primary-content'
+    color = borderColor
   }
   const image = (
     <>
@@ -169,6 +196,12 @@ const Talent = ({
         title={spell.name}
         alt={spell.name}
         class='size-full rounded object-cover'
+        data-tip='1'
+        ref={setTipData({
+          title: spell.name,
+          icon: spell.icon,
+          description: spell.ranks[count] || spell.ranks[0],
+        })}
       />
       <span class='pointer-events-none absolute inset-0 rounded shadow-[inset_0_0_2px_1px_black]' />
       <span class='absolute -right-1.5 -bottom-1.5 rounded-full bg-black px-1.5 py-0.5 text-xs leading-none font-bold text-white opacity-80 shadow'>
@@ -204,15 +237,15 @@ const Talent = ({
     )
   return (
     <span class='relative block aspect-square size-16 shrink-0'>
-      {requirementIndex != null && (
+      {unlocks.map((unlockIndex) => (
         <span
           class={[
             'pointer-events-none absolute z-0 size-0 border-x-6 border-t-8 border-x-transparent',
-            meetRequirement ? 'border-t-warning' : 'border-t-zinc-500',
-            getRequirementMarkerClass(talentIndex, requirementIndex),
+            arrowColor,
+            getUnlockMarkerClass(talentIndex, unlockIndex),
           ].join(' ')}
         />
-      )}
+      ))}
       {control}
     </span>
   )
@@ -243,30 +276,38 @@ export const Talents = () => {
             </header>
 
             <div class='mx-auto grid w-fit max-w-full gap-3 p-3 lg:grid-cols-3'>
-              {Object.entries(specs).map(([specName, rows], specIndex) => (
-                <section class='min-w-0 rounded-md border border-base-300 bg-base-200/40'>
-                  <h3 class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary'>
-                    {specName}
-                  </h3>
+              {Object.entries(specs).map(([specName, rows], specIndex) => {
+                const unlocksByIndex = getUnlocksByIndex(rows)
+                return (
+                  <section class='min-w-0 rounded-md border border-base-300 bg-base-200/40'>
+                    <h3 class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary'>
+                      {specName}
+                    </h3>
 
-                  <div class='flex w-fit max-w-full flex-col gap-3 p-3'>
-                    {rows.map((row, rowIndex) => (
-                      <div class='grid w-fit grid-cols-4 gap-3'>
-                        {row.map((spell, spellIndex) => (
-                          <Talent
-                            spell={spell}
-                            specIndex={specIndex}
-                            classId={wowClass.icon}
-                            classState={classState}
-                            rows={rows}
-                            talentIndex={rowIndex * 4 + spellIndex}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ))}
+                    <div class='flex w-fit max-w-full flex-col gap-3 p-3'>
+                      {rows.map((row, rowIndex) => (
+                        <div class='grid w-fit grid-cols-4 gap-3'>
+                          {row.map((spell, spellIndex) => {
+                            const talentIndex = rowIndex * 4 + spellIndex
+                            return (
+                              <Talent
+                                spell={spell}
+                                specIndex={specIndex}
+                                classId={wowClass.icon}
+                                classState={classState}
+                                rows={rows}
+                                talentIndex={talentIndex}
+                                unlocks={unlocksByIndex.get(talentIndex) ||
+                                  []}
+                              />
+                            )
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )
+              })}
             </div>
           </section>
         )

@@ -9,6 +9,7 @@ import { RecentActivePlayers } from './recent-active-players.tsx'
 import { Links } from './links.tsx'
 import { Talents } from './talents.tsx'
 import { QueueStats } from './queue-stats.tsx'
+import { ToolTip } from './tooltip.tsx'
 
 // Assets
 import styles from './app.module.css'
@@ -162,6 +163,7 @@ const App = () => (
       </aside>
     </div>
     <Talents />
+    <ToolTip />
   </div>
 )
 

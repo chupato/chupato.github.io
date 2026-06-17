@@ -78,7 +78,7 @@ export const navigate = (props: GetUrlProps & { replace?: boolean }) =>
   navigateUrl(getUrl(props).href, props.replace)
 
 export type LinkProps =
-  & { replace?: boolean }
+  & { replace?: boolean; viewTransition?: boolean }
   & JSX.HTMLAttributes<HTMLAnchorElement>
   & GetUrlProps
 
@@ -87,6 +87,7 @@ export const A = ({
   hash,
   params,
   replace,
+  viewTransition,
   onClick,
   onMouseDown,
   ...props
@@ -128,7 +129,7 @@ export const A = ({
     // In the normal case we handle the routing internally
     event.preventDefault()
     // @ts-ignore
-    if (document.startViewTransition) {
+    if (viewTransition && document.startViewTransition) {
       console.log('Starting view transition...')
       // @ts-ignore
       document.startViewTransition(() => {
