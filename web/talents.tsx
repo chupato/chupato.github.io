@@ -21,7 +21,8 @@ const CLASS_BY_MASK = {
   32: { name: 'Death Knight', icon: 'DEATHKNIGHT' },
 } as const
 
-const classIds = Object.values(CLASS_BY_MASK).map((v) => v.icon)
+const classes = Object.values(CLASS_BY_MASK)
+const DEFAULT_CLASS = classes[0].icon
 
 type Values<T> = T[keyof T]
 type TalentData = typeof talents
@@ -37,35 +38,29 @@ type ClassState = {
   total: number
   specs: SpecState[]
 }
-type TalentState = Record<string, ClassState>
 
+const selectedClass = computed(() => url.params.class || DEFAULT_CLASS)
 const rawTalentState = computed(() => url.params.talents || '')
 const talentState = computed(() => {
-  const newState = Object.fromEntries(classIds.map((classId) => [classId, {
+  const newState = {
     total: 0,
     specs: Array(3).fill(0).map(() => ({
       total: 0,
       talents: Array(7).fill(0),
     })),
-  }])) as TalentState
-  for (const classes of rawTalentState.value.split('-')) {
-    const [classId, specsState] = classes.split('_')
-    const classState = newState[classId]
-    if (!classState) continue
-    const specs = specsState.split('.')
-    for (const [specIndex, spec] of specs.entries()) {
-      const specState = classState.specs[specIndex]
-      if (!specState) continue
-      for (const [talentIndexStr, countStr] of Object.entries(spec)) {
-        const talentIndex = Number(talentIndexStr)
-        if (classState.total > 9) continue
-        if (talentIndex > 3 && specState.total < 5) continue
-        // TODO: ensure this spell can have this many ranks, max the count to the actual max value
-        const count = Number(countStr) || 0
-        specState.talents[talentIndex] = count
-        specState.total += count
-        classState.total = Math.min(classState.total + count, 10)
-      }
+  } as ClassState
+  for (const [specIndex, spec] of rawTalentState.value.split('.').entries()) {
+    const specState = newState.specs[specIndex]
+    if (!specState) continue
+    for (const [talentIndexStr, countStr] of Object.entries(spec)) {
+      const talentIndex = Number(talentIndexStr)
+      if (newState.total > 9) continue
+      if (talentIndex > 3 && specState.total < 5) continue
+      // TODO: ensure this spell can have this many ranks, max the count to the actual max value
+      const count = Number(countStr) || 0
+      specState.talents[talentIndex] = count
+      specState.total += count
+      newState.total = Math.min(newState.total + count, 10)
     }
   }
 
@@ -118,45 +113,27 @@ const getUnlockMarkerClass = (from: number, to: number) => {
 }
 
 const addTalentRank = (
-  classId: string,
   specIndex: number,
   talentIndex: number,
   amount: number,
 ) => {
   const nextState = structuredClone(talentState.value)
-  const spec = nextState[classId].specs[specIndex]
+  const spec = nextState.specs[specIndex]
   spec.talents[talentIndex] += amount
   spec.total += amount
-  nextState[classId].total += amount
+  nextState.total += amount
   return stringifyTalentState(nextState)
 }
 
-const resetClassTalents = (classId: string) => {
-  const nextState = structuredClone(talentState.value)
-  nextState[classId].total = 0
-  nextState[classId].specs = nextState[classId].specs.map(() => ({
-    total: 0,
-    talents: Array(7).fill(0),
-  }))
-  return stringifyTalentState(nextState)
-}
-
-const stringifyTalentState = (state: TalentState) =>
-  Object.entries(state)
-    .filter(([, classState]) => classState.total > 0)
-    .map(([classId, classState]) => {
-      const specs = classState.specs
-        .map((spec) => spec.talents.join('').replace(/0+$/, ''))
-        .join('.')
-
-      return `${classId}_${specs}`
-    })
-    .join('-')
+const stringifyTalentState = (state: ClassState) =>
+  state.total
+    ? state.specs.map((spec) => spec.talents.join('').replace(/0+$/, ''))
+      .join('.')
+    : ''
 
 const Talent = ({
   spell,
   specIndex,
-  classId,
   classState,
   rows,
   talentIndex,
@@ -164,7 +141,6 @@ const Talent = ({
 }: {
   spell: Spell
   specIndex: number
-  classId: string
   classState: ClassState
   rows: TalentRow[]
   talentIndex: number
@@ -206,14 +182,15 @@ const Talent = ({
     <>
       <img
         src={`/assets/icon/${spell.icon}.jpg`}
-        title={spell.name}
         alt={spell.name}
         class='size-full rounded object-cover'
         data-tip='1'
         ref={setTipData({
           title: spell.name,
           icon: spell.icon,
-          description: spell.ranks[count] || spell.ranks[0],
+          description: count >= spell.ranks.length
+            ? spell.ranks.at(-1)
+            : spell.ranks[count || 0],
         })}
       />
       <span class='pointer-events-none absolute inset-0 rounded shadow-[inset_0_0_2px_1px_black]' />
@@ -230,7 +207,7 @@ const Talent = ({
     e.preventDefault()
     count > 0 &&
       navigate({
-        params: { talents: addTalentRank(classId, specIndex, talentIndex, -1) },
+        params: { talents: addTalentRank(specIndex, talentIndex, -1) },
       })
   }
   const control = canAdd
@@ -238,7 +215,7 @@ const Talent = ({
       <A
         class={tw}
         onContextMenu={decrement}
-        params={{ talents: addTalentRank(classId, specIndex, talentIndex, 1) }}
+        params={{ talents: addTalentRank(specIndex, talentIndex, 1) }}
       >
         {image}
       </A>
@@ -266,87 +243,84 @@ const Talent = ({
 }
 
 export const Talents = () => {
+  const classId = selectedClass.value
   const state = talentState.value
+  const classEntry = Object.entries(CLASS_BY_MASK).find(([, v]) =>
+    v.icon === classId
+  )
+  const [classMask, wowClass] = classEntry || ['1', CLASS_BY_MASK[1]]
+  const classColor = wowClasses[wowClass.icon]?.color
+  const specs = talents[classMask as keyof typeof talents]
   return (
-    <section class='mx-auto flex w-fit max-w-full select-none flex-col gap-5 px-3 py-5 sm:px-5'>
-      {Object.entries(talents).map(([classMask, specs]) => {
-        const wowClass =
-          CLASS_BY_MASK[Number(classMask) as keyof typeof CLASS_BY_MASK] ||
-          CLASS_BY_MASK[1]
-        const classColor = wowClasses[wowClass.icon]?.color
-        const classState = state[wowClass.icon]
-        return (
-          <section class='mx-auto w-fit max-w-full rounded-lg border border-base-300 bg-base-100/70 shadow-lg shadow-black/20'>
-            <header class='relative flex items-center gap-3 border-b border-base-300 bg-base-200/70 px-3 py-0.5'>
-              <span
+    <section class='mx-auto w-fit max-w-full rounded-lg border border-base-300 bg-base-100/70 shadow-lg shadow-black/20'>
+      <header class='relative flex items-center p-4 gap-3 border-b border-base-300 bg-base-200/70'>
+        <nav class='mx-auto flex gap-3'>
+          {classes.map((wowClass) => {
+            const active = wowClass.icon === classId
+            return (
+              <A
                 class={[
                   styles.classIcon,
                   styles[wowClass.icon],
-                  'block size-9 shrink-0 translate-y-2 rounded-full outline-2 outline-offset-1 outline-current',
+                  'block size-12 rounded-full outline-2 outline-offset-1 outline-current',
+                  active ? '' : 'opacity-50 saturate-50 hover:opacity-100',
                 ].join(' ')}
-                style={{ color: classColor }}
+                style={{ color: wowClasses[wowClass.icon]?.color }}
+                params={{
+                  class: wowClass.icon === DEFAULT_CLASS ? null : wowClass.icon,
+                  talents: null,
+                }}
               />
-              <h2
-                class='text-lg font-bold leading-tight'
+            )
+          })}
+        </nav>
+      </header>
+      <div class='mx-auto grid w-fit max-w-full gap-3 p-3 lg:grid-cols-3'>
+        {Object.entries(specs).map(([specName, rows], specIndex) => {
+          const unlocksByIndex = getUnlocksByIndex(rows)
+          return (
+            <section class='min-w-0 rounded-md border border-base-300 bg-base-200/40'>
+              <h3
+                class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide'
                 style={{ color: classColor }}
               >
-                {wowClass.name}
-              </h2>
-              {classState.total > 0 && (
-                <A
-                  class='ml-auto inline-flex h-5 items-center gap-1 px-1 text-xs leading-none text-base-content/70 hover:text-error'
-                  params={{
-                    talents: resetClassTalents(wowClass.icon) || null,
-                  }}
-                >
-                  <span class='inline-flex size-4 items-center justify-center text-2xl leading-none font-bold text-error'>
-                    ×
-                  </span>
-                  <span>Reset</span>
-                </A>
-              )}
-            </header>
+                {specName}
+              </h3>
 
-            <div class='mx-auto grid w-fit max-w-full gap-3 p-3 pt-4 lg:grid-cols-3'>
-              {Object.entries(specs).map(([specName, rows], specIndex) => {
-                const unlocksByIndex = getUnlocksByIndex(rows)
-                return (
-                  <section class='min-w-0 rounded-md border border-base-300 bg-base-200/40'>
-                    <h3
-                      class='border-b border-base-300 px-2 py-1.5 text-xs font-semibold uppercase tracking-wide'
-                      style={{ color: classColor }}
-                    >
-                      {specName}
-                    </h3>
-
-                    <div class='flex w-fit max-w-full flex-col gap-3 p-3'>
-                      {rows.map((row, rowIndex) => (
-                        <div class='grid w-fit grid-cols-4 gap-3'>
-                          {row.map((spell, spellIndex) => {
-                            const talentIndex = rowIndex * 4 + spellIndex
-                            return (
-                              <Talent
-                                spell={spell}
-                                specIndex={specIndex}
-                                classId={wowClass.icon}
-                                classState={classState}
-                                rows={rows}
-                                talentIndex={talentIndex}
-                                unlocks={unlocksByIndex.get(talentIndex) ||
-                                  []}
-                              />
-                            )
-                          })}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )
-              })}
-            </div>
-          </section>
-        )
-      })}
+              <div class='flex w-fit max-w-full flex-col gap-3 p-3'>
+                {rows.map((row, rowIndex) => (
+                  <div class='grid w-fit grid-cols-4 gap-3'>
+                    {row.map((spell, spellIndex) => {
+                      const talentIndex = rowIndex * 4 + spellIndex
+                      return (
+                        <Talent
+                          spell={spell}
+                          specIndex={specIndex}
+                          classState={state}
+                          rows={rows}
+                          talentIndex={talentIndex}
+                          unlocks={unlocksByIndex.get(talentIndex) || []}
+                        />
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+      {state.total > 0 && (
+        <A
+          class='ml-auto inline-flex h-6 absolute items-center gap-1 px-1 text-xs leading-none text-base-content/70 hover:text-error'
+          params={{ talents: null }}
+        >
+          <span class='inline-flex size-4 items-center justify-center text-2xl leading-none font-bold text-error'>
+            ×
+          </span>
+          <span>Reset</span>
+        </A>
+      )}
     </section>
   )
 }
