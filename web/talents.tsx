@@ -275,7 +275,7 @@ export const Talents = () => {
           })}
         </nav>
       </header>
-      <div class='mx-auto grid w-fit max-w-full gap-3 p-3 lg:grid-cols-3'>
+      <div class='mx-auto grid w-fit max-w-full gap-3 p-3 lg:grid-cols-3' key={classMask}>
         {Object.entries(specs).map(([specName, rows], specIndex) => {
           const unlocksByIndex = getUnlocksByIndex(rows)
           return (
